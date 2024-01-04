@@ -47,28 +47,56 @@ class Player(pygame.sprite.Sprite):
     self.image = pygame.Surface((cs.tilesize, cs.tilesize))
     self.image.fill(cs.black)
     self.rect = self.image.get_rect()
-    self.x = x
-    self.y = y
+    self.vx, self.vy = 0, 0
+    self.x = x * cs.tilesize
+    self.y = y * cs.tilesize
     #self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
-  def move(self, xchange=0, ychange=0):
-    if not self.collicase(xchange, ychange):
-      self.x += xchange
-      self.y += ychange
+  def get_keys(self):
+    self.vx, self.vy = 0, 0
+    keez = pygame.key.get_pressed()
+    if keez[pygame.K_LEFT] or keez[pygame.K_a]:
+      self.vx = -cs.player_speed
+    elif keez[pygame.K_RIGHT] or keez[pygame.K_d]:
+      self.vx = cs.player_speed
+    elif keez[pygame.K_DOWN] or keez[pygame.K_s]:
+      self.vy = cs.player_speed
+    elif keez[pygame.K_UP] or keez[pygame.K_w]:
+      self.vy = -cs.player_speed
 
-  def collicase(self, xchange=0, ychange=0):
-    for bigolwall in self.game.obstruction:
-      if bigolwall.x == self.x + xchange and bigolwall.y == self.y + ychange:
-        if isinstance(bigolwall, Interactable):
-          self.game.displaytext = True
-        return True
-    return False
+
+
+  def collicase(self, axis):
+    if axis == 'x':
+      collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
+      if collision:
+        if self.vx > 0:
+          self.x = collision[0].rect.left - self.rect.width
+        if self.vx < 0:
+          self.x = collision[0].rect.right
+        self.vx = 0
+        self.rect.x = self.x
+    if axis == 'y':
+      collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
+      if collision:
+        if self.vy > 0:
+          self.y = collision[0].rect.top - self.rect.height
+        if self.vy < 0:
+          self.y = collision[0].rect.bottom
+        self.vy = 0
+        self.rect.y = self.y
+
 
 
 
   def update(self):
-    self.rect.x = self.x * cs.tilesize
-    self.rect.y = self.y * cs.tilesize
+    self.get_keys()
+    self.x += self.vx * self.game.dt
+    self.y += self.vy * self.game.dt
+    self.rect.x = self.x
+    self.collicase('x')
+    self.rect.y = self.y
+    self.collicase('y')
 
 '''class Background(pygame.sprite.Sprite):
   def __init__(self, x, y, layers):
@@ -108,6 +136,20 @@ class Interactable(pygame.sprite.Sprite):
     self.rect = self.image.get_rect()
     self.rect.x = self.x * cs.tilesize
     self.rect.y = self.y * cs.tilesize
+
+class InteractableBox(pygame.sprite.Sprite):
+  def __init__(self, game, x, y):
+    self.game = game
+    self.inside = self.game.all_sprites, self.game.interactablebox
+    pygame.sprite.Sprite.__init__(self, self.inside)
+    self._layer = cs.object_layer
+    self.x = x
+    self.y = y
+    self.image = pygame.Surface((18, 18), pygame.SRCALPHA, 32)
+    self.rect = self.image.get_rect()
+    self.rect.x = self.x * cs.tilesize - 1
+    self.rect.y = self.y * cs.tilesize - 1
+
 
 
 

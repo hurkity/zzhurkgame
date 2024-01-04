@@ -5,6 +5,8 @@ from objs import *
 import pygame
 from cons import *
 import buttons as b
+from tilemap import *
+
 
 
 class Game:
@@ -19,16 +21,14 @@ class Game:
 
   def load_data(self):
     folder = path.dirname(__file__)
-    self.mapdata = []
-    with open(path.join(folder, 'map.txt'), 'rt') as f:
-      for line in f:
-        self.mapdata.append(line)
+    self.map = Map(path.join(folder, 'map.txt'))
 
   def new(self):
     self.all_sprites = pygame.sprite.Group()
     self.obstruction = pygame.sprite.Group()
     self.interactable = pygame.sprite.Group()
-    for i, row in enumerate(tilemap):
+    self.interactablebox = pygame.sprite.Group()
+    for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
           Wall(self, j, i)
@@ -36,6 +36,7 @@ class Game:
           self.player = Player(self, j, i)
         elif value == '2':
           Interactable(self, j, i)
+          InteractableBox(self, j, i)
     """for x in range (15,30): #gyap
       Wall(self, x, 10) #gyap
     for x in range (20,25): #gyap
@@ -44,7 +45,7 @@ class Game:
       if thing.name == 'player':
         self.player = Player(self, thing.x, thing.y)"""
 
-    self.camera = Camera(diswidth, disheight) #gyap
+    self.camera = View(self.map.width, self.map.height) #gyap
 
   def newtwo(self):
     self.all_buttons = pygame.sprite.Group()
@@ -54,9 +55,9 @@ class Game:
     self.game_over = False
     while not self.game_over:
       self.dt = self.clock.tick(60) / 1000
+      self.events()
       self.rupdate()
       self.draw()
-      self.events()
     pygame.quit()
 
   def runtwo(self):
@@ -97,8 +98,10 @@ class Game:
   def draw(self):
     self.drawbg(white)
     self.grid()
-    self.all_sprites.draw(self.dis)
-    if self.displaytext == True:
+    #self.all_sprites.draw(self.dis) changed w camera
+    for sprite in self.all_sprites:
+      self.dis.blit(sprite.image, self.camera.implement(sprite))
+    if pygame.sprite.spritecollideany(self.player, self.interactablebox):
       self.displaymytext()
     '''for sprit in self.all_sprites:
      self.dis.blit(sprit.image, self.camera.apply(sprit))'''
@@ -117,18 +120,17 @@ class Game:
             self.quit()
         if event.type == pygame.KEYDOWN:
             play_pos = (self.player.x, self.player.y, self.displaytext)
-            if event.key == pygame.K_a:
-              self.player.move(xchange = -block_speed)
-              print (self.player.x)
-            elif event.key == pygame.K_d:
+            if event.key == pygame.K_ESCAPE:
+              self.quit()
+            '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
-            elif event.key == pygame.K_w:
+            if event.key == pygame.K_w:
               self.player.move(ychange = -block_speed)
-            elif event.key == pygame.K_s:
-              self.player.move(ychange = block_speed)
-            
-        elif event.type == pygame.KEYUP:
-          self.player.move()
+            if event.key == pygame.K_s:
+              self.player.move(ychange = block_speed)'''
+
+        #elif event.type == pygame.KEYUP:
+        #  self.player.move()
 
   def textappear(self, string, colour, background):
     char = ''

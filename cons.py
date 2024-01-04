@@ -85,7 +85,7 @@ gridwidth = int(diswidth/tilesize)
 gridheight = int(disheight/tilesize)
 
 block_speed = 1
-
+player_speed = 300
 
 
 tilemap = [
