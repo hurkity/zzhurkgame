@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="11">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="20">
  <editorsettings>
   <export format="tmx"/>
  </editorsettings>
@@ -52,11 +52,15 @@
   <object id="2" name="house" x="386" y="66" width="59" height="46"/>
   <object id="3" name="house" x="98" y="145" width="59" height="46"/>
   <object id="4" name="house" x="52" y="370" width="59" height="46"/>
-  <object id="5" name="house" x="212" y="289" width="59" height="46"/>
+  <object id="5" name="house" x="211" y="292" width="59" height="46"/>
   <object id="7" name="fence" x="181" y="67" width="44" height="11"/>
   <object id="8" name="fence" x="133" y="68" width="44" height="11"/>
   <object id="9" name="fence" x="229" y="69" width="44" height="11"/>
   <object id="10" name="player" x="289" y="177" width="12" height="13"/>
+  <object id="15" name="interactablehitbox" x="92" y="133" width="75" height="67"/>
+  <object id="17" name="interactablehitbox" x="376.5" y="55.5" width="75" height="67"/>
+  <object id="18" name="interactablehitbox" x="43.5" y="358.5" width="75" height="67"/>
+  <object id="19" name="interactablehitbox" x="203.5" y="280.5" width="75" height="67"/>
  </objectgroup>
  <layer id="2" name="objects" width="60" height="40">
   <data encoding="csv">

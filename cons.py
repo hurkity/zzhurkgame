@@ -22,6 +22,8 @@ floor_layer = 0
 object_layer = 1
 player_layer = 2
 
+playerhitrect = pygame.Rect(0,0,15,15)
+
 text1 = "Start"
 text2 = "Settings"
 text3 = "Quit"
@@ -77,7 +79,7 @@ string1 = "woahh oh woahh"
 font = pygame.font.Font('freesansbold.ttf', 32)
 text = font.render("'e' to interact with the object!", True, green, blue)
 textRect = text.get_rect()
-textRect.center = (480, 160)
+textRect.center = (250, 150)
 
 #part2
 tilesize = 16
