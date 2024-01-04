@@ -8,20 +8,21 @@ import buttons as b
 from tilemap import *
 
 
-
 class Game:
   def __init__(self):
     pygame.init()
-    self.dis = pygame.display.set_mode((800, 500))
-    pygame.display.set_caption('Start Screen')
+    self.dis = pygame.display.set_mode((cs.diswidth, cs.disheight))
+    pygame.display.set_caption('get me out of heeaarraahh')
     self.clock = pygame.time.Clock()
-    pygame.key.set_repeat(500, 100)
+    #pygame.key.set_repeat(500, 100)
     self.load_data()
-    self.displaytext = False
+    #self.displaytext = False
 
   def load_data(self):
     folder = path.dirname(__file__)
+    img_folder = path.join(folder, 'graphics')
     self.map = Map(path.join(folder, 'map.txt'))
+    self.player_img = pygame.image.load(path.join(img_folder, 'sunnysprite.png')).convert_alpha()
 
   def new(self):
     self.all_sprites = pygame.sprite.Group()
@@ -37,19 +38,11 @@ class Game:
         elif value == '2':
           Interactable(self, j, i)
           InteractableBox(self, j, i)
-    """for x in range (15,30): #gyap
-      Wall(self, x, 10) #gyap
-    for x in range (20,25): #gyap
-      Wall(self, 10, x) #gyap
-    for thing in self.map.tmxdata.objects:
-      if thing.name == 'player':
-        self.player = Player(self, thing.x, thing.y)"""
+    self.camera = View(self.map.width, self.map.height)
 
-    self.camera = View(self.map.width, self.map.height) #gyap
-
-  def newtwo(self):
+  '''def newtwo(self):
     self.all_buttons = pygame.sprite.Group()
-    pygame.display.flip()
+    pygame.display.flip() not using buttons'''
 
   def run(self):
     self.game_over = False
@@ -119,7 +112,7 @@ class Game:
         if event.type == pygame.QUIT:
             self.quit()
         if event.type == pygame.KEYDOWN:
-            play_pos = (self.player.x, self.player.y, self.displaytext)
+            #play_pos = (self.player.x, self.player.y, self.displaytext)
             if event.key == pygame.K_ESCAPE:
               self.quit()
             '''if event.key == pygame.K_d:

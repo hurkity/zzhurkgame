@@ -1,15 +1,15 @@
 import pygame
-from cons import *
+import cons as cs
 class Map:
     def __init__(self, filename):
         self.data = []
         with open(filename, 'rt') as f:
             for line in f:
-                self.data.append(line)
+                self.data.append(line.strip())
         self.tilewidth = len(self.data[0])
         self.tileheight = len(self.data)
-        self.width = self.tilewidth * tilesize
-        self.height = self.tilewidth * tilesize
+        self.width = self.tilewidth * cs.tilesize
+        self.height = self.tilewidth * cs.tilesize
 
 
 class View:
@@ -22,6 +22,12 @@ class View:
         return thing.rect.move(self.view.topleft)
 
     def update(self, target):
-        x = -target.rect.x + int(width/2)
-        y = -target.rect.y + int(height/2)
-        self.camera = pygame.Rect(x, y, self.width, self.height)
+        x = -target.rect.x + int(cs.diswidth/2)
+        y = -target.rect.y + int(cs.disheight/2)
+
+        #edgehitting
+        x = min(0, x)
+        y = min(0, y)
+        x = max(-(self.width - cs.diswidth), x)
+        y = max(-(self.width - cs.disheight), y)
+        self.view = pygame.Rect(x, y, self.width, self.height)

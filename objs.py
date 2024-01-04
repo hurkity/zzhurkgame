@@ -1,5 +1,6 @@
 import pygame
 import cons as cs
+vc = pygame.math.Vector2
 
 objlist = []
 pygame.init()
@@ -44,8 +45,10 @@ class Player(pygame.sprite.Sprite):
     self.group = game.all_sprites
     pygame.sprite.Sprite.__init__(self, self.group)
     self.game = game
-    self.image = pygame.Surface((cs.tilesize, cs.tilesize))
-    self.image.fill(cs.black)
+    self.image = game.player_img
+    self.image = pygame.transform.scale(self.image, (16, 16))
+    self.velocity = vc(0, 0)
+    self.position = vc(x, y) * cs.tilesize
     self.rect = self.image.get_rect()
     self.vx, self.vy = 0, 0
     self.x = x * cs.tilesize
@@ -53,16 +56,16 @@ class Player(pygame.sprite.Sprite):
     #self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
   def get_keys(self):
-    self.vx, self.vy = 0, 0
+    self.velocity = vc(0, 0)
     keez = pygame.key.get_pressed()
     if keez[pygame.K_LEFT] or keez[pygame.K_a]:
-      self.vx = -cs.player_speed
+      self.velocity.x = -cs.player_speed
     elif keez[pygame.K_RIGHT] or keez[pygame.K_d]:
-      self.vx = cs.player_speed
+      self.velocity.x = cs.player_speed
     elif keez[pygame.K_DOWN] or keez[pygame.K_s]:
-      self.vy = cs.player_speed
+      self.velocity.y = cs.player_speed
     elif keez[pygame.K_UP] or keez[pygame.K_w]:
-      self.vy = -cs.player_speed
+      self.velocity.y = -cs.player_speed
 
 
 
@@ -70,32 +73,31 @@ class Player(pygame.sprite.Sprite):
     if axis == 'x':
       collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
       if collision:
-        if self.vx > 0:
-          self.x = collision[0].rect.left - self.rect.width
-        if self.vx < 0:
-          self.x = collision[0].rect.right
-        self.vx = 0
-        self.rect.x = self.x
+        if self.velocity.x > 0:
+          self.position.x = collision[0].rect.left - self.rect.width
+        if self.velocity.x < 0:
+          self.position.x = collision[0].rect.right
+        self.velocity.x = 0
+        self.rect.x = self.position.x
     if axis == 'y':
       collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
       if collision:
-        if self.vy > 0:
-          self.y = collision[0].rect.top - self.rect.height
-        if self.vy < 0:
-          self.y = collision[0].rect.bottom
-        self.vy = 0
-        self.rect.y = self.y
+        if self.velocity.y > 0:
+          self.position.y = collision[0].rect.top - self.rect.height
+        if self.velocity.y < 0:
+          self.position.y = collision[0].rect.bottom
+        self.velocity.y = 0
+        self.rect.y = self.position.y
 
 
 
 
   def update(self):
     self.get_keys()
-    self.x += self.vx * self.game.dt
-    self.y += self.vy * self.game.dt
-    self.rect.x = self.x
+    self.position += self.velocity * self.game.dt
+    self.rect.x = self.position.x
     self.collicase('x')
-    self.rect.y = self.y
+    self.rect.y = self.position.y
     self.collicase('y')
 
 '''class Background(pygame.sprite.Sprite):
