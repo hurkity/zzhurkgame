@@ -21,7 +21,10 @@ class Game:
   def load_data(self):
     folder = path.dirname(__file__)
     img_folder = path.join(folder, 'graphics')
-    self.map = Map(path.join(folder, 'map.txt'))
+    map_folder = path.join(folder, 'tilemaps')
+    self.map = TiledMap(path.join(map_folder, 'Testmapweup.tmx'))
+    self.map_img = self.map.make_map()
+    self.map_rect = self.map_img.get_rect()
     self.player_img = pygame.image.load(path.join(img_folder, 'sunnysprite.png')).convert_alpha()
 
   def new(self):
@@ -29,7 +32,7 @@ class Game:
     self.obstruction = pygame.sprite.Group()
     self.interactable = pygame.sprite.Group()
     self.interactablebox = pygame.sprite.Group()
-    for i, row in enumerate(self.map.data):
+    '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
           Wall(self, j, i)
@@ -37,7 +40,12 @@ class Game:
           self.player = Player(self, j, i)
         elif value == '2':
           Interactable(self, j, i)
-          InteractableBox(self, j, i)
+          InteractableBox(self, j, i)'''
+    for layerobject in self.map.tmxdata.objects:
+      if layerobject.name == 'player':
+        self.player = Player(self, layerobject.x, layerobject.y)
+      elif layerobject.name == 'house':
+        Obstacle(self, layerobject.x, layerobject.y, layerobject.width, layerobject.height)
     self.camera = View(self.map.width, self.map.height)
 
   '''def newtwo(self):
@@ -89,8 +97,9 @@ class Game:
     self.all_buttons.draw(self.dis)
 
   def draw(self):
-    self.drawbg(white)
-    self.grid()
+    #self.drawbg(white)
+    #self.grid()
+    self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
     #self.all_sprites.draw(self.dis) changed w camera
     for sprite in self.all_sprites:
       self.dis.blit(sprite.image, self.camera.implement(sprite))

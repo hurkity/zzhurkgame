@@ -53,8 +53,8 @@ settingstext = "Switch up your settings!"
 
 
 #part1
-diswidth = 960
-disheight = 640
+diswidth = 500
+disheight = 500
 
 
 '''bg = pygame.image.load('graphics/background.jpg').convert_alpha()

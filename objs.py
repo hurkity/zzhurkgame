@@ -48,11 +48,9 @@ class Player(pygame.sprite.Sprite):
     self.image = game.player_img
     self.image = pygame.transform.scale(self.image, (16, 16))
     self.velocity = vc(0, 0)
-    self.position = vc(x, y) * cs.tilesize
+    self.position = vc(x, y)
     self.rect = self.image.get_rect()
     self.vx, self.vy = 0, 0
-    self.x = x * cs.tilesize
-    self.y = y * cs.tilesize
     #self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
   def get_keys(self):
@@ -110,6 +108,19 @@ class Player(pygame.sprite.Sprite):
     self.y = y'''
 
 
+class Interactable(pygame.sprite.Sprite):
+  def __init__(self, game, x, y):
+    self.game = game
+    self.inside = self.game.all_sprites, self.game.obstruction, self.game.interactable
+    pygame.sprite.Sprite.__init__(self, self.inside)
+    self._layer = cs.object_layer
+    self.x = x
+    self.y = y
+    self.image = pygame.image.load('graphics/tree.png').convert_alpha()
+    self.rect = self.image.get_rect()
+    self.rect.x = self.x * cs.tilesize
+    self.rect.y = self.y * cs.tilesize
+
 class Wall(pygame.sprite.Sprite):
   def __init__(self, game, x, y):
     self.game = game
@@ -126,18 +137,16 @@ class Wall(pygame.sprite.Sprite):
     self.rect.x = self.x * cs.tilesize
     self.rect.y = self.y * cs.tilesize
 
-class Interactable(pygame.sprite.Sprite):
-  def __init__(self, game, x, y):
+class Obstacle(pygame.sprite.Sprite):
+  def __init__(self, game, x, y, width, height):
     self.game = game
-    self.inside = self.game.all_sprites, self.game.obstruction, self.game.interactable
+    self.inside = self.game.all_sprites, self.game.obstruction
     pygame.sprite.Sprite.__init__(self, self.inside)
-    self._layer = cs.object_layer
     self.x = x
     self.y = y
-    self.image = pygame.image.load('graphics/tree.png').convert_alpha()
-    self.rect = self.image.get_rect()
-    self.rect.x = self.x * cs.tilesize
-    self.rect.y = self.y * cs.tilesize
+    self.rect = pygame.Rect(x, y, width, height)
+    self.rect.x = self.x
+    self.rect.y = self.y
 
 class InteractableBox(pygame.sprite.Sprite):
   def __init__(self, game, x, y):
@@ -160,9 +169,9 @@ class InteractableBox(pygame.sprite.Sprite):
 
 class Obstacle(pygame.sprite.Sprite):
   def __init__(self, game, x, y, width, height):
-    self.groups = self.game.all_sprites, self.game.obstruction
-    pygame.sprite.Sprite().__init__(self, self.groups)
     self.game = game
+    self.groups = self.game.obstruction
+    pygame.sprite.Sprite.__init__(self, self.groups)
     self.rect = pygame.Rect(x, y, width, height)
     self.x = x
     self.y = y
