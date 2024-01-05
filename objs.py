@@ -48,29 +48,45 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.image = game.player_img
         self.image = pygame.transform.scale(self.image, (16, 16))
+        self.imageleft = game.player_imgleft
+        self.imageright = game.player_imgright
+        self.imageback = game.player_imgback
+        self.image = pygame.transform.scale(self.image, (32, 32))
+        self.imageleft = pygame.transform.scale(self.imageleft, (32, 32))
+        self.imageright = pygame.transform.scale(self.imageright, (32, 32))
+        self.imageback = pygame.transform.scale(self.imageback, (32, 32))
         self.velocity = vc(0, 0)
         self.position = vc(x, y)
         self.rect = self.image.get_rect()
+        self.rectleft = self.imageleft.get_rect()
+        self.rectright = self.imageright.get_rect()
+        self.rectback = self.imageback.get_rect()
         self.vx, self.vy = 0, 0
         self.hit_rect = cs.playerhitrect
+        self.direction = 0
         # self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     def get_keys(self):
+        direction = None
         self.velocity = vc(0, 0)
         keez = pygame.key.get_pressed()
         if keez[pygame.K_LEFT] or keez[pygame.K_a]:
+            direction = "left"
             self.velocity.x = -cs.player_speed
         elif keez[pygame.K_RIGHT] or keez[pygame.K_d]:
+            direction = "right"
             self.velocity.x = cs.player_speed
         elif keez[pygame.K_DOWN] or keez[pygame.K_s]:
+            direction = "fwd"
             self.velocity.y = cs.player_speed
         elif keez[pygame.K_UP] or keez[pygame.K_w]:
+            direction = "bwd"
             self.velocity.y = -cs.player_speed
+        return direction
 
     def collicase(self, axis):
         if axis == 'x':
-            collision = pygame.sprite.spritecollide(self, self.game.obstruction,
-                                                    False)
+            collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
             if collision:
                 if self.velocity.x > 0:
                     self.position.x = collision[0].rect.left - self.rect.width
@@ -79,8 +95,7 @@ class Player(pygame.sprite.Sprite):
                 self.velocity.x = 0
                 self.rect.x = self.position.x
         if axis == 'y':
-            collision = pygame.sprite.spritecollide(self, self.game.obstruction,
-                                                    False)
+            collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
             if collision:
                 if self.velocity.y > 0:
                     self.position.y = collision[0].rect.top - self.rect.height
@@ -90,12 +105,13 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y = self.position.y
 
     def update(self):
-        self.get_keys()
+        self.direction = self.get_keys()
         self.position += self.velocity * self.game.dt
         self.rect.x = self.position.x
         self.collicase('x')
         self.rect.y = self.position.y
         self.collicase('y')
+        return self.direction
 
 
 '''class Background(pygame.sprite.Sprite):

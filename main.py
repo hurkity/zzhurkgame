@@ -3,6 +3,7 @@ import sys
 from os import path
 from objs import *
 import pygame
+from pygame import QUIT
 from cons import *
 import buttons as b
 from tilemap import *
@@ -25,8 +26,10 @@ class Game:
         self.map = TiledMap(path.join(map_folder, 'bettertestmap.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-        self.player_img = pygame.image.load(
-            path.join(img_folder, 'sunnysprite.png')).convert_alpha()
+        self.player_img = pygame.image.load(path.join(img_folder, 'sunnysprite.png')).convert_alpha()
+        self.player_imgleft = pygame.image.load(path.join(img_folder, 'sunnyleft.png')).convert_alpha()
+        self.player_imgright = pygame.image.load(path.join(img_folder, 'sunnyright.png')).convert_alpha()
+        self.player_imgback = pygame.image.load(path.join(img_folder, 'sunnyback.png')).convert_alpha()
 
     def new(self):
         self.all_sprites = pygame.sprite.Group()
@@ -53,24 +56,13 @@ class Game:
         self.draw_debug = False
         self.camera = View(self.map.width, self.map.height)
 
-    '''def newtwo(self):
-    self.all_buttons = pygame.sprite.Group()
-    pygame.display.flip() not using buttons'''
-
     def run(self):
         self.game_over = False
         while not self.game_over:
             self.dt = self.clock.tick(60) / 1000
             self.events()
-            self.rupdate()
-            self.draw()
-        pygame.quit()
-
-    def runtwo(self):
-        self.game_over = False
-        while not self.game_over:
-            self.dt = self.clock.tick(60) / 1000
-            self.drawtwo()
+            direction = self.rupdate()
+            self.draw(direction)
         pygame.quit()
 
     def quit(self):
@@ -78,7 +70,12 @@ class Game:
 
     def rupdate(self):
         self.all_sprites.update()
+        direction = self.player.direction
+        #direction = []
+        #for sprite in self.all_sprites:
+            #direction.append(sprite)
         self.camera.update(self.player)
+        return direction
 
     def grid(self):
         for y in range(0, disheight, tilesize):
@@ -97,17 +94,20 @@ class Game:
         elif value == 'p':
           self.player = Player(self, j, i)'''
 
-    def drawtwo(self):
-        self.dis.fill(white)
-        self.all_buttons.draw(self.dis)
-
-    def draw(self):
+    def draw(self, direction):
         # self.drawbg(white)
         # self.grid()
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
         # self.all_sprites.draw(self.dis) changed w camera
         for sprite in self.all_sprites:
-            self.dis.blit(sprite.image, self.camera.implement(sprite))
+            if direction == "fwd" or direction == None:
+                self.dis.blit(sprite.image, self.camera.implement(sprite))
+            elif direction == "left":
+                self.dis.blit(sprite.imageleft, self.camera.implement(sprite))
+            elif direction == "right":
+                self.dis.blit(sprite.imageright, self.camera.implement(sprite))
+            elif direction == "bwd":
+                self.dis.blit(sprite.imageback, self.camera.implement(sprite))
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
@@ -222,9 +222,6 @@ class Game:
 def main():
     gamestart = Game()
     while True:
-        # gamestart.newtwo()
-        # gamestart.runtwo()
-        # gamestart.mainmenu()
         gamestart.new()
         gamestart.run()
 
