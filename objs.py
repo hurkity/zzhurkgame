@@ -46,12 +46,22 @@ class Player(pygame.sprite.Sprite):
         self.group = game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.group)
         self.game = game
+        self.frontsprites = []
         self.image = game.player_img
-        self.image = pygame.transform.scale(self.image, (16, 16))
+        self.frontsprites.append(self.image)
+        self.imagefrontleft = game.player_imgfrontleft
+        self.frontsprites.append(self.imagefrontleft)
+        self.frontsprites.append(self.image)
+        self.imagefrontright = game.player_imgfrontright
+        self.frontsprites.append(self.imagefrontright)
+        self.currentsprite = 0
+
         self.imageleft = game.player_imgleft
         self.imageright = game.player_imgright
         self.imageback = game.player_imgback
-        self.image = pygame.transform.scale(self.image, (32, 32))
+        self.image = pygame.transform.scale(self.image, (5, 5))
+        self.image = pygame.transform.scale(self.imagefrontleft, (32, 32))
+        self.image = pygame.transform.scale(self.imagefrontright, (32, 32))
         self.imageleft = pygame.transform.scale(self.imageleft, (32, 32))
         self.imageright = pygame.transform.scale(self.imageright, (32, 32))
         self.imageback = pygame.transform.scale(self.imageback, (32, 32))

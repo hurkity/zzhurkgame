@@ -27,6 +27,8 @@ class Game:
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = pygame.image.load(path.join(img_folder, 'sunnysprite.png')).convert_alpha()
+        self.player_imgfrontleft = pygame.image.load(path.join(img_folder, 'sunnyfrontleft.png')).convert_alpha()
+        self.player_imgfrontright = pygame.image.load(path.join(img_folder, 'sunnyfrontright.png')).convert_alpha()
         self.player_imgleft = pygame.image.load(path.join(img_folder, 'sunnyleft.png')).convert_alpha()
         self.player_imgright = pygame.image.load(path.join(img_folder, 'sunnyright.png')).convert_alpha()
         self.player_imgback = pygame.image.load(path.join(img_folder, 'sunnyback.png')).convert_alpha()
@@ -94,20 +96,29 @@ class Game:
         elif value == 'p':
           self.player = Player(self, j, i)'''
 
+    #def movementani(self):
+        
+
     def draw(self, direction):
         # self.drawbg(white)
         # self.grid()
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
         # self.all_sprites.draw(self.dis) changed w camera
         for sprite in self.all_sprites:
-            if direction == "fwd" or direction == None:
-                self.dis.blit(sprite.image, self.camera.implement(sprite))
+            if direction == "fwd":
+                self.dis.blit(sprite.frontsprites[sprite.currentsprite], self.camera.implement(sprite)) #make a method for this lol
+                sprite.currentsprite += 1
+                pygame.time.wait(100)
+                if sprite.currentsprite > len(sprite.frontsprites) - 1:
+                    sprite.currentsprite = 0 
             elif direction == "left":
                 self.dis.blit(sprite.imageleft, self.camera.implement(sprite))
             elif direction == "right":
                 self.dis.blit(sprite.imageright, self.camera.implement(sprite))
             elif direction == "bwd":
                 self.dis.blit(sprite.imageback, self.camera.implement(sprite))
+            elif direction == None:
+                self.dis.blit(sprite.image, self.camera.implement(sprite))
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
