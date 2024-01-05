@@ -160,16 +160,29 @@ class Game:
             # elif event.type == pygame.KEYUP:
             #  self.player.move()
 
-    def textappear(self, string, colour, background):
-        char = ''
-        for i in range(len(string)):
-            char += string[i]
-            text = font.render(char, True, colour)
-            textrect = text.get_rect(center=(200, 400))
-            self.dis.blit(background, (0, 0))  # gyap
-            self.dis.blit(text, textrect)  # gyap
-            pygame.display.update()
-            pygame.time.wait(100)
+    def textani(self, tuple, string_list, font, txtcolour):
+        string = 0
+        letter = 0
+        running = True
+        x, y = tuple
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        string = (string + 1) % len(string_list)
+                        letter = 0
+
+            self.dis.fill(black)
+            current_string = string_list[string][:letter + 1]
+            text_surface = font.render(current_string, True, txtcolour)
+            text_rect = text_surface.get_rect(topleft=(x, y))
+            self.dis.blit(text_surface, text_rect)
+            letter += 1
+
+            pygame.display.flip()
+            self.clock.tick(30)
 
     def text(self, string, font, colour, x, y):
         text = font.render(string, True, colour)
