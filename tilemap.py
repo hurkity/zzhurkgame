@@ -52,5 +52,5 @@ class View:
         x = min(0, x)
         y = min(0, y)
         x = max(-(self.width - cs.diswidth), x)
-        y = max(-(self.width - cs.disheight), y)
+        y = max(-(self.height - cs.disheight), y)
         self.view = pygame.Rect(x, y, self.width, self.height)

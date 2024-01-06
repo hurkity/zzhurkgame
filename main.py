@@ -38,6 +38,8 @@ class Game:
         self.obstruction = pygame.sprite.Group()
         self.interactable = pygame.sprite.Group()
         self.interactablebox = pygame.sprite.Group()
+        self.text = pygame.sprite.Group()
+        self.playergroup = pygame.sprite.GroupSingle()
         '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
@@ -54,8 +56,13 @@ class Game:
                 Obstacle(self, layerobject.x, layerobject.y,
                          layerobject.width, layerobject.height)
             elif layerobject.name == 'interactablehitbox':
-                InteractableBox(self, layerobject.x, layerobject.y, layerobject.width, layerobject.height)
+                InteractableBox(self, layerobject.type, layerobject.x, layerobject.y, layerobject.width, layerobject.height)
+
+            elif layerobject.name == 'textdisplay':
+                TextDisplay(self, layerobject.type, int(layerobject.type.strip("'")))
+
         self.draw_debug = False
+        self.interactivity = False
         self.camera = View(self.map.width, self.map.height)
 
     def run(self):
@@ -128,16 +135,27 @@ class Game:
                                  self.camera.implement_rect(x.hit_rect), 1)
 
         if pygame.sprite.spritecollideany(self.player, self.interactablebox):
-            self.displaymytext()
+            for y in self.interactablebox:
+                if pygame.sprite.collide_rect(self.player, y):
+                    for interactable in self.text:
+                        if interactable.type == y.type:
+                            self.displaymytext(interactable)
+
         '''for sprit in self.all_sprites:
      self.dis.blit(sprit.image, self.camera.apply(sprit))'''
         # for x in list:
         # dis.blit()#find an efficient way to compare x as and integer to object position in a list
         pygame.display.flip()
 
-    def displaymytext(self):
+    def displaymytext(self, target):
         self.dis.blit(cs.text, cs.textRect)
+        if self.interactivity:
+            self.dis.blit(target.image, target.rect)
+            self.dis.blit(target.text, target.rect)
+            self.player.interacting = True
         pygame.display.update()
+
+
 
     def events(self):
         # while True:
@@ -150,6 +168,9 @@ class Game:
                     self.quit()
                 if event.key == pygame.K_j:
                     self.draw_debug = not self.draw_debug
+                if event.key == pygame.K_e:
+                    self.interactivity = not self.interactivity
+                    self.player.interacting = not self.player.interacting
                 '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
             if event.key == pygame.K_w:
@@ -184,10 +205,10 @@ class Game:
             pygame.display.flip()
             self.clock.tick(30)
 
-    def text(self, string, font, colour, x, y):
+    '''def text(self, string, font, colour, x, y):
         text = font.render(string, True, colour)
         textrect = text.get_rect(topleft=(x, y))
-        self.dis.blit(text, textrect)
+        self.dis.blit(text, textrect)'''
 
     def newgame(self):
         while True:

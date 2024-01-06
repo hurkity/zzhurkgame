@@ -43,7 +43,7 @@ class Camera:  # dont think we need this anymore wait i lied ehhhh did i though 
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, game, x, y):
-        self.group = game.all_sprites
+        self.group = game.all_sprites, game.playergroup
         pygame.sprite.Sprite.__init__(self, self.group)
         self.game = game
         self.frontsprites = []
@@ -74,29 +74,35 @@ class Player(pygame.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.hit_rect = cs.playerhitrect
         self.direction = 0
+        self.interactivity = False
+        self.interacting = False
+        self.x = x
+        self.y = y
         # self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     def get_keys(self):
         direction = None
         self.velocity = vc(0, 0)
-        keez = pygame.key.get_pressed()
-        if keez[pygame.K_LEFT] or keez[pygame.K_a]:
-            direction = "left"
-            self.velocity.x = -cs.player_speed
-        elif keez[pygame.K_RIGHT] or keez[pygame.K_d]:
-            direction = "right"
-            self.velocity.x = cs.player_speed
-        elif keez[pygame.K_DOWN] or keez[pygame.K_s]:
-            direction = "fwd"
-            self.velocity.y = cs.player_speed
-        elif keez[pygame.K_UP] or keez[pygame.K_w]:
-            direction = "bwd"
-            self.velocity.y = -cs.player_speed
+        if self.interacting == False:
+            keez = pygame.key.get_pressed()
+            if keez[pygame.K_LEFT] or keez[pygame.K_a]:
+                direction = "left"
+                self.velocity.x = -cs.player_speed
+            elif keez[pygame.K_RIGHT] or keez[pygame.K_d]:
+                direction = "right"
+                self.velocity.x = cs.player_speed
+            elif keez[pygame.K_DOWN] or keez[pygame.K_s]:
+                direction = "fwd"
+                self.velocity.y = cs.player_speed
+            elif keez[pygame.K_UP] or keez[pygame.K_w]:
+                direction = "bwd"
+                self.velocity.y = -cs.player_speed
         return direction
 
     def collicase(self, axis):
         if axis == 'x':
-            collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
+            collision = pygame.sprite.spritecollide(self, self.game.obstruction,
+                                                    False)
             if collision:
                 if self.velocity.x > 0:
                     self.position.x = collision[0].rect.left - self.rect.width
@@ -105,7 +111,8 @@ class Player(pygame.sprite.Sprite):
                 self.velocity.x = 0
                 self.rect.x = self.position.x
         if axis == 'y':
-            collision = pygame.sprite.spritecollide(self, self.game.obstruction, False)
+            collision = pygame.sprite.spritecollide(self, self.game.obstruction,
+                                                    False)
             if collision:
                 if self.velocity.y > 0:
                     self.position.y = collision[0].rect.top - self.rect.height
@@ -180,16 +187,32 @@ class Obstacle(pygame.sprite.Sprite):
 
 
 class InteractableBox(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, w, h):
+    def __init__(self, game, type, x, y, w, h):
         self.game = game
+        self.type = type
         self.inside = self.game.interactablebox
         pygame.sprite.Sprite.__init__(self, self.inside)
-        #self._layer = cs.object_layer
+        # self._layer = cs.object_layer
         self.rect = pygame.Rect(x, y, w, h)
         self.x = x
         self.y = y
-       #self.image = pygame.Surface((18, 18), pygame.SRCALPHA, 32)
+        # self.image = pygame.Surface((18, 18), pygame.SRCALPHA, 32)
         self.rect.x = self.x
         self.rect.y = self.y
 
+
+class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe objects
+
+    def __init__(self, game, type, textid):
+        self.game = game
+        self.type = type
+        self.inside = self.game.text
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        self.font = cs.objfont
+        self.text = cs.font.render(cs.Text[textid], True, cs.white)
+        self.image = pygame.Surface((cs.diswidth, 0.2 * cs.disheight), pygame.SRCALPHA)
+        self.image.fill(cs.translucent_black)
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = cs.diswidth * 0.8
 

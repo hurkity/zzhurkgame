@@ -17,12 +17,13 @@ dark_blue = (0, 0, 139)
 light_green = (144, 238, 144)
 dark_green = (0, 100, 0)
 grey = (127, 127, 127)
+translucent_black = (0, 0, 0, 128)
 
 floor_layer = 0
 object_layer = 1
 player_layer = 2
 
-playerhitrect = pygame.Rect(0,0,15,15)
+playerhitrect = pygame.Rect(0, 0, 15, 15)
 
 text1 = "Start"
 text2 = "Settings"
@@ -43,7 +44,7 @@ x3 = 600
 y3 = 300
 colour3 = orange
 
-font = pygame.font.SysFont("comicsans", 35)
+#font = pygame.font.SysFont("comicsans", 35)
 
 string1 = "NEW GAME"
 string2 = "CONTINUE"
@@ -75,11 +76,18 @@ tiles = math.ceil(diswidth/bgwidth) + 1 #should be 2 (round up)
 smokeappear, t = pygame.USEREVENT+1, 3000
 pygame.time.set_timer(smokeappear, t)'''
 
-string1 = "woahh oh woahh"
+string4 = "woahh oh woahh"
+objfont = pygame.font.Font('freesansbold.ttf', 32)
 font = pygame.font.Font('freesansbold.ttf', 32)
 text = font.render("'e' to interact with the object!", True, green, blue)
-textRect = text.get_rect()
-textRect.center = (250, 150)
+Text = [  # font.render("bjdndkjnf", True, green),
+        "first object description",
+        "second object description",
+        "third object description"]
+textRect = text.get_rect(center = (diswidth/2, disheight/10))
+#textRect1 = text1.get_rect()
+
+#textRect1.center = (250, 400)
 
 #part2
 tilesize = 16
