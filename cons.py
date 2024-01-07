@@ -77,8 +77,8 @@ smokeappear, t = pygame.USEREVENT+1, 3000
 pygame.time.set_timer(smokeappear, t)'''
 
 string4 = "woahh oh woahh"
-objfont = pygame.font.Font('freesansbold.ttf', 32)
-font = pygame.font.Font('freesansbold.ttf', 32)
+objfont = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
+font = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
 text = font.render("'e' to interact with the object!", True, green, blue)
 Text = [  # font.render("bjdndkjnf", True, green),
         "first object description",

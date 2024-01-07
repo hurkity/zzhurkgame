@@ -104,7 +104,7 @@ class Game:
           self.player = Player(self, j, i)'''
 
     #def movementani(self):
-        
+
 
     def draw(self, direction):
         # self.drawbg(white)
@@ -117,7 +117,7 @@ class Game:
                 sprite.currentsprite += 1
                 pygame.time.wait(100)
                 if sprite.currentsprite > len(sprite.frontsprites) - 1:
-                    sprite.currentsprite = 0 
+                    sprite.currentsprite = 0
             elif direction == "left":
                 self.dis.blit(sprite.imageleft, self.camera.implement(sprite))
             elif direction == "right":
@@ -168,9 +168,10 @@ class Game:
                     self.quit()
                 if event.key == pygame.K_j:
                     self.draw_debug = not self.draw_debug
-                if event.key == pygame.K_e:
-                    self.interactivity = not self.interactivity
-                    self.player.interacting = not self.player.interacting
+                if pygame.sprite.spritecollideany(self.player, self.interactablebox):
+                    if event.key == pygame.K_e:
+                        self.interactivity = not self.interactivity
+                        self.player.interacting = not self.player.interacting
                 '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
             if event.key == pygame.K_w:
