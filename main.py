@@ -16,6 +16,7 @@ class Game:
         pygame.display.set_caption('get me out of heeaarraahh')
         self.clock = pygame.time.Clock()
         # pygame.key.set_repeat(500, 100)
+        self.mapindex = 0
         self.load_data()
         # self.displaytext = False
 
@@ -23,22 +24,33 @@ class Game:
         folder = path.dirname(__file__)
         img_folder = path.join(folder, 'graphics')
         map_folder = path.join(folder, 'tilemaps')
-        self.map = TiledMap(path.join(map_folder, 'bettertestmap.tmx'))
+        self.map = TiledMap(path.join(map_folder, cs.mapchange[self.mapindex]))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-        self.player_img = pygame.image.load(path.join(img_folder, 'sunnysprite.png')).convert_alpha()
-        self.player_imgfrontleft = pygame.image.load(path.join(img_folder, 'sunnyfrontleft.png')).convert_alpha()
-        self.player_imgfrontright = pygame.image.load(path.join(img_folder, 'sunnyfrontright.png')).convert_alpha()
-        self.player_imgleft = pygame.image.load(path.join(img_folder, 'sunnyleft.png')).convert_alpha()
-        self.player_imgleftleft = pygame.image.load(path.join(img_folder, 'sunnyleftleft.png')).convert_alpha()
-        self.player_imgleftright = pygame.image.load(path.join(img_folder, 'sunnyleftright.png')).convert_alpha()
-        self.player_imgright = pygame.image.load(path.join(img_folder, 'sunnyright.png')).convert_alpha()
-        self.player_imgrightleft = pygame.image.load(path.join(img_folder, 'sunnyrightleft.png')).convert_alpha()
-        self.player_imgrightright = pygame.image.load(path.join(img_folder, 'sunnyrightright.png')).convert_alpha()
-        self.player_imgback = pygame.image.load(path.join(img_folder, 'sunnyback.png')).convert_alpha()
-        self.player_imgbackleft = pygame.image.load(path.join(img_folder, 'sunnybackleft.png')).convert_alpha()
-        self.player_imgbackright = pygame.image.load(path.join(img_folder, 'sunnybackright.png')).convert_alpha()
-
+        self.player_img = pygame.image.load(
+            path.join(img_folder, 'sunnysprite.png')).convert_alpha()
+        self.player_imgfrontleft = pygame.image.load(
+            path.join(img_folder, 'sunnyfrontleft.png')).convert_alpha()
+        self.player_imgfrontright = pygame.image.load(
+            path.join(img_folder, 'sunnyfrontright.png')).convert_alpha()
+        self.player_imgleft = pygame.image.load(
+            path.join(img_folder, 'sunnyleft.png')).convert_alpha()
+        self.player_imgleftleft = pygame.image.load(
+            path.join(img_folder, 'sunnyleftleft.png')).convert_alpha()
+        self.player_imgleftright = pygame.image.load(
+            path.join(img_folder, 'sunnyleftright.png')).convert_alpha()
+        self.player_imgright = pygame.image.load(
+            path.join(img_folder, 'sunnyright.png')).convert_alpha()
+        self.player_imgrightleft = pygame.image.load(
+            path.join(img_folder, 'sunnyrightleft.png')).convert_alpha()
+        self.player_imgrightright = pygame.image.load(
+            path.join(img_folder, 'sunnyrightright.png')).convert_alpha()
+        self.player_imgback = pygame.image.load(
+            path.join(img_folder, 'sunnyback.png')).convert_alpha()
+        self.player_imgbackleft = pygame.image.load(
+            path.join(img_folder, 'sunnybackleft.png')).convert_alpha()
+        self.player_imgbackright = pygame.image.load(
+            path.join(img_folder, 'sunnybackright.png')).convert_alpha()
 
     def new(self):
         self.all_sprites = pygame.sprite.Group()
@@ -47,6 +59,7 @@ class Game:
         self.interactablebox = pygame.sprite.Group()
         self.text = pygame.sprite.Group()
         self.playergroup = pygame.sprite.GroupSingle()
+        self.teleport = pygame.sprite.Group()
         '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
@@ -63,10 +76,14 @@ class Game:
                 Obstacle(self, layerobject.x, layerobject.y,
                          layerobject.width, layerobject.height)
             elif layerobject.name == 'interactablehitbox':
-                InteractableBox(self, layerobject.type, layerobject.x, layerobject.y, layerobject.width, layerobject.height)
-
+                InteractableBox(self, layerobject.type, layerobject.x,
+                                layerobject.y, layerobject.width,
+                                layerobject.height)
             elif layerobject.name == 'textdisplay':
-                TextDisplay(self, layerobject.type, int(layerobject.type.strip("'")))
+                TextDisplay(self, layerobject.type,
+                            int(layerobject.type.strip("'")))
+            elif layerobject.name == 'teleport':
+                Teleport(self, layerobject.x, layerobject.y, layerobject.width, layerobject.height)
 
         self.draw_debug = False
         self.interactivity = False
@@ -87,9 +104,9 @@ class Game:
     def rupdate(self):
         self.all_sprites.update()
         direction = self.player.direction
-        #direction = []
-        #for sprite in self.all_sprites:
-            #direction.append(sprite)
+        # direction = []
+        # for sprite in self.all_sprites:
+        # direction.append(sprite)
         self.camera.update(self.player)
         return direction
 
@@ -117,12 +134,13 @@ class Game:
                 self.dis.blit(sprite.image, self.camera.implement(sprite))
                 break
             anigroup = sprite.getanigroup()
-            self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(sprite)) #make a method for this lol
+            self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
+                sprite))  # make a method for this lol
             sprite.currentsprite += 1
             pygame.time.wait(100)
             if sprite.currentsprite > len(anigroup) - 1:
                 sprite.currentsprite = 0
-            
+
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
@@ -147,8 +165,12 @@ class Game:
                         if interactable.type == y.type:
                             self.displaymytext(interactable)
 
-        '''for sprit in self.all_sprites:
-     self.dis.blit(sprit.image, self.camera.apply(sprit))'''
+        if pygame.sprite.spritecollideany(self.player, self.teleport):
+            self.mapindex = 1
+            self.load_data()
+            '''
+        for sprit in self.all_sprites:
+             self.dis.blit(sprit.image, self.camera.apply(sprit))'''
         # for x in list:
         # dis.blit()#find an efficient way to compare x as and integer to object position in a list
         pygame.display.flip()
@@ -161,8 +183,6 @@ class Game:
             self.player.interacting = True
         pygame.display.update()
 
-
-
     def events(self):
         # while True:
         for event in pygame.event.get():
@@ -174,7 +194,8 @@ class Game:
                     self.quit()
                 if event.key == pygame.K_j:
                     self.draw_debug = not self.draw_debug
-                if pygame.sprite.spritecollideany(self.player, self.interactablebox):
+                if pygame.sprite.spritecollideany(self.player,
+                                                  self.interactablebox):
                     if event.key == pygame.K_e:
                         self.interactivity = not self.interactivity
                         self.player.interacting = not self.player.interacting

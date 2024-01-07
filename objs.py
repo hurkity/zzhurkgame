@@ -247,6 +247,19 @@ class InteractableBox(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+class Teleport(pygame.sprite.Sprite):
+    def __init__(self, game, x, y, w, h):
+        self.game = game
+        self.inside = self.game.teleport
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        # self._layer = cs.object_layer
+        self.rect = pygame.Rect(x, y, w, h)
+        self.x = x
+        self.y = y
+        # self.image = pygame.Surface((18, 18), pygame.SRCALPHA, 32)
+        self.rect.x = self.x
+        self.rect.y = self.y
+
 
 class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe objects
 

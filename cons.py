@@ -98,3 +98,7 @@ block_speed = 1
 player_speed = 300
 
 
+mapchange = [
+        'bettertestmap.tmx',
+        'betterbettertestmap.tmx'
+]
