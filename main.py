@@ -168,6 +168,7 @@ class Game:
         if pygame.sprite.spritecollideany(self.player, self.teleport):
             self.mapindex = 1
             self.load_data()
+            self.new()
             '''
         for sprit in self.all_sprites:
              self.dis.blit(sprit.image, self.camera.apply(sprit))'''
