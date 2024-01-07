@@ -46,25 +46,67 @@ class Player(pygame.sprite.Sprite):
         self.group = game.all_sprites, game.playergroup
         pygame.sprite.Sprite.__init__(self, self.group)
         self.game = game
-        self.frontsprites = []
-        self.image = game.player_img
-        self.frontsprites.append(self.image)
-        self.imagefrontleft = game.player_imgfrontleft
-        self.frontsprites.append(self.imagefrontleft)
-        self.frontsprites.append(self.image)
-        self.imagefrontright = game.player_imgfrontright
-        self.frontsprites.append(self.imagefrontright)
         self.currentsprite = 0
 
+        self.frontsprites = []
+        self.image = game.player_img
+        self.imagefrontleft = game.player_imgfrontleft
+        self.imagefrontright = game.player_imgfrontright
+
+        self.image = pygame.transform.scale(self.image, (32, 32))
+        self.imagefrontleft = pygame.transform.scale(self.imagefrontleft, (32, 32))
+        self.imagefrontright = pygame.transform.scale(self.imagefrontright, (32, 32))
+
+        self.frontsprites.append(self.image)
+        self.frontsprites.append(self.imagefrontleft)
+        self.frontsprites.append(self.image)
+        self.frontsprites.append(self.imagefrontright)
+
+        self.leftsprites = []
         self.imageleft = game.player_imgleft
-        self.imageright = game.player_imgright
-        self.imageback = game.player_imgback
-        self.image = pygame.transform.scale(self.image, (5, 5))
-        self.image = pygame.transform.scale(self.imagefrontleft, (32, 32))
-        self.image = pygame.transform.scale(self.imagefrontright, (32, 32))
+        self.imageleftleft = game.player_imgleftleft
+        self.imageleftright = game.player_imgleftright
+
         self.imageleft = pygame.transform.scale(self.imageleft, (32, 32))
+        self.imageleftleft = pygame.transform.scale(self.imageleftleft, (32, 32))
+        self.imageleftright = pygame.transform.scale(self.imageleftright, (32, 32))
+
+        self.leftsprites.append(self.imageleft)
+        self.leftsprites.append(self.imageleftleft)
+        self.leftsprites.append(self.imageleft)
+        self.leftsprites.append(self.imageleftright)
+
+        self.rightsprites = []
+        self.imageright = game.player_imgright
+        self.imagerightleft = game.player_imgrightleft
+        self.imagerightright = game.player_imgrightright
+
         self.imageright = pygame.transform.scale(self.imageright, (32, 32))
+        self.imagerightleft = pygame.transform.scale(self.imagerightleft, (32, 32))
+        self.imagerightright = pygame.transform.scale(self.imagerightright, (32, 32))
+
+        self.rightsprites.append(self.imageright)
+        self.rightsprites.append(self.imagerightleft)
+        self.rightsprites.append(self.imageright)
+        self.rightsprites.append(self.imagerightright)
+
+        self.backsprites = []
+        self.imageback = game.player_imgback
+        self.imagebackleft = game.player_imgbackleft
+        self.imagebackright = game.player_imgbackright
+
         self.imageback = pygame.transform.scale(self.imageback, (32, 32))
+        self.imagebackleft = pygame.transform.scale(self.imagebackleft, (32, 32))
+        self.imagebackright = pygame.transform.scale(self.imagebackright, (32, 32))
+
+        self.backsprites.append(self.imageback)
+        self.backsprites.append(self.imagebackleft)
+        self.backsprites.append(self.imageback)
+        self.backsprites.append(self.imagebackright)
+
+        self.sprites_group = {"fwd": self.frontsprites, "left": self.leftsprites, "right": self.rightsprites,
+                              "bwd": self.backsprites}
+
         self.velocity = vc(0, 0)
         self.position = vc(x, y)
         self.rect = self.image.get_rect()
@@ -98,6 +140,11 @@ class Player(pygame.sprite.Sprite):
                 direction = "bwd"
                 self.velocity.y = -cs.player_speed
         return direction
+
+    def getanigroup(self):
+        if self.direction == None:
+            return None
+        return self.sprites_group[self.direction]
 
     def collicase(self, axis):
         if axis == 'x':
