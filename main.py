@@ -167,14 +167,14 @@ class Game:
         combatbg = pygame.image.load('graphics/combatbg.jpg').convert() #load in combat background
         combatbg = pygame.transform.scale(combatbg, (600, disheight))
         self.map_img.blit(combatbg, (0, 0))
-        self.map_img.blit(enemyimg, (250, 400))
+        self.map_img.blit(enemyimg, (250, 250))
         
         #oh brother i gotta use buttons this is so freaked 
         mousepos = pygame.mouse.get_pos()
         escapebutton = b.Button(100, 100, black) #first screen; two choices are escape or attack
         attackbutton = b.Button(350, 100, white)
-        escapebutton.draw(self.dis)
-        attackbutton.draw(self.dis)
+        escapebutton.draw(self.map_img)
+        attackbutton.draw(self.map_img)
         self.drawtext("Escape...", font, white, 120, 100)
         self.drawtext("Attack!", font, black, 370, 100)
 
@@ -200,7 +200,7 @@ class Game:
                     else:
                         self.drawtext("Unable to escape!", font, red, 200, 100)
                         pygame.time.delay(500)
-                        self.text("You lost your advantage! %s attacks first!" %(enemy.name))
+                        self.drawtext("You lost your advantage! %s attacks first!" %(enemy.name))
                         damage = enemy.attack()
 
                         totalhp = 0
@@ -217,7 +217,7 @@ class Game:
                                 self.users.update()
                             
                 elif attackbutton.hover(mousepos):
-                    self.dis.blit(combatbg)
+                    self.map_img.blit(combatbg)
                     firstatkone.draw(self.dis)
                     self.drawtext("CHARACTER1", font, red, 120, 180)
                     secondatkone.draw(self.dis)
@@ -347,7 +347,7 @@ class Game:
         print ("asdasda")
         text = font.render(string, True, colour)
         textrect = text.get_rect(topleft=(x, y))
-        self.dis.blit(text, textrect)
+        self.map_img.blit(text, textrect)
 
     def texttwo(self, string, font, colour, x, y): #probably easier to use for combat
         text = font.render(string, True, colour)
