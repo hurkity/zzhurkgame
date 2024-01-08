@@ -7,18 +7,21 @@ from pygame import QUIT
 from cons import *
 import buttons as b
 from tilemap import *
+from combat import *
 
 
 class Game:
     def __init__(self):
         pygame.init()
-        self.dis = pygame.display.set_mode((cs.diswidth, cs.disheight))
+        pygame.font.init()
+        self.dis = pygame.display.set_mode((diswidth, disheight))
         pygame.display.set_caption('get me out of heeaarraahh')
         self.clock = pygame.time.Clock()
         # pygame.key.set_repeat(500, 100)
         self.mapindex = 0
         self.load_data()
         # self.displaytext = False
+        self.combatstate = False
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -51,6 +54,9 @@ class Game:
             path.join(img_folder, 'sunnybackleft.png')).convert_alpha()
         self.player_imgbackright = pygame.image.load(
             path.join(img_folder, 'sunnybackright.png')).convert_alpha()
+        
+        self.enemyimg = pygame.image.load('graphics/cookiemonster.png')
+        self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
 
     def new(self):
         self.all_sprites = pygame.sprite.Group()
@@ -88,6 +94,10 @@ class Game:
         self.draw_debug = False
         self.interactivity = False
         self.camera = View(self.map.width, self.map.height)
+
+        self.team = Team()
+
+        self.enemy = Computer(targname, targhp, targpow, True)
 
     def run(self):
         self.game_over = False
@@ -145,35 +155,132 @@ class Game:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
 
+    def healthbar(self, enemy):
+        return None
+
+    #call like self.combat(enemyimg, self.enemy) from new
+    def combat(self, enemyimg, enemy):
+        self.combatstate = True
+        self.camera.freeze = True
+        for sprite in self.all_sprites:
+            sprite.freeze = True
+        combatbg = pygame.image.load('graphics/combatbg.jpg').convert() #load in combat background
+        combatbg = pygame.transform.scale(combatbg, (600, disheight))
+        self.map_img.blit(combatbg, (0, 0))
+        self.map_img.blit(enemyimg, (250, 400))
+        
+        #oh brother i gotta use buttons this is so freaked 
+        mousepos = pygame.mouse.get_pos()
+        escapebutton = b.Button(100, 100, black) #first screen; two choices are escape or attack
+        attackbutton = b.Button(350, 100, white)
+        escapebutton.draw(self.dis)
+        attackbutton.draw(self.dis)
+        self.drawtext("Escape...", font, white, 120, 100)
+        self.drawtext("Attack!", font, black, 370, 100)
+
+        if escapebutton.hover(mousepos):
+            self.drawtext("Escape...", font, grey, 120, 100)
+        elif attackbutton.hover(mousepos):
+            self.drawtext("Attack!", font, red, 370, 100)
+        
+        #attacks happen in pairs, choose two characters to create a combo attack that deals damage based on power + trust
+        firstatkone = b.Button(100, 200, green) 
+        secondatkone = b.Button(350, 200, orange)
+        thirdatkone = b.Button(100, 100, blue)
+        fourthatkone = b.Button(350, 100, red)
+
+        gameover = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                self.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if escapebutton.hover(mousepos):
+                    if enemy.escape: #escapability depends on if enemy is part of the main quest
+                        self.dis.blit(self.map_img, self.map_rect)
+                    else:
+                        self.drawtext("Unable to escape!", font, red, 200, 100)
+                        pygame.time.delay(500)
+                        self.text("You lost your advantage! %s attacks first!" %(enemy.name))
+                        damage = enemy.attack()
+
+                        totalhp = 0
+                        for user in self.users: #set hp for user
+                            totalhp += user.hp
+
+                            totalhp -= damage
+                            print ("You lost %i HP!" (damage)) #lazy
+
+                            while not gameover: #this wont work lol
+                                self.users.attack()
+                                enemy.update()
+                                enemy.attack()
+                                self.users.update()
+                            
+                elif attackbutton.hover(mousepos):
+                    self.dis.blit(combatbg)
+                    firstatkone.draw(self.dis)
+                    self.drawtext("CHARACTER1", font, red, 120, 180)
+                    secondatkone.draw(self.dis)
+                    self.drawtext("CHARACTER2", font, blue, 370, 180)
+                    thirdatkone.draw(self.dis)
+                    self.drawtext("CHARACTER3", font, orange, 120, 80)
+                    fourthatkone.draw(self.dis)
+                    self.drawtext("CHARACTER4", font, green, 370, 80)
+
+                    if firstatkone.hover(mousepos):
+                        self.drawtext("CHARACTER1", fontbold, red, 120, 180)
+                    elif secondatkone.hover(mousepos):
+                        self.drawtext("CHARACTER2", fontbold, blue, 370, 180)
+                    elif thirdatkone.hover(mousepos):
+                        self.drawtext("CHARACTER3", fontbold, orange, 120, 80)
+                    elif fourthatkone.hover(mousepos):
+                        self.drawtext("CHARACTER4", fontbold, green, 370, 80)
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if firstatkone.hover(mousepos):
+                            return 1
+                        elif secondatkone.hover(mousepos):
+                            return 2
+                        elif thirdatkone.hover(mousepos):
+                            return 3
+                        elif fourthatkone.hover(mousepos):
+                            return 4
+
+    def combat2(self, enemyimg, enemy):
+        firstattack = self.combat(enemyimg, enemy)
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pass 
+
     def draw(self, direction):
-        # self.drawbg(white)
-        # self.grid()
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
-        # self.all_sprites.draw(self.dis) changed w camera
+        if not self.combatstate:
 
-        self.movementani(direction)
+            # self.all_sprites.draw(self.dis) changed w camera
 
-        if self.draw_debug:
-            for x in self.obstruction:
-                pygame.draw.rect(self.dis, cs.blue,
-                                 self.camera.implement_rect(x.hit_rect), 1)
+            self.movementani(direction)
 
-        if pygame.sprite.spritecollideany(self.player, self.interactablebox):
-            for y in self.interactablebox:
-                if pygame.sprite.collide_rect(self.player, y):
-                    for interactable in self.text:
-                        if interactable.type == y.type:
-                            self.displaymytext(interactable)
+            if self.draw_debug:
+                for x in self.obstruction:
+                    pygame.draw.rect(self.dis, cs.blue,
+                                    self.camera.implement_rect(x.hit_rect), 1)
 
-        if pygame.sprite.spritecollideany(self.player, self.teleport):
-            self.mapindex = 1
-            self.load_data()
-            self.new()
-            '''
-        for sprit in self.all_sprites:
-             self.dis.blit(sprit.image, self.camera.apply(sprit))'''
-        # for x in list:
-        # dis.blit()#find an efficient way to compare x as and integer to object position in a list
+            if pygame.sprite.spritecollideany(self.player, self.interactablebox):
+                for y in self.interactablebox:
+                    if pygame.sprite.collide_rect(self.player, y):
+                        for interactable in self.text:
+                            if interactable.type == y.type:
+                                self.displaymytext(interactable)
+
+            if pygame.sprite.spritecollideany(self.player, self.teleport):
+                self.mapindex = 1
+                self.load_data()
+                self.new()
+                '''
+            for sprit in self.all_sprites:
+                self.dis.blit(sprit.image, self.camera.apply(sprit))'''
+            # for x in list:
+            # dis.blit()#find an efficient way to compare x as and integer to object position in a list
         pygame.display.flip()
 
     def displaymytext(self, target):
@@ -193,6 +300,8 @@ class Game:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
+                if event.key == pygame.K_SPACE:
+                    self.combat(self.enemyimg, self.enemy)
                 if event.key == pygame.K_j:
                     self.draw_debug = not self.draw_debug
                 if pygame.sprite.spritecollideany(self.player,
@@ -234,10 +343,16 @@ class Game:
             pygame.display.flip()
             self.clock.tick(30)
 
-    '''def text(self, string, font, colour, x, y):
+    def drawtext(self, string, font, colour, x, y):
+        print ("asdasda")
         text = font.render(string, True, colour)
         textrect = text.get_rect(topleft=(x, y))
-        self.dis.blit(text, textrect)'''
+        self.dis.blit(text, textrect)
+
+    def texttwo(self, string, font, colour, x, y): #probably easier to use for combat
+        text = font.render(string, True, colour)
+        textrect = text.get_rect(center=(x, y))
+        self.dis.blit(text, textrect)
 
     def newgame(self):
         while True:

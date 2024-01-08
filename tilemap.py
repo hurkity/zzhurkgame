@@ -38,13 +38,17 @@ class View:
         self.view = pygame.Rect(0, 0, width, height)
         self.width = width
         self.height = height
+        self.freeze = False
 
     def implement(self, thing):
         return thing.rect.move(self.view.topleft)
 
     def implement_rect(self, rect):
         return rect.move(self.view.topleft)
+    
     def update(self, target):
+        if self.freeze == True:
+            return
         x = -target.rect.x + int(cs.diswidth/2)
         y = -target.rect.y + int(cs.disheight/2)
 
@@ -54,3 +58,4 @@ class View:
         x = max(-(self.width - cs.diswidth), x)
         y = max(-(self.height - cs.disheight), y)
         self.view = pygame.Rect(x, y, self.width, self.height)
+    

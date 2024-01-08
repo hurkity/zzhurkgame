@@ -17,3 +17,7 @@ class Button:
   def hover(self, position):
     if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
       return True
+  
+  def invalid(self):
+    x = pygame.image.load('graphics/x.png').convert_alpha()
+    self.blit(x)

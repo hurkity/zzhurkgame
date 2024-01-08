@@ -120,6 +120,7 @@ class Player(pygame.sprite.Sprite):
         self.interacting = False
         self.x = x
         self.y = y
+        self.freeze = False
         # self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     def get_keys(self):
@@ -169,6 +170,8 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y = self.position.y
 
     def update(self):
+        if self.freeze:
+            return
         self.direction = self.get_keys()
         self.position += self.velocity * self.game.dt
         self.rect.x = self.position.x

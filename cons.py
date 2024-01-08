@@ -2,6 +2,7 @@ import pygame
 
 
 pygame.init()
+pygame.font.init()
 black = (0, 0, 0)
 blue = (0, 0, 128)
 white = (255, 255, 255)
@@ -102,3 +103,24 @@ mapchange = [
         'bettertestmap.tmx',
         'betterbettertestmap.tmx'
 ]
+
+
+userhp = 100
+
+name1 = "name"
+pow1 = 20
+
+name2 = "err"
+pow2 = 15
+
+name3 = "ooh"
+pow3 = 25
+
+name4 = "aah"
+pow4 = 10
+
+targname = "gart"
+targpow = 30
+targhp = 300
+
+fontbold = pygame.font.SysFont('public-pixel-font/PublicPixel.ttf', 16, bold = True)
