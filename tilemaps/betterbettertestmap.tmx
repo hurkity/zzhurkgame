@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="5">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="9">
  <tileset firstgid="1" source="../graphics/tinytowntest.tsx"/>
  <layer id="1" name="Tile Layer 1" width="60" height="40">
   <data encoding="csv">
@@ -91,8 +91,11 @@
  </layer>
  <objectgroup id="3" name="Object Layer 1">
   <object id="1" name="player" x="385" y="130"/>
-  <object id="2" x="-92" y="-22"/>
-  <object id="3" name="teleport" x="870" y="197" width="75" height="62"/>
-  <object id="4" name="teleport" x="7" y="271" width="83" height="73"/>
+  <object id="3" name="teleport" type="0" x="870" y="197" width="75" height="62"/>
+  <object id="4" name="teleport" type="2" x="7" y="271" width="83" height="73"/>
+  <object id="5" name="house" x="935.5" y="0" width="21" height="642"/>
+  <object id="6" name="house" x="1.5" y="2" width="21" height="642"/>
+  <object id="7" name="house" x="9.5" y="3" width="949" height="22"/>
+  <object id="8" name="house" x="9.5" y="619" width="949" height="22"/>
  </objectgroup>
 </map>
