@@ -59,13 +59,14 @@ class Game:
         self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
 
     def new(self):
-        self.all_sprites = pygame.sprite.Group()
-        self.obstruction = pygame.sprite.Group()
-        self.interactable = pygame.sprite.Group()
-        self.interactablebox = pygame.sprite.Group()
-        self.text = pygame.sprite.Group()
-        self.playergroup = pygame.sprite.GroupSingle()
-        self.teleport = pygame.sprite.Group()
+        self.all_sprites = pygame.sprite.Group()  # all sprites
+        self.obstruction = pygame.sprite.Group()  # blocks movement in collicase
+        self.interactable = pygame.sprite.Group()  # obsolete class hate this
+        self.interactablebox = pygame.sprite.Group()  # prompts interaction without actually colliding with objects you can't go through
+        self.text = pygame.sprite.Group()  # group for sprites that need to display text
+        self.playergroup = pygame.sprite.GroupSingle()  # single group for player
+        self.teleport = pygame.sprite.Group()  # moves player from map to map
+        self.locks = pygame.sprite.Group()  # destination corresponding to the objects the player picks up
         '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
@@ -93,6 +94,16 @@ class Game:
             elif layerobject.name == 'teleport':
                 Teleport(self, layerobject.type,
                          layerobject.x, layerobject.y, layerobject.width, layerobject.height)
+            elif layerobject.name == 'lock':
+                Lock(self,
+                     layerobject.x, layerobject.y, layerobject.width,
+                     layerobject.height, int(layerobject.type.strip("'")),
+                     int(layerobject.type.strip("'")))
+            elif layerobject.name == 'interactablehitlox':
+                InteractableLox(self, layerobject.type, layerobject.x,
+                                layerobject.y, layerobject.width,
+                                layerobject.height)
+
 
         self.draw_debug = False
         self.interactivity = False
@@ -265,6 +276,9 @@ class Game:
                     self.player.holding(x)
 
             for x in self.text:
+                self.dis.blit(x.image, self.camera.implement_rect(x.rect))
+
+            for x in self.locks:
                 self.dis.blit(x.image, self.camera.implement_rect(x.rect))
             #.all_sprites.draw(self.dis)
 

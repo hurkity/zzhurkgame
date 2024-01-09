@@ -173,6 +173,7 @@ class Player(pygame.sprite.Sprite):
     def holding(self, target):
         self.keytype = target.type
         target.rect.center = self.rect.midbottom
+        return True
 
 
     def update(self):
@@ -256,6 +257,20 @@ class InteractableBox(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+class InteractableLox(pygame.sprite.Sprite):
+    def __init__(self, game, type, x, y, w, h):
+        self.game = game
+        self.type = type
+        self.inside = self.game.locks
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        # self._layer = cs.object_layer
+        self.rect = pygame.Rect(x, y, w, h)
+        self.x = x
+        self.y = y
+        # self.image = pygame.Surface((18, 18), pygame.SRCALPHA, 32)
+        self.rect.x = self.x
+        self.rect.y = self.y
+
 class Teleport(pygame.sprite.Sprite):
     def __init__(self, game, type, x, y, w, h):
         self.game = game
@@ -294,4 +309,60 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
+
+
+class Lock(pygame.sprite.Sprite):
+    def __init__(self, game, x, y, width, height, type, text_id):
+        self.game = game
+        self.type = type
+        self.inside = self.game.locks, self.game.obstruction
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        self.rect = pygame.Rect(x, y, width, height)
+        self.x = x
+        self.y = y
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.hit_rect = self.rect
+        self.font = cs.objfont
+        self.image = pygame.image.load('graphics/truck.png').convert()
+        self.image = pygame.transform.scale(self.image, (self.rect.width,
+                                                         self.rect.height))
+        self.text = cs.font.render(cs.LockText[text_id], True, cs.white)
+        self.textimage = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
+                                        pygame.SRCALPHA)
+        self.textimage.fill(cs.translucent_black)
+        self.textrect = self.textimage.get_rect()
+        self.textrect.x = 0
+        self.textrect.y = cs.diswidth * 0.8
+
+    def unlocked(self, key, changetarget):
+        if self.type == key.type:
+            self.image = changetarget.image
+            pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+            pygame.sprite.Sprite.remove(self, self.game.obstruction)
+            return True
+        return False
+
+class Lockchange(pygame.sprite.Sprite):
+    def __init__(self, game, x, y, width, height, type, text_id):
+        self.game = game
+        self.type = type
+        self.inside = self.game.text, self.game.obstruction
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        self.rect = pygame.Rect(x, y, width, height)
+        self.x = x
+        self.y = y
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.hit_rect = self.rect
+        self.font = cs.objfont
+        self.image = pygame.image.load('graphics/painter.jpg').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+        self.text = cs.font.render(cs.LockText[text_id], True, cs.white)
+        self.textimage = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
+                                        pygame.SRCALPHA)
+        self.textimage.fill(cs.translucent_black)
+        self.textrect = self.textimage.get_rect()
+        self.textrect.x = 0
+        self.textrect.y = cs.diswidth * 0.8
 

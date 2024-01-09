@@ -90,6 +90,11 @@ Text = [  # font.render("bjdndkjnf", True, green),
         "first object description",
         "second object description",
         "third object description"]
+
+LockText = [  # font.render("bjdndkjnf", True, green),
+        "first lock description",
+        "second lock description",
+        "third lock description"]
 textRect = text.get_rect(center = (diswidth/2, disheight/10))
 textSecondLineRect = text.get_rect(center = (diswidth/2, disheight/10 +
                                              textRect.height))
