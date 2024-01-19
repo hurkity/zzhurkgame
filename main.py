@@ -4,7 +4,7 @@ import math
 from os import path
 from objs import *
 import pygame
-from pygame import QUIT
+from pygame import QUIT, Rect
 from cons import *
 import buttons as b
 from tilemap import *
@@ -56,18 +56,19 @@ class Game:
             path.join(img_folder, 'sunnybackleft.png')).convert_alpha()
         self.player_imgbackright = pygame.image.load(
             path.join(img_folder, 'sunnybackright.png')).convert_alpha()
-        
+
         self.enemyimg = pygame.image.load('graphics/cookiemonster.png')
         self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
 
     def new(self):
-        self.all_sprites = pygame.sprite.Group()
-        self.obstruction = pygame.sprite.Group()
-        self.interactable = pygame.sprite.Group()
-        self.interactablebox = pygame.sprite.Group()
-        self.text = pygame.sprite.Group()
-        self.playergroup = pygame.sprite.GroupSingle()
-        self.teleport = pygame.sprite.Group()
+        self.all_sprites = pygame.sprite.Group()  # all sprites
+        self.obstruction = pygame.sprite.Group()  # blocks movement in collicase
+        self.interactable = pygame.sprite.Group()  # obsolete class hate this
+        self.interactablebox = pygame.sprite.Group()  # prompts interaction without actually colliding with objects you can't go through
+        self.text = pygame.sprite.Group()  # group for sprites that need to display text
+        self.playergroup = pygame.sprite.GroupSingle()  # single group for player
+        self.teleport = pygame.sprite.Group()  # moves player from map to map
+        self.locks = pygame.sprite.Group()  # destination corresponding to the objects the player picks up
         '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
@@ -88,13 +89,27 @@ class Game:
                                 layerobject.y, layerobject.width,
                                 layerobject.height)
             elif layerobject.name == 'textdisplay':
-                TextDisplay(self, layerobject.type,
+                TextDisplay(self, layerobject.x,
+                            layerobject.y, layerobject.width,
+                            layerobject.height, layerobject.type,
                             int(layerobject.type.strip("'")))
             elif layerobject.name == 'teleport':
-                Teleport(self, layerobject.x, layerobject.y, layerobject.width, layerobject.height)
+                Teleport(self, layerobject.type,
+                         layerobject.x, layerobject.y, layerobject.width, layerobject.height)
+            elif layerobject.name == 'lock':
+                Lock(self,
+                     layerobject.x, layerobject.y, layerobject.width,
+                     layerobject.height, int(layerobject.type.strip("'")),
+                     int(layerobject.type.strip("'")))
+            elif layerobject.name == 'interactablehitlox':
+                InteractableLox(self, layerobject.type, layerobject.x,
+                                layerobject.y, layerobject.width,
+                                layerobject.height)
+
 
         self.draw_debug = False
         self.interactivity = False
+        self.interactivibee = False
         self.camera = View(self.map.width, self.map.height)
 
         self.team = Team()
@@ -122,11 +137,11 @@ class Game:
         self.camera.update(self.player)
         return direction
 
-    def grid(self):
+    '''def grid(self):
         for y in range(0, disheight, tilesize):
-            pygame.draw.line(self.dis, (black), (0, y), (diswidth, y))
+            pygame.draw.line(self.dis, cs.black, (0, y), (diswidth, y))
         for x in range(0, diswidth, tilesize):
-            pygame.draw.line(self.dis, (black), (x, 0), (x, disheight))
+            pygame.draw.line(self.dis, (black), (x, 0), (x, disheight))'''
 
     def drawbg(self, colour):
         self.dis.fill(colour)
@@ -242,13 +257,13 @@ class Game:
                 elif self.attackbutton.hover(mousepos):
                     self.map_img.blit(self.combatbg)
                     self.c1attack.draw(self.dis)
-                    self.drawtext("CHARACTER1", font, red, 120, 350)
+                    self.drawtext("CHARACTER1", font, red, 120, 180)
                     self.c2attack.draw(self.dis)
-                    self.drawtext("CHARACTER2", font, blue, 370, 350)
+                    self.drawtext("CHARACTER2", font, blue, 370, 180)
                     self.c3attack.draw(self.dis)
-                    self.drawtext("CHARACTER3", font, orange, 120, 450)
+                    self.drawtext("CHARACTER3", font, orange, 120, 80)
                     self.c4attack.draw(self.dis)
-                    self.drawtext("CHARACTER4", font, green, 370, 450)
+                    self.drawtext("CHARACTER4", font, green, 370, 80)
 
                     if self.c1attack.hover(mousepos):
                         self.drawtext("CHARACTER1", fontbold, red, 120, 350)
@@ -274,8 +289,8 @@ class Game:
         firstattack = self.combat(enemyimg, enemy)
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pass 
-    
+                pass
+            
     def cutsceneend(self):
         x = self.player.position.x - 250
         y = self.player.position.y - 50
@@ -300,7 +315,16 @@ class Game:
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
         if not self.combatstate:
 
-            # self.all_sprites.draw(self.dis) changed w camera
+            for x in self.text:
+                if x.type == self.player.keytype:
+                    self.player.holding(x)
+
+            for x in self.text:
+                self.dis.blit(x.image, self.camera.implement_rect(x.rect))
+
+            for x in self.locks:
+                self.dis.blit(x.image, self.camera.implement_rect(x.rect))
+            #.all_sprites.draw(self.dis)
 
             self.movementani(direction)
 
@@ -308,18 +332,27 @@ class Game:
                 for x in self.obstruction:
                     pygame.draw.rect(self.dis, cs.blue,
                                     self.camera.implement_rect(x.hit_rect), 1)
-
             if pygame.sprite.spritecollideany(self.player, self.interactablebox):
                 for y in self.interactablebox:
                     if pygame.sprite.collide_rect(self.player, y):
                         for interactable in self.text:
                             if interactable.type == y.type:
-                                self.displaymytext(interactable)
+                                if self.interactivity:
+                                    self.displaymytextbetter(interactable)
+                                elif self.interactivibee:
+                                    self.player.keytype = interactable.type
+                                    pygame.sprite.Sprite.remove(interactable,
+                                                                self.obstruction)
+
+                                else:
+                                    self.displaymytext(interactable)
 
             if pygame.sprite.spritecollideany(self.player, self.teleport):
-                self.mapindex = 1
-                self.load_data()
-                self.new()
+                for x in self.teleport:
+                    if pygame.sprite.collide_rect(self.player, x):
+                        self.mapindex = int(x.type.strip("'"))
+                    self.load_data()
+                    self.new()
                 '''
             for sprit in self.all_sprites:
                 self.dis.blit(sprit.image, self.camera.apply(sprit))'''
@@ -327,12 +360,16 @@ class Game:
             # dis.blit()#find an efficient way to compare x as and integer to object position in a list
         pygame.display.flip()
 
+    def displaymytextbetter(self, target):
+        self.dis.blit(target.textimage, target.textrect)
+        self.dis.blit(target.text, target.textrect)
+        self.dis.blit(cs.text2, cs.textRect2)
+
+        pygame.display.update()
+
     def displaymytext(self, target):
         self.dis.blit(cs.text, cs.textRect)
-        if self.interactivity:
-            self.dis.blit(target.image, target.rect)
-            self.dis.blit(target.text, target.rect)
-            self.player.interacting = True
+        self.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
         pygame.display.update()
 
     def combatevent(self, event):
@@ -435,6 +472,10 @@ class Game:
                     if event.key == pygame.K_e:
                         self.interactivity = not self.interactivity
                         self.player.interacting = not self.player.interacting
+                if pygame.sprite.spritecollideany(self.player,
+                                                  self.interactablebox):
+                    if event.key == pygame.K_p:
+                        self.interactivibee = not self.interactivibee
                 '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
             if event.key == pygame.K_w:
@@ -511,16 +552,16 @@ class Game:
         button3 = b.Button(x3, y3, colour3)
         button3.draw(self.dis)
 
-        self.text(string1, font, black, x1 + 8, y1 + 12)
-        self.text(string2, font, black, x2 + 8, y2 + 12)
-        self.text(string3, font, black, x3 + 8, y3 + 12)
+        text(string1, font, black, x1 + 8, y1 + 12)
+        text(string2, font, black, x2 + 8, y2 + 12)
+        text(string3, font, black, x3 + 8, y3 + 12)
 
         if button1.hover(mousepos):
-            self.text(string1, font, grey, x1 + 8, y1 + 12)
+            text(string1, font, grey, x1 + 8, y1 + 12)
         elif button2.hover(mousepos):
-            self.text(string2, font, grey, x2 + 8, y2 + 12)
+            text(string2, font, grey, x2 + 8, y2 + 12)
         elif button3.hover(mousepos):
-            self.text(string3, font, grey, x3 + 8, y3 + 12)
+            text(string3, font, grey, x3 + 8, y3 + 12)
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -537,6 +578,7 @@ class Game:
 def main():
     gamestart = Game()
     while True:
+        #gamestart.mainmenu() i tried making this code run but idk what the texts are lol
         gamestart.new()
         gamestart.run()
 
