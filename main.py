@@ -1,5 +1,6 @@
 # start screen gyap
 import sys
+import math
 from os import path
 from objs import *
 import pygame
@@ -22,6 +23,7 @@ class Game:
         self.load_data()
         # self.displaytext = False
         self.combatstate = False
+        self.cutscenestate = False
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -145,7 +147,7 @@ class Game:
                 break
             anigroup = sprite.getanigroup()
             self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
-                sprite))  # make a method for this lol
+                sprite))  
             sprite.currentsprite += 1
             pygame.time.wait(100)
             if sprite.currentsprite > len(anigroup) - 1:
@@ -154,6 +156,17 @@ class Game:
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
+                                 
+    def blitdirection(self, sprites): #sprites is dict key = char, value = direction
+        for sprite in sprites:
+            if sprites[sprite] == "left":
+                self.map_img.blit(sprite.imageleft, sprite.rectleft)
+            elif sprites[sprite] == "right":
+                self.map_img.blit(sprite.imageright, sprite.rectright)
+            elif sprites[sprite] == "front":
+                self.map_img.blit(sprite.imagefront, sprite.rectfront)
+            elif sprites[sprite] == "back":
+                self.map_img.blit(sprite.imageback, sprite.rectback)
 
     def healthbar(self, enemy):
         return None
@@ -164,37 +177,47 @@ class Game:
         self.camera.freeze = True
         for sprite in self.all_sprites:
             sprite.freeze = True
-        combatbg = pygame.image.load('graphics/combatbg.jpg').convert() #load in combat background
-        combatbg = pygame.transform.scale(combatbg, (600, disheight))
-        self.map_img.blit(combatbg, (0, 0))
+        
+        self.combatbg = pygame.image.load('graphics/combatbg.jpg').convert()
+        self.combatbg = pygame.transform.scale(self.combatbg, (diswidth, disheight))
+        self.map_img.blit(self.combatbg, (0, 0))
         self.map_img.blit(enemyimg, (250, 250))
         
-        #oh brother i gotta use buttons this is so freaked 
-        mousepos = pygame.mouse.get_pos()
-        escapebutton = b.Button(100, 100, black) #first screen; two choices are escape or attack
-        attackbutton = b.Button(350, 100, white)
-        escapebutton.draw(self.map_img)
-        attackbutton.draw(self.map_img)
+        #oh bluther i gotta use buttons this is so freaked 
+        self.escapebutton = b.Button(100, 100, black) #first screen; two choices are escape or attack
+        self.attackbutton = b.Button(350, 100, white)
+        self.escapebutton.draw(self.map_img)
+        self.attackbutton.draw(self.map_img)
         self.drawtext("Escape...", font, white, 120, 100)
         self.drawtext("Attack!", font, black, 370, 100)
-
-        if escapebutton.hover(mousepos):
-            self.drawtext("Escape...", font, grey, 120, 100)
-        elif attackbutton.hover(mousepos):
-            self.drawtext("Attack!", font, red, 370, 100)
         
         #attacks happen in pairs, choose two characters to create a combo attack that deals damage based on power + trust
-        firstatkone = b.Button(100, 200, green) 
-        secondatkone = b.Button(350, 200, orange)
-        thirdatkone = b.Button(100, 100, blue)
-        fourthatkone = b.Button(350, 100, red)
+        self.c1attack = b.Button(100, 80, green) 
+        self.c2attack = b.Button(350, 80, orange)
+        self.c3attack = b.Button(100, 180, blue)
+        self.c4attack = b.Button(350, 180, red)
+
+        self.buttons = []
+        self.buttons.append(self.escapebutton)
+        self.buttons.append(self.attackbutton)
+        self.buttons.append(self.c1attack)
+        self.buttons.append(self.c2attack)
+        self.buttons.append(self.c3attack)
+        self.buttons.append(self.c4attack)
 
         gameover = False
-        for event in pygame.event.get():
+        '''for event in pygame.event.get():
             if event.type == QUIT:
                 self.quit()
+            if event.type == pygame.MOUSEMOTION:
+                mousepos = pygame.mouse.get_pos()
+                print (mousepos)
+                if self.escapebutton.hover(mousepos):
+                    self.drawtext("Escape...", font, grey, 120, 100)
+                elif self.attackbutton.hover(mousepos):
+                    self.drawtext("Attack!", font, red, 370, 100)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if escapebutton.hover(mousepos):
+                if self.escapebutton.hover(mousepos):
                     if enemy.escape: #escapability depends on if enemy is part of the main quest
                         self.dis.blit(self.map_img, self.map_rect)
                     else:
@@ -216,42 +239,63 @@ class Game:
                                 enemy.attack()
                                 self.users.update()
                             
-                elif attackbutton.hover(mousepos):
-                    self.map_img.blit(combatbg)
-                    firstatkone.draw(self.dis)
-                    self.drawtext("CHARACTER1", font, red, 120, 180)
-                    secondatkone.draw(self.dis)
-                    self.drawtext("CHARACTER2", font, blue, 370, 180)
-                    thirdatkone.draw(self.dis)
-                    self.drawtext("CHARACTER3", font, orange, 120, 80)
-                    fourthatkone.draw(self.dis)
-                    self.drawtext("CHARACTER4", font, green, 370, 80)
+                elif self.attackbutton.hover(mousepos):
+                    self.map_img.blit(self.combatbg)
+                    self.c1attack.draw(self.dis)
+                    self.drawtext("CHARACTER1", font, red, 120, 350)
+                    self.c2attack.draw(self.dis)
+                    self.drawtext("CHARACTER2", font, blue, 370, 350)
+                    self.c3attack.draw(self.dis)
+                    self.drawtext("CHARACTER3", font, orange, 120, 450)
+                    self.c4attack.draw(self.dis)
+                    self.drawtext("CHARACTER4", font, green, 370, 450)
 
-                    if firstatkone.hover(mousepos):
-                        self.drawtext("CHARACTER1", fontbold, red, 120, 180)
-                    elif secondatkone.hover(mousepos):
-                        self.drawtext("CHARACTER2", fontbold, blue, 370, 180)
-                    elif thirdatkone.hover(mousepos):
-                        self.drawtext("CHARACTER3", fontbold, orange, 120, 80)
-                    elif fourthatkone.hover(mousepos):
-                        self.drawtext("CHARACTER4", fontbold, green, 370, 80)
+                    if self.c1attack.hover(mousepos):
+                        self.drawtext("CHARACTER1", fontbold, red, 120, 350)
+                    elif self.c2attack.hover(mousepos):
+                        self.drawtext("CHARACTER2", fontbold, blue, 370, 350)
+                    elif self.c3attack.hover(mousepos):
+                        self.drawtext("CHARACTER3", fontbold, orange, 120, 450)
+                    elif self.c4attack.hover(mousepos):
+                        self.drawtext("CHARACTER4", fontbold, green, 370, 450)
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        if firstatkone.hover(mousepos):
+                        if self.c1attack.hover(mousepos):
+                            sys.quit()
                             return 1
-                        elif secondatkone.hover(mousepos):
+                        elif self.c2attack.hover(mousepos):
                             return 2
-                        elif thirdatkone.hover(mousepos):
+                        elif self.c3attack.hover(mousepos):
                             return 3
-                        elif fourthatkone.hover(mousepos):
-                            return 4
+                        elif self.c4attack.hover(mousepos):
+                            return 4'''
 
     def combat2(self, enemyimg, enemy):
         firstattack = self.combat(enemyimg, enemy)
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass 
+    
+    def cutsceneend(self):
+        x = self.player.position.x - 250
+        y = self.player.position.y - 50
+        self.textani((x, y), stringlist, font, white)
+        pygame.display.update()
+        self.player.cutscene = False
+        self.player.cutsceneend = False
 
+    def cutscene(self): 
+        self.player.cutscene = True
+        self.player.directions = ['left', 'left', 'left', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd']
+
+
+        #for guy in turns:
+            #how to get direction in here lol what the heck!
+            #also movementani has to take in the sprite thats moving
+            #dict gives which sprite of four move as key and how much as value
+            #call movementani as it goes
+            #self.movementani()
+            
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
         if not self.combatstate:
@@ -291,11 +335,93 @@ class Game:
             self.player.interacting = True
         pygame.display.update()
 
+    def combatevent(self, event):
+        if event.type == QUIT:
+            self.quit()
+        if event.type == pygame.MOUSEMOTION:
+            mousepos = pygame.mouse.get_pos()
+            print (mousepos)
+            if self.escapebutton.hover(mousepos):
+                self.drawtext("Escape...", font, grey, 120, 100)
+            elif self.attackbutton.hover(mousepos):
+                self.drawtext("Attack!", font, red, 370, 100)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mousepos = pygame.mouse.get_pos()
+            if self.escapebutton.hover(mousepos):
+                if self.enemy.escape: #escapability depends on if enemy is part of the main quest
+                    print ("asdasd")
+                    self.combatstate = False
+                    self.camera.freeze = False
+                    for sprite in self.all_sprites:
+                        sprite.freeze = False #releasing the little man
+                    self.drawtext("You ran away...", fontbold, red, 250, 400)
+                    self.combatbg.blit(self.map_img, self.camera.implement_rect(self.map_rect))
+                    direction = self.rupdate()
+                    self.draw(direction)
+                    #self.escapebutton.delete()
+                else:
+                    self.dis.blit(self.combatbg, (0, 0))
+                    self.drawtext("Unable to escape!", font, red, 200, 400)
+                    pygame.time.delay(1000)
+                    
+                    self.dis.blit(self.combatbg, (0, 0))
+                    self.drawtext("You lost your advantage! %s attacks first!" %(self.enemy.name), fontbold, red, 200, 400)
+                    damage = self.enemy.attack()
+
+                    totalhp = 0
+                    '''for user in self.users: #set hp for user
+                        totalhp += user.hp
+
+                        totalhp -= damage
+                        print ("You lost %i HP!" (damage)) #lazy'''
+                        
+            elif self.attackbutton.hover(mousepos):
+                print ("asd")
+                self.combatbg.blit(self.combatbg, (0, 0))
+                self.c1attack.draw(self.combatbg)
+                self.drawtext("CHARACTER1", font, red, 120, 80)
+                self.c2attack.draw(self.combatbg)
+                self.drawtext("CHARACTER2", font, blue, 370, 80)
+                self.c3attack.draw(self.dis)
+                self.drawtext("CHARACTER3", font, orange, 120, 180)
+                self.c4attack.draw(self.dis)
+                self.drawtext("CHARACTER4", font, green, 370, 180)
+
+                if self.c1attack.hover(mousepos):
+                    self.drawtext("CHARACTER1", fontbold, blue, 120, 80)
+                elif self.c2attack.hover(mousepos):
+                    self.drawtext("CHARACTER2", fontbold, red, 370, 80)
+                elif self.c3attack.hover(mousepos):
+                    self.drawtext("CHARACTER3", fontbold, green, 120, 180)
+                elif self.c4attack.hover(mousepos):
+                    self.drawtext("CHARACTER4", fontbold, orange, 370, 180)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.c1attack.hover(mousepos):
+                        return 1
+                    elif self.c2attack.hover(mousepos):
+                        return 2
+                    elif self.c3attack.hover(mousepos):
+                        return 3
+                    elif self.c4attack.hover(mousepos):
+                        return 4
     def events(self):
         # while True:
+        if not self.player.cutscene:
+            if not self.player.cutsceneend:
+                if abs(self.player.position.x - 500) < 50 and abs(self.player.position.y - 500) < 50:
+                    self.cutscene()
+        else:
+            if self.player.cutsceneend:
+                print ("Asd")
+                self.cutsceneend()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+            if self.combatstate:
+                self.combatevent(event)
+                continue
+
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
                 if event.key == pygame.K_ESCAPE:
@@ -333,18 +459,18 @@ class Game:
                         string = (string + 1) % len(string_list)
                         letter = 0
 
-            self.dis.fill(black)
+            pygame.draw.rect(self.map_img, black, pygame.Rect(x, y, 500, 100))
             current_string = string_list[string][:letter + 1]
             text_surface = font.render(current_string, True, txtcolour)
             text_rect = text_surface.get_rect(topleft=(x, y))
-            self.dis.blit(text_surface, text_rect)
+            self.map_img.blit(text_surface, text_rect)
             letter += 1
 
+            pygame.display.update()
             pygame.display.flip()
             self.clock.tick(30)
 
     def drawtext(self, string, font, colour, x, y):
-        print ("asdasda")
         text = font.render(string, True, colour)
         textrect = text.get_rect(topleft=(x, y))
         self.map_img.blit(text, textrect)

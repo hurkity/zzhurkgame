@@ -1,6 +1,6 @@
 import pygame
 
-class Button:
+class Button (pygame.sprite.Sprite):
   def __init__(self, x, y, colour):
     self.x = x
     self.y = y
@@ -21,3 +21,6 @@ class Button:
   def invalid(self):
     x = pygame.image.load('graphics/x.png').convert_alpha()
     self.blit(x)
+
+  def delete(self):
+    pass

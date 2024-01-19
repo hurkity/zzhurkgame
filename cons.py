@@ -123,4 +123,6 @@ targname = "gart"
 targpow = 30
 targhp = 300
 
-fontbold = pygame.font.SysFont('public-pixel-font/PublicPixel.ttf', 16, bold = True)
+fontbold = pygame.font.SysFont('public-pixel-font/PublicPixel.ttf', 25, bold = True)
+
+stringlist = ["blah blah", "blah"]

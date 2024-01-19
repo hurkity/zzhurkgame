@@ -121,9 +121,32 @@ class Player(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.freeze = False
+        self.cutscene = False
+        self.cutsceneend = False
+        self.directions = []
         # self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     def get_keys(self):
+        if self.cutscene:
+            if len(self.directions) > 0:
+                direction = self.directions[0]
+                if direction == 'left':
+                    self.position.x -= cs.block_speed
+                    self.velocity.x = -cs.player_speed/2
+                elif direction == 'right':
+                    self.position.x += cs.block_speed
+                    self.velocity.x = cs.player_speed/2
+                elif direction == 'fwd':
+                    self.position.y += cs.block_speed
+                    self.velocity.y = cs.player_speed/2
+                elif direction == 'bwd':
+                    self.position.y -= cs.block_speed
+                    self.velocity.y = -cs.player_speed/2
+                self.directions.pop(0)
+                print (self.directions)
+                return direction
+            else:
+                self.cutsceneend = True
         direction = None
         self.velocity = vc(0, 0)
         if self.interacting == False:

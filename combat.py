@@ -50,7 +50,7 @@ class Team:
                 print ("game over")
 
 
-class Computer(pygame.sprite.Sprite): #refers to computer
+class Computer(pygame.sprite.Sprite):
     def __init__(self, name, hp, power, escape):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
