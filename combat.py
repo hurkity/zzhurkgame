@@ -30,8 +30,16 @@ class Team:
                       c2.name + ' ' + c4.name: 7,
                       c3.name + ' ' + c4.name: 12
                       }
+        
+    @property
+    def hp(self):
+        hp = 0
+        for chars in self.characters:
+            hp += chars.hp
+        return hp
     
     def attack(self, c1, c2):
+        print ("player: %i" % self.hp)
         print ("%s and %s attacking" %(c1.name, c2.name))
         trust = 0
         key = c1.name + ' ' + c2.name
@@ -60,6 +68,7 @@ class Computer(pygame.sprite.Sprite):
         self.escape = escape
 
     def attack(self):
+        print ("enemy: %i" % self.hp)
         print ("enemy attacking")
         damage = self.power
         return damage

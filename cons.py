@@ -135,8 +135,8 @@ name4 = "aah"
 pow4 = 10
 
 targname = "gart"
-targpow = 30
-targhp = 1000
+targpow = 80
+targhp = 20000
 
 fontbold = pygame.font.SysFont('public-pixel-font/PublicPixel.ttf', 25, bold = True)
 

@@ -65,7 +65,7 @@ class Game:
 
         self.enemyimg = pygame.image.load('graphics/cookiemonster.png')
         self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
-        self.painterimg = pygame.image.load('graphics/painter.jpg')
+        self.painterimg = pygame.image.load('graphics/personality.png')
         self.painterimg = pygame.transform.scale(self.painterimg, (100, 100))
 
 
@@ -123,7 +123,7 @@ class Game:
 
         self.team = Team()
 
-        self.enemy = Computer(targname, targhp, targpow, True)
+        self.enemy = Computer(targname, targhp, targpow, False)
 
     def run(self):
         self.game_over = False
@@ -196,12 +196,6 @@ class Game:
     def healthbar(self, enemy):
         return None
 
-
-    def combat2(self, enemyimg, enemy):
-        firstattack = self.combat(enemyimg, enemy)
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pass
             
     def cutsceneend(self, event):
         x = self.player.position.x - 250
@@ -276,7 +270,6 @@ class Game:
         self.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
         pygame.display.update()
 
-    #call like self.combat(enemyimg, self.enemy) from new
     def combat(self):
         self.combatstate = True
         self.camera.freeze = True
@@ -355,16 +348,13 @@ class Game:
                     self.drawtext("Unable to escape!", font, red, 200, 400)
                     pygame.time.delay(1000)
                     
-                    self.dis.blit(self.combatbg, (0, 0))
+                    self.map_img = self.map.make_map()
+                    self.map_img.blit(self.combatbg, (x - 250, y - 240))
+                    self.map_img.blit(self.enemyimg, (x - 50, y))
+                    self.map_img.blit(self.painterimg, (x + 100, y + 100))
+
                     self.drawtext("You lost your advantage! %s attacks first!" %(self.enemy.name), fontbold, red, 200, 400)
-                    damage = self.enemy.attack()
-
-                    totalhp = 0
-                    '''for user in self.users: #set hp for user
-                        totalhp += user.hp
-
-                        totalhp -= damage
-                        print ("You lost %i HP!" (damage)) #lazy'''
+                    self.enemyattacking = True
                         
             elif self.attackbutton.hover(mousepos) and not self.attackingstate:
                 print ("attacking")
@@ -401,6 +391,7 @@ class Game:
                   ]
         
         i = 0
+            
         for chara in charas:
             if self.selected[i]:
                 colour1 = red
@@ -444,6 +435,7 @@ class Game:
                 print ("%i and %i attack" %(self.chosen[0], self.chosen[1]))
                 damage = self.team.attack(self.team.characters[self.chosen[0]], self.team.characters[self.chosen[1]])
                 self.enemy.update(damage)
+                pygame.time.delay(2000)
                 if self.enemy.hp > 0:
                     self.enemyattacking = True
                 else:
@@ -459,8 +451,12 @@ class Game:
             
     def enemyattack(self, enemy):
         damage = enemy.attack()
+        print ("enemy damage: %i" % damage)
         self.team.update(damage)
+        pygame.time.delay(2000)
         self.enemyattacking = False
+        self.selected = [False, False, False, False]
+        self.chosen = []
         
         if self.team.hp <= 0:
             print ("you lose")
