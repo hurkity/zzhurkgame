@@ -116,15 +116,18 @@ class Player(pygame.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.hit_rect = cs.playerhitrect
         self.direction = 0
-        self.interactivity = False
-        self.interacting = False
+
         self.x = x
         self.y = y
         self.freeze = False
         self.cutscene = False
         self.cutsceneend = False
         self.directions = []
+
+        #object interaction schturrrrff
+        self.status = "free"
         self.keytype = None
+        self.interactivity = False
         # self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     def get_keys(self):
@@ -150,7 +153,7 @@ class Player(pygame.sprite.Sprite):
                 self.cutsceneend = True
         direction = None
         self.velocity = vc(0, 0)
-        if self.interacting == False:
+        if self.game.interactivity == False:
             keez = pygame.key.get_pressed()
             if keez[pygame.K_LEFT] or keez[pygame.K_a]:
                 direction = "left"
@@ -284,7 +287,7 @@ class InteractableLox(pygame.sprite.Sprite):
     def __init__(self, game, type, x, y, w, h):
         self.game = game
         self.type = type
-        self.inside = self.game.locks
+        self.inside = self.game.interactablelox
         pygame.sprite.Sprite.__init__(self, self.inside)
         # self._layer = cs.object_layer
         self.rect = pygame.Rect(x, y, w, h)
@@ -311,7 +314,7 @@ class Teleport(pygame.sprite.Sprite):
 
 class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe objects
 
-    def __init__(self, game, x, y, width, height, type, text_id):
+    def __init__(self, game, x, y, width, height, type):
         self.game = game
         self.type = type
         self.inside = self.game.text, self.game.obstruction
@@ -324,13 +327,26 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         self.hit_rect = self.rect
         self.font = cs.objfont
         self.image = pygame.image.load('graphics/tree.png').convert_alpha()
-        self.text = cs.font.render(cs.Text[text_id], True, cs.white)
+        self.text = cs.font.render(cs.Text[self.type][self.game.textindex], True, cs.white)
         self.textimage = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
                                         pygame.SRCALPHA)
         self.textimage.fill(cs.translucent_black)
         self.textrect = self.textimage.get_rect()
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
+
+    def displaymytextbetter(self, index):
+        self.game.dis.blit(self.textimage, self.textrect)
+        self.game.dis.blit(self.text, self.textrect)
+        self.game.dis.blit(cs.text2, cs.textRect2)
+        self.game.dis.blit(cs.text3, cs.textRect3)
+        self.text = cs.font.render(cs.Text[self.type][self.game.textindex], True, cs.white)
+        pygame.display.update()
+
+    def displaymytext(self):
+        self.game.dis.blit(cs.text, cs.textRect)
+        self.game.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
+        pygame.display.update()
 
 
 
@@ -358,19 +374,18 @@ class Lock(pygame.sprite.Sprite):
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
-    def unlocked(self, key, changetarget):
-        if self.type == key.type:
-            self.image = changetarget.image
-            pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
-            pygame.sprite.Sprite.remove(self, self.game.obstruction)
-            return True
-        return False
+    def unlocked(self, key, changetarget, player):
+        self.image = changetarget.image
+        pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+        pygame.sprite.Sprite.remove(self, self.game.obstruction)
+        player.status = "free"
+        key.kill()
 
 class Lockchange(pygame.sprite.Sprite):
     def __init__(self, game, x, y, width, height, type, text_id):
         self.game = game
         self.type = type
-        self.inside = self.game.text, self.game.obstruction
+        self.inside = self.game.lockchange
         pygame.sprite.Sprite.__init__(self, self.inside)
         self.rect = pygame.Rect(x, y, width, height)
         self.x = x

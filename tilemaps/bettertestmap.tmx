@@ -115,9 +115,9 @@
   <object id="44" name="lock" type="0" x="63" y="57" width="31" height="26"/>
   <object id="45" name="lock" type="1" x="607" y="532" width="42" height="36"/>
   <object id="46" name="lock" type="2" x="817" y="84" width="53" height="43"/>
-  <object id="48" name="interactablehitbox" type="0" x="53" y="48" width="49" height="43"/>
+  <object id="48" name="interactablehitlox" type="0" x="53" y="48" width="49" height="43"/>
   <object id="49" name="interactablehitbox" type="1" x="599" y="520" width="51" height="60"/>
-  <object id="50" name="interactablehitbox" type="1" x="599" y="520" width="51" height="60"/>
-  <object id="51" name="interactablehitbox" type="2" x="806" y="74" width="75" height="63"/>
+  <object id="50" name="interactablehitlox" type="1" x="599" y="520" width="51" height="60"/>
+  <object id="51" name="interactablehitlox" type="2" x="806" y="74" width="75" height="63"/>
  </objectgroup>
 </map>

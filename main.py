@@ -23,6 +23,7 @@ class Game:
         self.load_data()
         # self.displaytext = False
         self.combatstate = False
+        self.textindex = 0
         self.cutscenestate = False
         self.textplaying = False
         self.attackingstate = False
@@ -69,6 +70,8 @@ class Game:
         self.painterimg = pygame.transform.scale(self.painterimg, (100, 100))
 
 
+    def striptype(self, stripped):
+        return int(stripped.strip("'"))
     def new(self):
         self.all_sprites = pygame.sprite.Group()  # all sprites
         self.obstruction = pygame.sprite.Group()  # blocks movement in collicase
@@ -78,6 +81,8 @@ class Game:
         self.playergroup = pygame.sprite.GroupSingle()  # single group for player
         self.teleport = pygame.sprite.Group()  # moves player from map to map
         self.locks = pygame.sprite.Group()  # destination corresponding to the objects the player picks up
+        self.interactablelox = pygame.sprite.Group()
+        self.lockchange = pygame.sprite.Group()
         '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
@@ -85,40 +90,50 @@ class Game:
         elif value == 'p':
           self.player = Player(self, j, i)
         elif value == '2':
-          Interactable(self, j, i)
+          Interactable(self, j, i) old tilemap stuff
           InteractableBox(self, j, i)'''
         for layerobject in self.map.tmxdata.objects:
+
             if layerobject.name == 'player':
-                self.player = Player(self, layerobject.x, layerobject.y)
+                self.player = Player(self, layerobject.x, layerobject.y) #playerspawn
+
             elif layerobject.name == 'house':
                 Obstacle(self, layerobject.x, layerobject.y,
-                         layerobject.width, layerobject.height)
+                         layerobject.width, layerobject.height) #obstructionspawn, use this for walls and stuff
+
             elif layerobject.name == 'interactablehitbox':
-                InteractableBox(self, layerobject.type, layerobject.x,
+                InteractableBox(self, self.striptype(layerobject.type), layerobject.x, #keyhitbox
                                 layerobject.y, layerobject.width,
                                 layerobject.height)
+
             elif layerobject.name == 'textdisplay':
                 TextDisplay(self, layerobject.x,
                             layerobject.y, layerobject.width,
-                            layerobject.height, layerobject.type,
-                            int(layerobject.type.strip("'")))
+                            layerobject.height, self.striptype(layerobject.type)) #key spawn
+
             elif layerobject.name == 'teleport':
                 Teleport(self, layerobject.type,
-                         layerobject.x, layerobject.y, layerobject.width, layerobject.height)
+                         layerobject.x, layerobject.y, layerobject.width,
+                         layerobject.height) #teleport spawn
+
             elif layerobject.name == 'lock':
                 Lock(self,
-                     layerobject.x, layerobject.y, layerobject.width,
-                     layerobject.height, int(layerobject.type.strip("'")),
-                     int(layerobject.type.strip("'")))
+                     layerobject.x, layerobject.y, layerobject.width, #spawn a lock object and a lockchange object in the same spot
+                     layerobject.height, self.striptype(layerobject.type),
+                     self.striptype(layerobject.type))
+                Lockchange(self,
+                           layerobject.x, layerobject.y, layerobject.width,
+                           layerobject.height, self.striptype(layerobject.type),
+                           self.striptype(layerobject.type))
+
             elif layerobject.name == 'interactablehitlox':
-                InteractableLox(self, layerobject.type, layerobject.x,
+                InteractableLox(self, self.striptype(layerobject.type), layerobject.x, #lock hit box
                                 layerobject.y, layerobject.width,
                                 layerobject.height)
 
-
         self.draw_debug = False
-        self.interactivity = False
-        self.interactivibee = False
+        self.interactivity = False #text interactivity
+        self.interactivibee = False #pickup interactivity
         self.camera = View(self.map.width, self.map.height)
 
         self.team = Team()
@@ -221,28 +236,20 @@ class Game:
 
             for x in self.locks:
                 self.dis.blit(x.image, self.camera.implement_rect(x.rect))
-            #.all_sprites.draw(self.dis)
+            # .all_sprites.draw(self.dis)
 
             self.movementani(direction)
 
             if self.draw_debug:
                 for x in self.obstruction:
                     pygame.draw.rect(self.dis, cs.blue,
-                                    self.camera.implement_rect(x.hit_rect), 1)
-            if pygame.sprite.spritecollideany(self.player, self.interactablebox):
-                for y in self.interactablebox:
-                    if pygame.sprite.collide_rect(self.player, y):
-                        for interactable in self.text:
-                            if interactable.type == y.type:
-                                if self.interactivity:
-                                    self.displaymytextbetter(interactable)
-                                elif self.interactivibee:
-                                    self.player.keytype = interactable.type
-                                    pygame.sprite.Sprite.remove(interactable,
-                                                                self.obstruction)
+                                     self.camera.implement_rect(x.hit_rect), 1)
 
-                                else:
-                                    self.displaymytext(interactable)
+            self.checkobjinter()
+            self.checklockinter()
+
+            if self.player.status == "carrying":
+                self.inneractivibee()
 
             if pygame.sprite.spritecollideany(self.player, self.teleport):
                 for x in self.teleport:
@@ -258,14 +265,43 @@ class Game:
 
         pygame.display.flip()
 
-    def displaymytextbetter(self, target):
-        self.dis.blit(target.textimage, target.textrect)
-        self.dis.blit(target.text, target.textrect)
-        self.dis.blit(cs.text2, cs.textRect2)
+    def inneractivibee(self):
+        a = pygame.sprite.spritecollideany(self.player, self.interactablelox)
+        if a is not None: #checking specific box
+            if self.player.keytype == a.type: #if the key the player is carrying matches hitbox type
+                for lock in self.locks: #lock object check
+                    if lock.type == a.type: #if lock object type is equal to hitbox object type
+                        for lc in self.lockchange: #if lockchange type is equal to yada yada
+                            if lc.type == lock.type:
+                                for textdis in self.text:
+                                    if textdis.type == lc.type:
+                                        lock.unlocked(textdis, lc, self.player) #WHY IS THIS NOT WORKING
 
-        pygame.display.update()
+    def checklockinter(self):
+        c = pygame.sprite.spritecollideany(self.player, self.interactablelox)
+        if self.interactivibee:
+            if c is not None:
+                for aye in self.locks:
+                    if aye.type == c.type:
+                        self.player.keytype = aye.type
+                        pygame.sprite.Sprite.remove(aye,
+                                                    self.obstruction)
 
-    def displaymytext(self, target):
+    def checkobjinter(self):
+        b = pygame.sprite.spritecollideany(self.player, self.interactablebox)
+        if b is not None:
+            for interactable in self.text:
+                if interactable.type == b.type:
+                    if self.interactivity:
+                        interactable.displaymytextbetter(self.textindex)
+                    elif self.interactivibee:
+                        self.player.keytype = interactable.type
+                        pygame.sprite.Sprite.remove(interactable,
+                                                    self.obstruction)
+                    else:
+                        self.displaymytext()
+
+    def displaymytext(self):
         self.dis.blit(cs.text, cs.textRect)
         self.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
         pygame.display.update()
@@ -499,13 +535,25 @@ class Game:
                     self.draw_debug = not self.draw_debug
                 if pygame.sprite.spritecollideany(self.player,
                                                   self.interactablebox):
-                    if event.key == pygame.K_e:
-                        self.interactivity = not self.interactivity
-                        self.player.interacting = not self.player.interacting
+                    if self.player.status == "free":
+                        if event.key == pygame.K_e:
+                            self.interactivity = not self.interactivity
+                            self.textindex = 0
                 if pygame.sprite.spritecollideany(self.player,
                                                   self.interactablebox):
                     if event.key == pygame.K_p:
                         self.interactivibee = not self.interactivibee
+                        self.player.status = "carrying"
+                        for y in self.interactablelox:
+                            if pygame.sprite.collide_rect(self.player, y):
+                                self.player.keytype = y.type
+                abc = pygame.sprite.spritecollideany(self.player,
+                                                     self.interactablebox)
+                if abc is not None:
+                    if event.key == pygame.K_RETURN:
+                        if len(cs.Text[abc.type]) - 1 > self.textindex:
+                            self.textindex += 1
+
                 '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
             if event.key == pygame.K_w:
@@ -546,7 +594,8 @@ class Game:
         textrect = text.get_rect(topleft=(x, y))
         self.map_img.blit(text, textrect)
 
-    def texttwo(self, string, font, colour, x, y): #probably easier to use for combat
+    def texttwo(self, string, font, colour, x,
+                y):  # probably easier to use for combat
         text = font.render(string, True, colour)
         textrect = text.get_rect(center=(x, y))
         self.dis.blit(text, textrect)
@@ -608,7 +657,7 @@ class Game:
 def main():
     gamestart = Game()
     while True:
-        #gamestart.mainmenu() i tried making this code run but idk what the texts are lol
+        # gamestart.mainmenu() i tried making this code run but idk what the texts are lol
         gamestart.new()
         gamestart.run()
 

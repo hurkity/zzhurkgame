@@ -80,16 +80,19 @@ pygame.time.set_timer(smokeappear, t)'''
 string4 = "woahh oh woahh"
 objfont = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
 font = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
-font2 = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 4)
+font2 = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 8)
 
 text = font.render("'e' to interact with the object!", True, green, blue)
 textSecondLine = font.render("'p' to pick up the object!", True, green, blue)
-text2 = font.render("press 'e' again to close", True, white)
+text2 = font2.render("press 'e' again to close", True, white)
+text3= font2.render("press enter to continue", True, white)
+
+
 
 Text = [  # font.render("bjdndkjnf", True, green),
-        "first object description",
-        "second object description",
-        "third object description"]
+        ["first object description", "first object des2", "first object des3"],
+        ["second object description", "second object des2"],
+        ["third object description"]]
 
 LockText = [  # font.render("bjdndkjnf", True, green),
         "first lock description",
@@ -99,6 +102,7 @@ textRect = text.get_rect(center = (diswidth/2, disheight/10))
 textSecondLineRect = text.get_rect(center = (diswidth/2, disheight/10 +
                                              textRect.height))
 textRect2 = text2.get_rect(bottomright = (diswidth, disheight))
+textRect3 = text2.get_rect(bottomright = (textRect2.left - 20, textRect2.bottom))
 
 #textRect1 = text1.get_rect()
 
@@ -110,7 +114,7 @@ gridwidth = int(diswidth/tilesize)
 gridheight = int(disheight/tilesize)
 
 block_speed = 1
-player_speed = 300
+player_speed = 150
 
 
 mapchange = [
