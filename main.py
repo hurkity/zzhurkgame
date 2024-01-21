@@ -5,6 +5,7 @@ from os import path
 from objs import *
 import pygame
 from pygame import QUIT, Rect
+from pygame import mixer
 from cons import *
 import buttons as b
 from tilemap import *
@@ -15,6 +16,7 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.font.init()
+        mixer.init()
         self.dis = pygame.display.set_mode((diswidth, disheight))
         pygame.display.set_caption('get me out of heeaarraahh')
         self.clock = pygame.time.Clock()
@@ -208,6 +210,10 @@ class Game:
             elif sprites[sprite] == "back":
                 self.map_img.blit(sprite.imageback, sprite.rectback)
 
+    def playsound(self, sound):
+        mixer.music.load(sound)
+        mixer.music.set_volume(0.3)
+        mixer.music.play()
 
     def cutsceneend(self, event):
         x = self.player.position.x - 250
@@ -303,6 +309,10 @@ class Game:
         self.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
         pygame.display.update()
 
+    def drawborder(self, rect):
+        pygame.draw.rect(self.map_img, black, pygame.Rect(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4))
+        pygame.display.flip()
+
     def combat(self):
         self.combatstate = True
         self.camera.freeze = True
@@ -335,8 +345,6 @@ class Game:
         self.c4attack = b.Button(x + 70, y - 70, white)
 
         self.buttons = []
-        self.buttons.append(self.escapebutton)
-        self.buttons.append(self.attackbutton)
         self.buttons.append(self.c1attack)
         self.buttons.append(self.c2attack)
         self.buttons.append(self.c3attack)
@@ -377,17 +385,19 @@ class Game:
                     self.map_img = self.map.make_map()
                     #self.draw(direction)
                 else:
-                    self.dis.blit(self.combatbg, (0, 0))
-                    self.drawtext("Unable to escape!", font, red, 200, 400)
-                    pygame.time.delay(1000)
-                    
+                    self.attackingstate = True
                     self.map_img = self.map.make_map()
                     self.map_img.blit(self.combatbg, (x - 250, y - 240))
                     self.map_img.blit(self.enemyimg, (x - 50, y))
                     self.map_img.blit(self.painterimg, (x + 100, y + 100))
+                    self.drawtext("Unable to escape!", font, red, x - 130, y + 180)
+                    pygame.display.flip()
+                    self.drawtext("You lost your advantage!", font, red, x - 180, y + 200)
+                    self.drawtext("%s attacks first!" %(self.enemy.name), font, red, x - 160, y + 220)
+                    pygame.display.flip()
 
-                    self.drawtext("You lost your advantage! %s attacks first!" %(self.enemy.name), fontbold, red, 200, 400)
                     self.enemyattacking = True
+                    self.charstate = True
                         
             elif self.attackbutton.hover(mousepos) and not self.attackingstate:
                 print ("attacking")
@@ -404,6 +414,10 @@ class Game:
         self.charstate = True
         x = self.player.position.x
         y = self.player.position.y
+
+        for i in range(4):
+            self.drawborder(self.buttons[i])
+
         self.c1attack.draw(self.map_img)
         self.c2attack.draw(self.map_img)
         self.c3attack.draw(self.map_img)
@@ -532,7 +546,6 @@ class Game:
         pygame.display.flip()
 
     def events(self):
-        # while True:
         if not self.player.cutscene:
             if not self.player.cutsceneend:
                 if abs(self.player.position.x - 500) < 50 and abs(self.player.position.y - 500) < 50:
@@ -546,6 +559,7 @@ class Game:
                 self.quit()
             if self.enemyattacking:
                 self.enemyattack(self.enemy)
+                self.healthbar(targhpcopy)
                 continue
             if self.charstate:
                 self.combatstage2(event)
@@ -562,6 +576,8 @@ class Game:
                     self.quit()
                 if event.key == pygame.K_SPACE:
                     self.combat()
+                if event.key == pygame.K_m:
+                    self.playsound('sounds/typing.mp3')
                 if event.key == pygame.K_j:
                     self.draw_debug = not self.draw_debug
                 if pygame.sprite.spritecollideany(self.player,
