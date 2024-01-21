@@ -208,10 +208,7 @@ class Game:
             elif sprites[sprite] == "back":
                 self.map_img.blit(sprite.imageback, sprite.rectback)
 
-    def healthbar(self, enemy):
-        return None
 
-            
     def cutsceneend(self, event):
         x = self.player.position.x - 250
         y = self.player.position.y - 50
@@ -482,8 +479,7 @@ class Game:
                         sprite.freeze = False #releasing the little man
                     self.map_img = self.map.make_map()
                     self.charstate = False
-                    #self.dis.blit(self.map_img, )
-                
+
             
     def enemyattack(self, enemy):
         damage = enemy.attack()
@@ -496,10 +492,44 @@ class Game:
         
         if self.team.hp <= 0:
             print ("you lose")
+            self.charstate = False
+            self.enemyattacking = False
             self.combatstate = False
             self.camera.freeze = False
             for sprite in self.all_sprites:
                 sprite.freeze = False #releasing the little man
+            self.map_img = self.map.make_map()
+
+
+    def healthbar(self, enemymaxhp):
+        x = self.player.position.x 
+        y = self.player.position.y
+
+        if self.team.hp > 300:
+            playerhealth = green
+        elif self.team.hp > 150 and self.team.hp <= 300:
+            playerhealth = yellow
+        elif self.team.hp <= 150:
+            playerhealth = red
+        
+        pygame.draw.rect(self.map_img, black, pygame.Rect(x + 98, y + 68, 104, 24), 20)
+        widthplayer = int(self.team.hp / 4)
+        heightplayer = 20
+        pygame.draw.rect(self.map_img, playerhealth, pygame.Rect(x + 100, y + 70, widthplayer, heightplayer))
+
+        if self.enemy.hp > int(enemymaxhp / 3) * 2:
+            enemyhealth = green
+        elif self.enemy.hp > int(enemymaxhp / 3) and self.enemy.hp <= int(enemymaxhp / 3) * 2:
+            enemyhealth = yellow 
+        elif self.enemy.hp <= int(enemymaxhp / 3):
+            enemyhealth = red
+        
+        pygame.draw.rect(self.map_img, black, pygame.Rect(x - 52, y - 12, 104, 24), 20)
+        widthenemy = self.enemy.hp/enemymaxhp * 100
+        heightenemy = 20
+        pygame.draw.rect(self.map_img, enemyhealth, pygame.Rect(x - 50, y - 10, widthenemy, heightenemy))
+
+        pygame.display.flip()
 
     def events(self):
         # while True:
@@ -519,6 +549,7 @@ class Game:
                 continue
             if self.charstate:
                 self.combatstage2(event)
+                self.healthbar(targhpcopy)
                 continue
             if self.combatstate:
                 self.combatevent(event)

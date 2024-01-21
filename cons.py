@@ -124,7 +124,7 @@ mapchange = [
 ]
 
 
-userhp = 100
+playerhptotal = 400
 
 name1 = "name"
 pow1 = 20
@@ -141,6 +141,9 @@ pow4 = 10
 targname = "gart"
 targpow = 80
 targhp = 20000
+
+targhpcopy = 20000
+trust = [5, 7, 8, 8, 5, 7]
 
 fontbold = pygame.font.SysFont('public-pixel-font/PublicPixel.ttf', 25, bold = True)
 

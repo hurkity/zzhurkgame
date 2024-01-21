@@ -1,5 +1,6 @@
 import pygame
 import random
+from cons import *
 
 pygame.init()
 
@@ -15,20 +16,20 @@ class Character(pygame.sprite.Sprite):
 class Team:
     def __init__(self):
         self.characters = []
-        c1 = Character('s', 100, 20)
-        c2 = Character('as', 100, 30)
-        c3 = Character('f', 100, 30)
-        c4 = Character('w', 100, 30)
+        c1 = Character('s', 100, pow1)
+        c2 = Character('as', 100, pow2)
+        c3 = Character('f', 100, pow3)
+        c4 = Character('w', 100, pow4)
         self.characters.append(c1)
         self.characters.append(c2)
         self.characters.append(c3)
         self.characters.append(c4)
-        self.trust = {c1.name + ' ' + c2.name: 10, 
-                      c1.name + ' ' + c3.name: 5,
-                      c1.name + ' ' + c4.name: 8,
-                      c2.name + ' ' + c3.name: 15,
-                      c2.name + ' ' + c4.name: 7,
-                      c3.name + ' ' + c4.name: 12
+        self.trust = {c1.name + ' ' + c2.name: trust[0], 
+                      c1.name + ' ' + c3.name: trust[1],
+                      c1.name + ' ' + c4.name: trust[2],
+                      c2.name + ' ' + c3.name: trust[3],
+                      c2.name + ' ' + c4.name: trust[4],
+                      c3.name + ' ' + c4.name: trust[5]
                       }
         
     @property
