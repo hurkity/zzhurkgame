@@ -32,6 +32,7 @@ class Team:
                       }
     
     def attack(self, c1, c2):
+        print ("%s and %s attacking" %(c1.name, c2.name))
         trust = 0
         key = c1.name + ' ' + c2.name
         key2 = c2.name + ' ' + c1.name
@@ -59,6 +60,7 @@ class Computer(pygame.sprite.Sprite):
         self.escape = escape
 
     def attack(self):
+        print ("enemy attacking")
         damage = self.power
         return damage
     

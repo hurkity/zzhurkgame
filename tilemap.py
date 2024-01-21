@@ -39,6 +39,8 @@ class View:
         self.width = width
         self.height = height
         self.freeze = False
+        self.x = 0
+        self.y = 0
 
     def implement(self, thing):
         return thing.rect.move(self.view.topleft)
@@ -55,7 +57,7 @@ class View:
         #edgehitting
         x = min(0, x)
         y = min(0, y)
-        x = max(-(self.width - cs.diswidth), x)
-        y = max(-(self.height - cs.disheight), y)
-        self.view = pygame.Rect(x, y, self.width, self.height)
+        self.x = max(-(self.width - cs.diswidth), x)
+        self.y = max(-(self.height - cs.disheight), y)
+        self.view = pygame.Rect(self.x, self.y, self.width, self.height)
     
