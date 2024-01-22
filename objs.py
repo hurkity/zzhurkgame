@@ -115,7 +115,7 @@ class Player(pygame.sprite.Sprite):
         self.rectback = self.imageback.get_rect()
         self.vx, self.vy = 0, 0
         self.hit_rect = cs.playerhitrect
-        self.direction = 0
+        self.direction = None
 
         self.x = x
         self.y = y
@@ -348,7 +348,37 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         self.game.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
         pygame.display.update()
 
+    '''def displaytextani(self, string_list, txtcolour, font):
+        # if not self.textrunning:
+        if self.string >= len(string_list):
+            return
 
+        self.camera.freeze = True
+        for sprite in self.all_sprites:
+            sprite.freeze = True
+        
+        # playerx = self.player.position.x
+        # playery = self.player.position.y
+        
+        pygame.draw.rect(self.map_img, cs.black, pygame.Rect(self.x - 250, self.y + 150, 500, 100))
+        
+        current_string = string_list[self.string][:self.letter]
+        text_surface = font.render(current_string, True, txtcolour)
+        text_rect = text_surface.get_rect(topleft=(self.x - 200, self.y + 180))
+        self.map_img.blit(text_surface, text_rect)
+
+        if self.letter > len(string_list[self.string]) - 1:
+            self.string += 1
+            self.letter = 0
+            if self.string >= len(string_list):
+                self.textrunning = False
+                return
+            
+        self.letter += 1
+        pygame.display.update()
+        pygame.display.flip()
+        self.clock.tick(15)
+'''
 
 class Lock(pygame.sprite.Sprite):
     def __init__(self, game, x, y, width, height, type, text_id):

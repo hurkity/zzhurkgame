@@ -33,17 +33,17 @@ text3 = "Quit"
 width = 150
 height = 50
 
-x1 = 100
-y1 = 300
-colour1 = yellow
+x1 = -175
+y1 = 100
+colour1 = white
 
-x2 = 350
-y2 = 300
-colour2 = green
+x2 = -75
+y2 = 175
+colour2 = white
 
-x3 = 600
-y3 = 300
-colour3 = orange
+x3 = 25
+y3 = 100
+colour3 = white
 
 #font = pygame.font.SysFont("comicsans", 35)
 
@@ -114,7 +114,7 @@ gridwidth = int(diswidth/tilesize)
 gridheight = int(disheight/tilesize)
 
 block_speed = 1
-player_speed = 150
+player_speed = 250
 
 
 mapchange = [
@@ -148,3 +148,8 @@ trust = [5, 7, 8, 8, 5, 7]
 fontbold = pygame.font.SysFont('public-pixel-font/PublicPixel.ttf', 25, bold = True)
 
 stringlist = ["blah blah", "blah"]
+combattext1 = ["You've been ambushed!", "What would you like to do?"]
+escapetext = ["You ran away..."]
+escapetext2 = ["You can't run!"]
+combattext2 = ["Choose your first character: "]
+combattext3 = ["Choose your second character: "]

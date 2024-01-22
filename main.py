@@ -33,6 +33,15 @@ class Game:
         self.selected = [False, False, False, False]
         self.chosen = []
         self.enemyattacking = False
+        self.start = False
+        self.string = 0 
+        self.letter = 0
+        self.textrunning = False
+        self.volume = 0.5
+        self.settingstate = False
+        self.string_list = []
+        self.font = None
+        self.colour = None
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -140,7 +149,7 @@ class Game:
 
         self.team = Team()
 
-        self.enemy = Computer(targname, targhp, targpow, False)
+        self.enemy = Computer(targname, targhp, targpow, True)
 
     def run(self):
         self.game_over = False
@@ -212,7 +221,7 @@ class Game:
 
     def playsound(self, sound):
         mixer.music.load(sound)
-        mixer.music.set_volume(0.3)
+        mixer.music.set_volume(self.volume)
         mixer.music.play()
 
     def cutsceneend(self, event):
@@ -309,8 +318,8 @@ class Game:
         self.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
         pygame.display.update()
 
-    def drawborder(self, rect):
-        pygame.draw.rect(self.map_img, black, pygame.Rect(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4))
+    def drawborder(self, rect, colour):
+        pygame.draw.rect(self.map_img, colour, pygame.Rect(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4))
         pygame.display.flip()
 
     def combat(self):
@@ -353,6 +362,14 @@ class Game:
     def combatevent(self, event):
         x = self.player.position.x
         y = self.player.position.y
+        self.string_list = combattext1
+        self.font = font
+        self.colour = white
+        self.textrunning = True
+        self.textplaying = True
+
+        # self.textani(combattext1, font, white)
+        #self.textdisplay = TextDisplay(self, x, y, 500, 100, None)
         if event.type == QUIT: 
             self.quit()
         if event.type == pygame.MOUSEMOTION:
@@ -416,7 +433,7 @@ class Game:
         y = self.player.position.y
 
         for i in range(4):
-            self.drawborder(self.buttons[i])
+            self.drawborder(self.buttons[i], black)
 
         self.c1attack.draw(self.map_img)
         self.c2attack.draw(self.map_img)
@@ -554,6 +571,10 @@ class Game:
             if self.player.cutsceneend:
                 print ("Asd")
                 self.cutsceneend()
+        if self.textplaying:
+            self.font = font
+            self.colour = white
+            self.textani()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
@@ -566,18 +587,37 @@ class Game:
                 self.healthbar(targhpcopy)
                 continue
             if self.combatstate:
+                self.textrunning = True
                 self.combatevent(event)
                 continue
 
+            if not self.start and not self.settingstate:
+                self.mainmenu(event)
+                continue
 
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE: #temporary
                     self.combat()
-                if event.key == pygame.K_m:
-                    self.playsound('sounds/typing.mp3')
+                if event.key == pygame.K_m: #temporary
+                    self.playsound('sounds/typing.mp3') 
+                if event.key == pygame.K_t: #GYAP
+                    self.textplaying = True
+                    self.textrunning = True
+                    self.string = 0
+                    self.letter = 0
+                    self.string_list = stringlist
+                    self.font = font
+                    self.colour = white
+                if event.key == pygame.K_RETURN:
+                    if self.textplaying and not self.textrunning:
+                        self.map_img = self.map.make_map()
+                        self.camera.freeze = False
+                        for sprite in self.all_sprites:
+                            sprite.freeze = False
+                        self.textplaying = False
                 if event.key == pygame.K_j:
                     self.draw_debug = not self.draw_debug
                 if pygame.sprite.spritecollideany(self.player,
@@ -601,6 +641,8 @@ class Game:
                         if len(cs.Text[abc.type]) - 1 > self.textindex:
                             self.textindex += 1
 
+            
+
                 '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
             if event.key == pygame.K_w:
@@ -611,30 +653,36 @@ class Game:
             # elif event.type == pygame.KEYUP:
             #  self.player.move()
 
-    def textani(self, event, tuple, string_list, font, txtcolour):
-        self.textplaying = True
-        string = 0
-        letter = 0
-        running = True
-        x, y = tuple
-        while running:
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    string = (string + 1) % len(string_list)
-                    letter = 0
+    def textani(self):
+        # if not self.textrunning:
+        if self.string >= len(self.string_list):
+            return
 
-            pygame.draw.rect(self.map_img, black, pygame.Rect(x, y, 500, 100))
-            current_string = string_list[string][:letter + 1]
-            text_surface = font.render(current_string, True, txtcolour)
-            text_rect = text_surface.get_rect(topleft=(x, y))
-            self.map_img.blit(text_surface, text_rect)
-            letter += 1
+        self.camera.freeze = True
+        #for sprite in self.all_sprites:
+            #sprite.freeze = True
+        
+        playerx = self.player.position.x
+        playery = self.player.position.y
+        
+        pygame.draw.rect(self.map_img, black, pygame.Rect(playerx - 250, playery + 150, 500, 100))
+        
+        current_string = self.string_list[self.string][:self.letter]
+        text_surface = self.font.render(current_string, True, self.colour)
+        text_rect = text_surface.get_rect(topleft=(playerx - 200, playery + 180))
+        self.map_img.blit(text_surface, text_rect)
 
-            pygame.display.update()
-            pygame.display.flip()
-            self.clock.tick(30)
+        if self.letter > len(self.string_list[self.string]) - 1:
+            self.string += 1
+            self.letter = 0
+            if self.string >= len(self.string_list):
+                self.textrunning = False
+                return
+            
+        self.letter += 1
+        pygame.display.update()
+        pygame.display.flip()
+        self.clock.tick(15)
 
     def drawtext(self, string, font, colour, x, y):
         text = font.render(string, True, colour)
@@ -647,58 +695,102 @@ class Game:
         textrect = text.get_rect(center=(x, y))
         self.dis.blit(text, textrect)
 
-    def newgame(self):
-        while True:
-            pygame.display.set_caption("New Game")
-            self.dis.fill(black)
-            self.text(newgametext, font, white, 300, 250)
-            pygame.display.flip()
+    def newgame(self, event):
+        pygame.display.set_caption("New Game")
+        
+        self.map_img = self.map.make_map()
+        pygame.display.flip()
+        self.start = True
 
-    def contgame(self):
-        while True:
-            pygame.display.set_caption("Continue Game")
-            self.dis.fill(black)
-            self.text(conttext, font, white, 300, 250)
-            pygame.display.flip()
+        if event.type == QUIT:
+            self.quit()
 
-    def settings(self):
-        while True:
-            pygame.display.set_caption("Settings")
-            self.dis.fill(black)
-            self.text(settingstext, font, white, 300, 250)
-            pygame.display.flip()
+    def contgame(self, event):
+        pygame.display.set_caption("Continue Game")
+        self.map_img = self.map.make_map()
+        pygame.display.flip()
 
-    def mainmenu(self):
-        # while True:
-        mousepos = pygame.mouse.get_pos()
-        button1 = b.Button(x1, y1, colour1)
-        button1.draw(self.dis)
-        button2 = b.Button(x2, y2, colour2)
-        button2.draw(self.dis)
-        button3 = b.Button(x3, y3, colour3)
-        button3.draw(self.dis)
+        self.start = True
+        if event.type == QUIT:
+            self.quit()
 
-        text(string1, font, black, x1 + 8, y1 + 12)
-        text(string2, font, black, x2 + 8, y2 + 12)
-        text(string3, font, black, x3 + 8, y3 + 12)
+    def settings(self, event):
+        x = self.player.position.x 
+        y = self.player.position.y
+
+        pygame.display.set_caption("Settings")
+        self.map_img.fill(black)
+        pygame.display.flip()
+    
+        self.settingstate = True
+        if event.type == QUIT:
+            self.quit()
+
+        audiobutton = b.Button(x - 200, y - 200, black)
+        systembutton = b.Button(x, y - 200, black)
+        self.drawborder(audiobutton, white)
+        self.drawborder(systembutton, white)
+
+        audiobutton.draw(self.map_img)
+        systembutton.draw(self.map_img)
+
+        self.drawtext("AUDIO", font, white, x - 170, y - 180)
+        self.drawtext("SYSTEM", font, white, x + 30, y - 180)
+
+        mousepos = list(pygame.mouse.get_pos())
+        mousepos[0] -= self.camera.x
+        mousepos[1] -= self.camera.y
+
+        if audiobutton.hover(mousepos):
+            self.drawtext("AUDIO", font, red, x - 170, y - 180)
+        elif systembutton.hover(mousepos):
+            self.drawtext("SYSTEM", font, red, x + 30, y - 180)
+
+
+    def mainmenu(self, event):
+        self.map_img.fill(white)
+        
+        #self.camera.freeze = True
+        #for sprite in self.all_sprites:
+            #sprite.freeze = True
+
+        x = self.player.position.x
+        y = self.player.position.y
+        mousepos = list(pygame.mouse.get_pos())
+        mousepos[0] -= self.camera.x
+        mousepos[1] -= self.camera.y
+
+        button1 = b.Button(x + x1, y1 + y, colour1)
+        self.drawborder(button1, black)
+        button1.draw(self.map_img)
+        button2 = b.Button(x + x2, y2 + y, colour2)
+        self.drawborder(button2, black)
+        button2.draw(self.map_img)
+        button3 = b.Button(x + x3, y3 + y, colour3)
+        self.drawborder(button3, black)
+        button3.draw(self.map_img)
+
+        self.drawtext(string1, font, black, x + x1 + 10, y1 + y + 10)
+        self.drawtext(string2, font, black, x + x2 + 10, y2 + y + 10)
+        self.drawtext(string3, font, black, x + x3 + 10, y3 + y + 10)
 
         if button1.hover(mousepos):
-            text(string1, font, grey, x1 + 8, y1 + 12)
+            self.drawtext(string1, font, red, x + x1 + 10, y1 + y + 10)
         elif button2.hover(mousepos):
-            text(string2, font, grey, x2 + 8, y2 + 12)
+            self.drawtext(string2, font, red, x + x2 + 10, y2 + y + 10)
         elif button3.hover(mousepos):
-            text(string3, font, grey, x3 + 8, y3 + 12)
+            self.drawtext(string3, font, red, x + x3 + 10, y3 + y + 10)
 
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                self.quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if button1.hover(mousepos):
-                    self.newgame()
-                elif button2.hover(mousepos):
-                    self.contgame()
-                elif button3.hover(mousepos):
-                    self.settings()
+
+        if event.type == QUIT:
+            self.quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if button1.hover(mousepos):
+                self.newgame(event)
+            elif button2.hover(mousepos):
+                self.contgame(event)
+            elif button3.hover(mousepos):
+                self.settings(event)
 
 
 def main():
