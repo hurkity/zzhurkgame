@@ -322,6 +322,12 @@ class Game:
         pygame.draw.rect(self.map_img, colour, pygame.Rect(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4))
         pygame.display.flip()
 
+    def starttextani(self):
+        self.string = 0
+        self.letter = 0
+        self.textrunning = True
+        self.textplaying = True
+
     def combat(self):
         self.combatstate = True
         self.camera.freeze = True
@@ -392,22 +398,27 @@ class Game:
             if self.escapebutton.hover(mousepos) and not self.attackingstate:
                 if self.enemy.escape: #escapability depends on if enemy is part of the main quest
                     print ("escaping")
+                    self.string_list = escapetext
+                    self.starttextani()
+                    
                     self.combatstate = False
                     self.camera.freeze = False
                     for sprite in self.all_sprites:
                         sprite.freeze = False #releasing the little man
-                    self.drawtext("You ran away...", fontbold, red, 250, 400) #fix textani later
                     pygame.time.delay(1000)
-                    #direction = self.rupdate()
                     self.map_img = self.map.make_map()
-                    #self.draw(direction)
                 else:
                     self.attackingstate = True
                     self.map_img = self.map.make_map()
                     self.map_img.blit(self.combatbg, (x - 250, y - 240))
                     self.map_img.blit(self.enemyimg, (x - 50, y))
                     self.map_img.blit(self.painterimg, (x + 100, y + 100))
-                    self.drawtext("Unable to escape!", font, red, x - 130, y + 180)
+
+                    self.string_list = combattext2
+                    self.textrunning = True
+                    self.textplaying = True
+
+                    #self.drawtext("Unable to escape!", font, red, x - 130, y + 180)
                     pygame.display.flip()
                     self.drawtext("You lost your advantage!", font, red, x - 180, y + 200)
                     self.drawtext("%s attacks first!" %(self.enemy.name), font, red, x - 160, y + 220)
@@ -572,9 +583,19 @@ class Game:
                 print ("Asd")
                 self.cutsceneend()
         if self.textplaying:
+            self.playsound('sounds/typing.mp3')
             self.font = font
             self.colour = white
             self.textani()
+        if not self.textplaying:
+            if self.textrunning:
+                self.textrunning = False
+                self.camera.freeze = False
+                for sprite in self.all_sprites:
+                    sprite.freeze = False
+                    
+                if not self.combatstate:  
+                    self.map_img = self.map.make_map()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
@@ -593,6 +614,9 @@ class Game:
 
             if not self.start and not self.settingstate:
                 self.mainmenu(event)
+                continue
+            if self.settingstate:
+                self.settings(event)
                 continue
 
             if event.type == pygame.KEYDOWN:
@@ -658,6 +682,7 @@ class Game:
         if self.string >= len(self.string_list):
             return
 
+        print('.')
         self.camera.freeze = True
         #for sprite in self.all_sprites:
             #sprite.freeze = True
@@ -676,7 +701,8 @@ class Game:
             self.string += 1
             self.letter = 0
             if self.string >= len(self.string_list):
-                self.textrunning = False
+                # self.textrunning = False
+                self.textplaying = False
                 return
             
         self.letter += 1
@@ -715,6 +741,9 @@ class Game:
             self.quit()
 
     def settings(self, event):
+        mousepos = list(pygame.mouse.get_pos())
+        mousepos[0] -= self.camera.x
+        mousepos[1] -= self.camera.y
         x = self.player.position.x 
         y = self.player.position.y
 
@@ -734,18 +763,35 @@ class Game:
         audiobutton.draw(self.map_img)
         systembutton.draw(self.map_img)
 
-        self.drawtext("AUDIO", font, white, x - 170, y - 180)
-        self.drawtext("SYSTEM", font, white, x + 30, y - 180)
+        selected = "AUDIO"
+        audiocol = white
+        systemcol = white
+        if selected == "AUDIO":
+            audiocol = red
+        elif selected == "SYSTEM":
+            systemcol = red
+        self.drawtext("AUDIO", font, audiocol, x - 170, y - 180)
+        self.drawtext("SYSTEM", font, systemcol, x + 30, y - 180)
 
-        mousepos = list(pygame.mouse.get_pos())
-        mousepos[0] -= self.camera.x
-        mousepos[1] -= self.camera.y
-
-        if audiobutton.hover(mousepos):
+        if audiobutton.hover(mousepos) and selected != "AUDIO":
             self.drawtext("AUDIO", font, red, x - 170, y - 180)
-        elif systembutton.hover(mousepos):
+        elif systembutton.hover(mousepos) and selected != "SYSTEM":
             self.drawtext("SYSTEM", font, red, x + 30, y - 180)
+        
+        bgvol = b.Button(x - 200, y - 50, black)
+        sevol = b.Button(x - 200, y + 100, black)
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if audiobutton.hover(mousepos):
+                self.drawborder(bgvol, white)
+                bgvol.draw(self.map_img)
+                self.drawborder(sevol, white)
+                sevol.draw(self.map_img)
+                self.drawtext("BGM VOL", font, red, x - 180, y - 30)
+                self.drawtext("SE VOL", font, red, x - 180, y + 120)
+            if systembutton.hover(mousepos):
+                self.map_img = self.map.make_map()
+                self.map_img.fill(black)
 
     def mainmenu(self, event):
         self.map_img.fill(white)
