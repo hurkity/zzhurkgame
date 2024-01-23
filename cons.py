@@ -34,15 +34,15 @@ width = 150
 height = 50
 
 x1 = -175
-y1 = -100
+y1 = 100
 colour1 = white
 
 x2 = -75
-y2 = -25
+y2 = 175
 colour2 = white
 
 x3 = 25
-y3 = -100
+y3 = 100
 colour3 = white
 
 #font = pygame.font.SysFont("comicsans", 35)
