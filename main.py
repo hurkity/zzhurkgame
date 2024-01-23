@@ -50,6 +50,7 @@ class Game:
         self.scroll = 0
         self.text_ani = TextAni()
         self.start_playing = False
+        self.tutorial_start = False
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -189,7 +190,7 @@ class Game:
         gameover = False
         currentime = 0
         num = 7
-        self.playsound('sounds/car.mp3')
+        #self.playsound('sounds/car.mp3')
         while not gameover and currentime < 1000:
             if event.type == QUIT:
                 gameover = True
@@ -217,17 +218,46 @@ class Game:
                     self.camera.freeze = True
                     for sprite in self.all_sprites:
                         sprite.freeze = True
-                    self.text_ani.start_display(text_list, x, y, font2, white, cleanup_func = self.start_game)
+                    self.text_ani.start_display(text_list, x, y, font2, white, cleanup_func = self.start_tutorial)
 
-                    self.cleanup()
-
+                    #self.cleanup()
+                    print ("??")
                     if event.type == pygame.KEYDOWN:
-                        self.text_ani.start_display(instructions1, x, y, font2, white)
+                        self.tutorial(event)
                     
                 currentime = pygame.time.get_ticks()
                 self.clock.tick(80) #gyap
                 pygame.display.update()
 
+    def start_tutorial(self):
+        print ("Asdasd")
+        x = self.player.position.x - 250
+        y = self.player.position.y + 160
+        self.text_ani.start_display(instructions1, x, y, font2, yellow, cleanup_func = self.start_game)
+        self.tutorial_start = True
+
+    def tutorial(self, event):
+        x = self.player.position.x - 250
+        y = self.player.position.y + 160
+        currentime = 0
+        running = True
+        if event.type == pygame.KEYDOWN:
+            if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]:
+                while running:
+                    self.camera.freeze = False
+                    for sprite in self.all_sprites:
+                        sprite.freeze = False
+                    print (currentime)
+                    currentime = pygame.time.get_ticks()
+                    self.clock.tick(80)
+                    pygame.display.update()
+                    if currentime > 5000:
+                        running = False
+                        '''self.camera.freeze = True 
+                        for sprite in self.all_sprites:
+                            sprite.freeze = True'''
+                        self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = None)
+                #self.text_ani.start_display(instructions3, x, y, font2, yellow, cleanup_func = self.start_game)
 
     def movementani(self, direction):
 
@@ -439,16 +469,15 @@ class Game:
             mousepos[0] -= self.camera.x
             mousepos[1] -= self.camera.y
             if self.escapebutton.hover(mousepos) and not self.attackingstate:
-                if self.enemy.escape: #escapability depends on if enemy is part of the main quest
-                    print ("escaping")
-                    self.string_list = escapetext
-                    
+                if self.enemy.escape: #escapability depends on if enemy is part of the main quest                    
                     self.combatstate = False
                     self.camera.freeze = False
                     for sprite in self.all_sprites:
                         sprite.freeze = False #releasing the little man
                     pygame.time.delay(1000)
                     self.map_img = self.map.make_map()
+                    self.text_ani.start_display(["You ran away..."], x - 250, y + 150, font, red, cleanup_func=self.cleanup)
+
                 else:
                     self.attackingstate = True
                     self.map_img = self.map.make_map()
@@ -460,7 +489,6 @@ class Game:
                     self.textrunning = True
                     self.textplaying = True
 
-                    #self.drawtext("Unable to escape!", font, red, x - 130, y + 180)
                     pygame.display.flip()
                     self.drawtext("You lost your advantage!", font, red, x - 180, y + 200)
                     self.drawtext("%s attacks first!" %(self.enemy.name), font, red, x - 160, y + 220)
@@ -680,7 +708,9 @@ class Game:
             if self.settingstate:
                 self.settings(event)
                 continue
-            
+
+            if self.tutorial_start:
+                self.tutorial(event)
 
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
@@ -691,7 +721,7 @@ class Game:
                         x = self.player.position.x - 250
                         y = self.player.position.y + 150
                         self.combat()
-                        self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = self.cleanup)
+                        self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = None)
                 if event.key == pygame.K_m: #temporary
                     self.playsound('sounds/typing.mp3') 
                 if event.key == pygame.K_t: #GYAP
