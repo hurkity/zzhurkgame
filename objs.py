@@ -338,7 +338,8 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         self.game.dis.blit(self.textimage, self.textrect)
         self.game.dis.blit(self.text, self.textrect)
         self.game.dis.blit(cs.text2, cs.textRect2)
-        self.game.dis.blit(cs.text3, cs.textRect3)
+        if len(cs.Text[self.type]) - 1 > self.game.textindex:
+            self.game.dis.blit(cs.text3, cs.textRect3)
         self.text = cs.font.render(cs.Text[self.type][self.game.textindex], True, cs.white)
         pygame.display.update()
 
@@ -403,11 +404,12 @@ class Lock(pygame.sprite.Sprite):
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
-    def unlocked(self, key, changetarget, player):
+    def unlocked(self, key, changetarget):
         self.image = changetarget.image
         pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
         pygame.sprite.Sprite.remove(self, self.game.obstruction)
-        player.status = "free"
+        self.game.player.status = "free"
+        self.game.interactivibee = False
         key.kill()
 
 class Lockchange(pygame.sprite.Sprite):
