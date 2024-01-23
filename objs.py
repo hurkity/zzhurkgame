@@ -147,7 +147,6 @@ class Player(pygame.sprite.Sprite):
                     self.position.y -= cs.block_speed
                     self.velocity.y = -cs.player_speed/2
                 self.directions.pop(0)
-                print (self.directions)
                 return direction
             else:
                 self.cutsceneend = True
@@ -434,3 +433,72 @@ class Lockchange(pygame.sprite.Sprite):
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
+class TextAni(object):
+    def __init__(self):
+        self.string_list = None
+        self.x = 0
+        self.y = 0
+        self.string = 0
+        self.letter = 0
+        self.textrunning = False
+        self.textplaying = False
+        self.cleanup_func = None
+
+    def start_display(self, string_list, x, y, font, colour, cleanup_func=None):
+        self.string_list = [f"{str} " for str in string_list]
+        self.string = 0
+        self.letter = 0
+        self.x = x
+        self.y = y
+        self.font = font
+        self.colour = colour
+        self.cleanup_func = cleanup_func
+
+        self.textrunning = True
+        self.textplaying = True
+
+    def stop_display(self):
+        self.textrunning = False
+        self.textplaying = False
+
+    def is_displaying(self):
+        return self.textrunning
+
+    def skip_line(self):
+        if self.string < len(self.string_list):
+            self.letter = len(self.string_list[self.string]) - 1
+
+    def update(self, map_img):
+        if not self.textplaying:
+            return
+        if self.string >= len(self.string_list):
+            return
+
+        # self.camera.freeze = True
+        #for sprite in self.all_sprites:
+            #sprite.freeze = True
+        if self.letter > len(self.string_list[self.string]) - 1:
+            self.string += 1
+            self.letter = 0
+            if self.string >= len(self.string_list):
+                self.textrunning = False
+                return False
+
+        pygame.draw.rect(map_img, cs.black, pygame.Rect(self.x, self.y, 500, 100))
+
+        current_string = self.string_list[self.string][:self.letter]
+        text_surface = self.font.render(current_string, True, self.colour)
+        text_rect = text_surface.get_rect(topleft=(self.x + 20, self.y + 30))
+        map_img.blit(text_surface, text_rect)
+
+        self.letter += 1
+        pygame.display.update()
+        pygame.display.flip()
+        pygame.time.Clock().tick(15)
+        return True
+    
+    def cleanup(self):
+        if self.cleanup_func is None:
+            return
+        self.cleanup_func()
+        self.cleanup_func = None

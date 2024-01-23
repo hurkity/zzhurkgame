@@ -1,5 +1,5 @@
 import pygame
-
+import math
 
 pygame.init()
 pygame.font.init()
@@ -59,28 +59,28 @@ settingstext = "Switch up your settings!"
 #part1
 diswidth = 500
 disheight = 500
-
-
-'''bg = pygame.image.load('graphics/background.jpg').convert_alpha()
-bg = pygame.transform.scale(bg, (1023, 768))
+dis = pygame.display.set_mode((diswidth, disheight))
+bg = pygame.image.load('graphics/background.jpg').convert_alpha()
+bg = pygame.transform.scale(bg, (499, 499))
 bgwidth = bg.get_width()
 white1 = pygame.image.load('graphics/white.jpg').convert_alpha()
 truck = pygame.image.load('graphics/unnamed.jpg').convert_alpha()
-truck = pygame.transform.scale(truck, (100, 100))
+truck = pygame.transform.scale(truck, (50, 50))
 smoke = pygame.image.load('graphics/painter.jpg').convert_alpha()
-smoke = pygame.transform.scale(smoke, (25, 25))
+smoke = pygame.transform.scale(smoke, (15, 15))
 
-truckrect = truck.get_rect(center = (400, 375))
-smokerect = smoke.get_rect(center = (325, 420))
+truckrect = truck.get_rect(center = (250, 400))
+smokerect = smoke.get_rect(center = (235, 420))
 scroll = 0
 tiles = math.ceil(diswidth/bgwidth) + 1 #should be 2 (round up)
 smokeappear, t = pygame.USEREVENT+1, 3000
-pygame.time.set_timer(smokeappear, t)'''
+pygame.time.set_timer(smokeappear, t)
 
 string4 = "woahh oh woahh"
 objfont = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
 font = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
 font2 = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 8)
+font3 = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 12)
 
 text = font.render("'e' to interact with the object!", True, green, blue)
 textSecondLine = font.render("'p' to pick up the object!", True, green, blue)
@@ -153,3 +153,26 @@ escapetext = ["You ran away..."]
 escapetext2 = ["You can't run!"]
 combattext2 = ["Choose your first character: "]
 combattext3 = ["Choose your second character: "]
+
+testtext = ["shblawg"]
+
+bigtext1 = ["3: Ohhh my goodness… My entire body hurts…", 
+"4: Right? How did people back in the day handle these crazy long car rides?", 
+"1: Hey 2, is this the right place?", 
+"2: According to my calculations, we have arrived at our destination.",
+"...Although… I may not be the most accurate GPS… I really hope we weren’t misled…", 
+"4: We’d better not have been!!! IF I WENT THROUGH ALL THAT JUST FOR US TO BE IN THE WRONG PLACE, I’M GONNA-", 
+"1: I’m sick of your voice.", 
+"3: Yeah 4, we’re the ones who suffered through hearing you complain the whole time.", 
+"2: Quit arguing everyone! Let’s head inside already, looks like the reception is just through the front door."]
+
+instructions1 = ["INSTRUCTIONS:",
+"Welcome to x! Press W, A, S, D to control your movement.\nTo sprint, press and hold SHIFT."]
+
+instructions2 = ["Good, now try interacting with this x using the E key!\nE will be your key for interacting with everything (hah.. the key!)", 
+"Now you’re getting the hang of things.\nPress M to see your MENU, which includes your CHARACTER INFORMATION and SETTINGS.",
+"Use your LEFT MOUSE BUTTON to select the function you’d like to access."]
+
+instructions3 = ["Once you’re done, press the ESC key to leave the menu.", 
+"In case you forget anything, hit X to see all the INSTRUCTIONS again!", 
+"That’s all for the time being, now head towards the HOTEL to your LEFT!"]
