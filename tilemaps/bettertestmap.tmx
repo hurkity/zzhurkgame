@@ -255,7 +255,7 @@
  </layer>
  <objectgroup id="3" name="objlayer">
   <object id="1" name="teleport" type="2" x="858" y="1219.33" width="197.333" height="61.3333"/>
-  <object id="20" name="player" x="943" y="1151" width="35" height="26"/>
+  <object id="20" name="player" x="996" y="189" width="35" height="26"/>
   <object id="29" name="almosteleport" type="4" x="1600" y="-10" width="321" height="127"/>
   <object id="31" name="almosteleport" type="4" x="1779" y="-3" width="141" height="211"/>
   <object id="33" name="textdisplay" type="0" x="1302" y="843" width="26" height="22"/>

@@ -34,7 +34,7 @@ class Game:
         self.chosen = []
         self.enemyattacking = False
         self.start = False
-        self.string = 0 
+        self.string = 0
         self.letter = 0
         self.textrunning = False
         self.volume = 0.5
@@ -43,7 +43,7 @@ class Game:
         self.font = None
         self.colour = None
         self.selected2 = None
-        self.vol1col = white 
+        self.vol1col = white
         self.vol2col = white
         self.vol3col = white
         self.vol4col = black
@@ -183,7 +183,7 @@ class Game:
 
     def drawbg(self, colour):
         self.dis.fill(colour)
-    
+
     def startscreen(self, event):
 
         gameover = False
@@ -197,7 +197,7 @@ class Game:
 
             for i in range(0, tiles):
                 self.dis.blit(bg, (i*diswidth + self.scroll, 0))
-                
+
                 num -= 0.01
                 self.scroll -= num
 
@@ -223,7 +223,7 @@ class Game:
 
                     if event.type == pygame.KEYDOWN:
                         self.text_ani.start_display(instructions1, x, y, font2, white)
-                    
+
                 currentime = pygame.time.get_ticks()
                 self.clock.tick(80) #gyap
                 pygame.display.update()
@@ -307,7 +307,7 @@ class Game:
             if pygame.sprite.spritecollideany(self.player, self.teleport):
                 for x in self.teleport:
                     if pygame.sprite.collide_rect(self.player, x):
-                        self.mapindex = self.striptype(x)
+                        self.mapindex = self.striptype(x.type)
                     self.load_data()
                     self.new()
                 '''
@@ -437,7 +437,7 @@ class Game:
                 if self.enemy.escape: #escapability depends on if enemy is part of the main quest
                     print ("escaping")
                     self.string_list = escapetext
-                    
+
                     self.combatstate = False
                     self.camera.freeze = False
                     for sprite in self.all_sprites:
@@ -589,7 +589,7 @@ class Game:
 
 
     def healthbar(self, enemymaxhp):
-        x = self.player.position.x 
+        x = self.player.position.x
         y = self.player.position.y
 
         if self.team.hp > 300:
@@ -598,7 +598,7 @@ class Game:
             playerhealth = yellow
         elif self.team.hp <= 150:
             playerhealth = red
-        
+
         pygame.draw.rect(self.map_img, black, pygame.Rect(x + 98, y + 68, 104, 24), 20)
         widthplayer = int(self.team.hp / 4)
         heightplayer = 20
@@ -607,10 +607,10 @@ class Game:
         if self.enemy.hp > int(enemymaxhp / 3) * 2:
             enemyhealth = green
         elif self.enemy.hp > int(enemymaxhp / 3) and self.enemy.hp <= int(enemymaxhp / 3) * 2:
-            enemyhealth = yellow 
+            enemyhealth = yellow
         elif self.enemy.hp <= int(enemymaxhp / 3):
             enemyhealth = red
-        
+
         pygame.draw.rect(self.map_img, black, pygame.Rect(x - 52, y - 12, 104, 24), 20)
         widthenemy = self.enemy.hp/enemymaxhp * 100
         heightenemy = 20
@@ -623,7 +623,7 @@ class Game:
         self.camera.freeze = False
         for sprite in self.all_sprites:
             sprite.freeze = False
-    
+
     def swith_enemy_attack(self):
         self.enemyattacking = True
 
@@ -675,7 +675,7 @@ class Game:
             if self.settingstate:
                 self.settings(event)
                 continue
-            
+
 
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
@@ -688,7 +688,7 @@ class Game:
                         self.combat()
                         self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = self.cleanup)
                 if event.key == pygame.K_m: #temporary
-                    self.playsound('sounds/typing.mp3') 
+                    self.playsound('sounds/typing.mp3')
                 if event.key == pygame.K_t: #GYAP
                     x = self.player.position.x - 250
                     y = self.player.position.y + 150
@@ -730,7 +730,7 @@ class Game:
                         if len(cs.Text[abc.type]) - 1 > self.textindex:
                             self.textindex += 1
 
-            
+
 
                 '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
@@ -758,7 +758,7 @@ class Game:
 
     def newgame(self, event):
         pygame.display.set_caption("New Game")
-        
+
         self.map_img = self.map.make_map()
 
         self.startscreen(event)
@@ -785,13 +785,13 @@ class Game:
         mousepos = list(pygame.mouse.get_pos())
         mousepos[0] -= self.camera.x
         mousepos[1] -= self.camera.y
-        x = self.player.position.x 
+        x = self.player.position.x
         y = self.player.position.y
 
         pygame.display.set_caption("Settings")
         self.map_img.fill(black)
         pygame.display.flip()
-    
+
         self.settingstate = True
         if event.type == QUIT:
             self.quit()
@@ -825,7 +825,7 @@ class Game:
             self.drawtext("AUDIO", font, red, x - 170, y - 180)
         elif systembutton.hover(mousepos) and self.selected2 != "SYSTEM":
             self.drawtext("SYSTEM", font, red, x + 30, y - 180)
-        
+
         yvols = [y - 50, y - 65, y - 80, y - 95]
         vols = []
         self.vol1 = b.Button2(x, yvols[0], white, 50)
@@ -878,11 +878,11 @@ class Game:
             self.drawtext("BGM VOL", font, red, x - 180, y - 30)
             self.drawtext("SE VOL", font, red, x - 180, y + 120)
             self.drawtext("BACK", font, red, x + 150, y + 200)
-        
+
             for vol in range(4):
                 self.drawborder(vols[vol], white)
                 vols[vol].draw(self.map_img)
-            
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if systembutton.hover(mousepos):
                     self.selected2 = "SYSTEM"
@@ -909,7 +909,7 @@ class Game:
 
     def mainmenu(self, event):
         self.map_img.fill(white)
-        
+
         #self.camera.freeze = True
         #for sprite in self.all_sprites:
             #sprite.freeze = True
