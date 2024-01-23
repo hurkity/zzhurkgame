@@ -34,15 +34,15 @@ width = 150
 height = 50
 
 x1 = -175
-y1 = 100
+y1 = -100
 colour1 = white
 
 x2 = -75
-y2 = 175
+y2 = -25
 colour2 = white
 
 x3 = 25
-y3 = 100
+y3 = -100
 colour3 = white
 
 #font = pygame.font.SysFont("comicsans", 35)
@@ -187,14 +187,15 @@ instructions4 = ["4: Alright, let’s go have some fun!",
 "They forgot to give us our hotel room key???", 
 "Are you kidding me?!?!", 
 "3: That totally sucks. I guess let’s go look for it?", 
-"NARRATOR: Oops haha! I completely forgot to give you the key.", 
-"Well, I left it down the hall, so go ahead and pick it up as your first quest."]
+"NARRATOR: Oops! I completely forgot to give you the key.", 
+"I left it down the hall, so go ahead and pick it up."]
 
-instructions5 = ["Perfect, you found the key! Now, head on over to the hotel."]
+instructions5 = ["Perfect, you found the key!", 
+"Now, head on over to the hotel."]
 
 hotel1 = ["4: Wow. This place is GORGEOUS!", 
 "1: You’re being way too generous. There are cobwebs EVERYWHERE!", 
-"3: Yeah… I can feel the spiders creeping up my body already… eugh.", 
+"3: Yeah… I can feel spiders creeping up my body already… eugh.", 
 "2: Insightful commentary, now let’s go talk to the receptionist."]
 
 hotel2 = ["RECEPTIONIST: Hello, how can I help you?",
@@ -204,6 +205,35 @@ hotel2 = ["RECEPTIONIST: Hello, how can I help you?",
 "It’s been a long time since we’ve had new visitors...", 
 "...but we’re happy to have you guys! Especially since… well…", 
 "In any case, welcome to x!", 
-"I’ll have your bags and all moved up to your rooms when they’re ready.", 
+"I’ll have your bags and all moved up to your rooms.", 
 "So feel free to spend some time exploring the town."]
 
+cutscene1 = ["TOUR GUIDE: “Well, here we are! Welcome to x!", 
+"1+2+3+4: ...", 
+"TOUR GUIDE: ...", 
+"TOUR GUIDE: Well… If you have any questions, let me know."]
+
+louisedia = ["LOUISE: Ahh.. young ones…", 
+"LOUISE: You’re new here.", 
+"LOUISE: It’s been a while since I’ve seen anyone", 
+"born after the Chilly War.", 
+"4: ..??? Chilly War???", 
+"LOUISE: Kids nowadays.", 
+"LOUISE: I’ve lost my cat, Mittens.", 
+"LOUISE: It would mean so much if you could help me find her…", 
+"LOUISE: My legs just aren't what they used to be…", 
+"4: Of course we can help you! It’s just that-", 
+"LOUISE: Never mind.. I wouldn’t want to bother you children…", 
+"Go on, have some fun."]
+
+evangelinedia = ["EVANGELINE: “Hello!!!", 
+"EVANGELINE: “Oh.. you’re wondering what I do?", 
+"EVANGELINE: Well.. recently I’ve been working on an experiment", 
+"which essentially involves genetically modifying a series of creatures,", 
+"causing them to mutate rather oddly...", 
+"I don’t want to bore you though.", 
+"2: Wow… that’s so interesting.",
+"2: I really aspire to be like you in the future!",
+"EVANGELINE: Really? Well… I appreciate the sentiment."
+"EVANGELINE: “You all should run off now, and..", 
+"be careful around these parts."]
