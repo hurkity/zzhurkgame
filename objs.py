@@ -480,6 +480,7 @@ class TextAni(object):
         #for sprite in self.all_sprites:
             #sprite.freeze = True
         if self.letter > len(self.string_list[self.string]) - 1:
+            pygame.time.delay(1000)
             self.string += 1
             self.letter = 0
             if self.string >= len(self.string_list):
@@ -490,7 +491,7 @@ class TextAni(object):
 
         current_string = self.string_list[self.string][:self.letter]
         text_surface = self.font.render(current_string, True, self.colour)
-        text_rect = text_surface.get_rect(topleft=(self.x + 20, self.y + 30))
+        text_rect = text_surface.get_rect(topleft=(self.x + 10, self.y + 30))
         map_img.blit(text_surface, text_rect)
 
         self.letter += 1

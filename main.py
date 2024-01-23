@@ -50,6 +50,7 @@ class Game:
         self.scroll = 0
         self.text_ani = TextAni()
         self.start_playing = False
+        self.tutorial_start = False
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -65,17 +66,17 @@ class Game:
         self.player_imgfrontright = pygame.image.load(
             path.join(img_folder, 'sunnyfrontright.png')).convert_alpha()
         self.player_imgleft = pygame.image.load(
-            path.join(img_folder, 'mcleft.png')).convert_alpha()
+            path.join(img_folder, 'sunnyleft.png')).convert_alpha()
         self.player_imgleftleft = pygame.image.load(
-            path.join(img_folder, 'mcleftleft.png')).convert_alpha()
+            path.join(img_folder, 'sunnyleftleft.png')).convert_alpha()
         self.player_imgleftright = pygame.image.load(
-            path.join(img_folder, 'mcleftright.png')).convert_alpha()
+            path.join(img_folder, 'sunnyleftright.png')).convert_alpha()
         self.player_imgright = pygame.image.load(
-            path.join(img_folder, 'mcright.png')).convert_alpha()
+            path.join(img_folder, 'sunnyright.png')).convert_alpha()
         self.player_imgrightleft = pygame.image.load(
-            path.join(img_folder, 'mcrightleft.png')).convert_alpha()
+            path.join(img_folder, 'sunnyrightleft.png')).convert_alpha()
         self.player_imgrightright = pygame.image.load(
-            path.join(img_folder, 'mcrightright.png')).convert_alpha()
+            path.join(img_folder, 'sunnyrightright.png')).convert_alpha()
         self.player_imgback = pygame.image.load(
             path.join(img_folder, 'sunnyback.png')).convert_alpha()
         self.player_imgbackleft = pygame.image.load(
@@ -162,7 +163,7 @@ class Game:
     def run(self):
         self.game_over = False
         while not self.game_over:
-            self.dt = self.clock.tick(120) / 1000
+            self.dt = self.clock.tick(60) / 1000
             self.events()
             direction = self.rupdate()
             self.draw(direction)
@@ -189,7 +190,7 @@ class Game:
         gameover = False
         currentime = 0
         num = 7
-        self.playsound('sounds/car.mp3')
+        #self.playsound('sounds/car.mp3')
         while not gameover and currentime < 1000:
             if event.type == QUIT:
                 gameover = True
@@ -217,17 +218,46 @@ class Game:
                     self.camera.freeze = True
                     for sprite in self.all_sprites:
                         sprite.freeze = True
-                    self.text_ani.start_display(text_list, x, y, font2, white, cleanup_func = self.start_game)
+                    self.text_ani.start_display(text_list, x, y, font2, white, cleanup_func = self.start_tutorial)
 
-                    self.cleanup()
-
+                    #self.cleanup()
+                    print ("??")
                     if event.type == pygame.KEYDOWN:
-                        self.text_ani.start_display(instructions1, x, y, font2, white)
+                        self.tutorial(event)
 
                 currentime = pygame.time.get_ticks()
                 self.clock.tick(80) #gyap
                 pygame.display.update()
 
+    def start_tutorial(self):
+        print ("Asdasd")
+        x = self.player.position.x - 250
+        y = self.player.position.y + 160
+        self.text_ani.start_display(instructions1, x, y, font2, yellow, cleanup_func = self.start_game)
+        self.tutorial_start = True
+
+    def tutorial(self, event):
+        x = self.player.position.x - 250
+        y = self.player.position.y + 160
+        currentime = 0
+        running = True
+        if event.type == pygame.KEYDOWN:
+            if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]:
+                while running:
+                    self.camera.freeze = False
+                    for sprite in self.all_sprites:
+                        sprite.freeze = False
+                    print (currentime)
+                    currentime = pygame.time.get_ticks()
+                    self.clock.tick(80)
+                    pygame.display.update()
+                    if currentime > 5000:
+                        running = False
+                        self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = None)
+                        self.camera.freeze = True 
+                        for sprite in self.all_sprites:
+                            sprite.freeze = True
+                #self.text_ani.start_display(instructions3, x, y, font2, yellow, cleanup_func = self.start_game)
 
     def movementani(self, direction):
 
@@ -237,7 +267,7 @@ class Game:
                 break
             anigroup = sprite.getanigroup()
             self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
-                sprite))
+                sprite))  
             sprite.currentsprite += 1
             pygame.time.wait(100)
             if sprite.currentsprite > len(anigroup) - 1:
@@ -246,7 +276,7 @@ class Game:
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
-
+                                 
     def blitdirection(self, sprites): #sprites is dict key = char, value = direction
         for sprite in sprites:
             if sprites[sprite] == "left":
@@ -273,10 +303,10 @@ class Game:
         self.player.cutscene = False
         self.player.cutsceneend = False
 
-    def cutscene(self):
+    def cutscene(self): 
         self.player.cutscene = True
         self.player.directions = ['left', 'left', 'left', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd']
-
+            
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
         if not self.combatstate:
@@ -444,6 +474,8 @@ class Game:
                         sprite.freeze = False #releasing the little man
                     pygame.time.delay(1000)
                     self.map_img = self.map.make_map()
+                    self.text_ani.start_display(["You ran away..."], x - 250, y + 150, font, red, cleanup_func=self.cleanup)
+
                 else:
                     self.attackingstate = True
                     self.map_img = self.map.make_map()
@@ -463,7 +495,7 @@ class Game:
 
                     self.enemyattacking = True
                     self.charstate = True
-
+                        
             elif self.attackbutton.hover(mousepos) and not self.attackingstate:
                 print ("attacking")
                 self.attackingstate = True
@@ -501,9 +533,9 @@ class Game:
                    "x": x + 70,
                    "y": y - 60}
                   ]
-
+        
         i = 0
-
+            
         for chara in charas:
             if self.selected[i]:
                 colour1 = red
@@ -567,7 +599,7 @@ class Game:
                     text_list.append("You win!")
                     self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.cleanup)
 
-
+            
     def enemyattack(self, enemy):
         damage = enemy.attack()
         print ("enemy damage: %i" % damage)
@@ -576,7 +608,7 @@ class Game:
         self.enemyattacking = False
         self.selected = [False, False, False, False]
         self.chosen = []
-
+        
         if self.team.hp <= 0:
             print ("you lose")
             self.charstate = False
@@ -676,6 +708,8 @@ class Game:
                 self.settings(event)
                 continue
 
+            if self.tutorial_start:
+                self.tutorial(event)
 
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
@@ -686,7 +720,7 @@ class Game:
                         x = self.player.position.x - 250
                         y = self.player.position.y + 150
                         self.combat()
-                        self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = self.cleanup)
+                        self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = None)
                 if event.key == pygame.K_m: #temporary
                     self.playsound('sounds/typing.mp3')
                 if event.key == pygame.K_t: #GYAP
