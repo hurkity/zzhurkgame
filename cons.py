@@ -145,7 +145,7 @@ player_speed = 250
 mapchange = [
         'tuto.tmx',
         'hotel.tmx',
-        'town.tmx',
+        'town.tmx'
 ]
 
 

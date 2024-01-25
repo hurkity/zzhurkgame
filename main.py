@@ -56,6 +56,8 @@ class Game:
         folder = path.dirname(__file__)
         img_folder = path.join(folder, 'graphics')
         map_folder = path.join(folder, 'tilemaps')
+        print("Index: " + str(self.mapindex) + "; Map len: "
+              + str(len(cs.mapchange)))
         self.map = TiledMap(path.join(map_folder, cs.mapchange[self.mapindex]))
         print(len(cs.mapchange))
         self.map_img = self.map.make_map()
@@ -336,12 +338,13 @@ class Game:
             if self.player.status == "carrying":
                 self.inneractivibee()
 
-            if pygame.sprite.spritecollideany(self.player, self.teleport):
-                for x in self.teleport:
-                    if pygame.sprite.collide_rect(self.player, x):
-                        self.mapindex = self.striptype(x.type)
-                    self.load_data()
-                    self.new()
+
+            arghhss = pygame.sprite.spritecollideany(self.player, self.teleport)
+            if arghhss is not None:
+                self.mapindex = self.striptype(arghhss.type)
+                print("type: " + arghhss.type)
+                self.load_data()
+                self.new()
                 '''
             for sprit in self.all_sprites:
                 self.dis.blit(sprit.image, self.camera.apply(sprit))'''

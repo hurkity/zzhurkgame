@@ -310,9 +310,7 @@ class Teleport(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-
-class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe objects
-
+class NormalObject(pygame.sprite.Sprite):
     def __init__(self, game, x, y, width, height, type):
         self.game = game
         self.type = type
@@ -342,6 +340,35 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
             self.game.dis.blit(cs.text3, cs.textRect3)
         self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
         pygame.display.update()
+
+    def displaymytext(self):
+        self.game.dis.blit(cs.text, cs.textRect)
+        pygame.display.update()
+class TextDisplay(NormalObject):  # textbox appearing to describe objects
+
+    def __init__(self, game, x, y, width, height, type):
+        self.game = game
+        self.type = type
+        self.inside = self.game.text, self.game.interactable, self.game.obstruction
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        self.rect = pygame.Rect(x, y, width, height)
+        self.x = x
+        self.y = y
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.hit_rect = self.rect
+        self.font = cs.objfont
+        self.image = pygame.image.load('graphics/tree.png').convert_alpha()
+        self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
+        self.textimage = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
+                                        pygame.SRCALPHA)
+        self.textimage.fill(cs.translucent_black)
+        self.textrect = self.textimage.get_rect()
+        self.textrect.x = 0
+        self.textrect.y = cs.diswidth * 0.8
+
+    #def displaymytextbetter(self, index):
+   #     pass
 
     def displaymytext(self):
         self.game.dis.blit(cs.text, cs.textRect)
