@@ -37,20 +37,18 @@ class Game:
         self.string = 0 
         self.letter = 0
         self.textrunning = False
-        self.volume = 0.5
+        self.volume = 0.3
+        self.sevolume = 0.3
         self.settingstate = False
         self.string_list = []
         self.font = None
         self.colour = None
         self.selected2 = None
-        self.vol1col = white 
-        self.vol2col = white
-        self.vol3col = white
-        self.vol4col = black
         self.scroll = 0
         self.text_ani = TextAni()
         self.start_playing = False
         self.tutorial_start = False
+        self.tutorial_start2 = False
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -191,7 +189,7 @@ class Game:
         currentime = 0
         num = 7
         #self.playsound('sounds/car.mp3')
-        while not gameover and currentime < 1000:
+        while not gameover and currentime < 10000:
             if event.type == QUIT:
                 gameover = True
                 self.quit()
@@ -209,7 +207,7 @@ class Game:
                 if event.type == smokeappear:
                     self.dis.blit(smoke, smokerect) #gyap
 
-                if currentime in range(0, 1000):
+                if currentime in range(9980, 10020):
                     pygame.time.delay(3000)
                     pygame.mixer.stop()
                     x = self.player.position.x - 250
@@ -230,7 +228,6 @@ class Game:
                 pygame.display.update()
 
     def start_tutorial(self):
-        print ("Asdasd")
         x = self.player.position.x - 250
         y = self.player.position.y + 160
         self.text_ani.start_display(instructions1, x, y, font2, yellow, cleanup_func = self.start_game)
@@ -240,24 +237,42 @@ class Game:
         x = self.player.position.x - 250
         y = self.player.position.y + 160
         currentime = 0
-        running = True
         if event.type == pygame.KEYDOWN:
             if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]:
+                print (self.text_ani.is_displaying())
+                running = True
                 while running:
+                    if currentime > 20000:
+                        running = False
+                        self.tutorial_start = False
+                        self.tutorial_start2 = True
                     self.camera.freeze = False
                     for sprite in self.all_sprites:
                         sprite.freeze = False
+                    self.text_ani.stop_display()
+                    self.text_ani.cleanup()
+                    self.start = True
                     print (currentime)
                     currentime = pygame.time.get_ticks()
                     self.clock.tick(80)
                     pygame.display.update()
-                    if currentime > 5000:
-                        running = False
-                        self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = None)
-                        self.camera.freeze = True 
-                        for sprite in self.all_sprites:
-                            sprite.freeze = True
-                #self.text_ani.start_display(instructions3, x, y, font2, yellow, cleanup_func = self.start_game)
+
+        self.camera.freeze = True 
+        for sprite in self.all_sprites:
+            sprite.freeze = True
+
+    def tutorial2(self, event):
+        x = self.player.position.x - 250
+        y = self.player.position.y + 160
+        self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = None)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_e:
+                self.text_ani.stop_display()
+                #self.tutorial_start2 = False
+                self.cleanup()
+                self.start = True
+                self.text_ani.start_display(instructions3, x, y, font2, yellow, cleanup_func = self.start_game)
+
 
     def movementani(self, direction):
 
@@ -668,7 +683,6 @@ class Game:
                     self.cutscene()
         else:
             if self.player.cutsceneend:
-                print ("Asd")
                 self.cutsceneend()
 
         '''if not self.textplaying:
@@ -703,14 +717,19 @@ class Game:
                 # continue
 
             if not self.start and not self.settingstate:
+                self.interactivity = True
                 self.mainmenu(event)
                 continue
             if self.settingstate:
                 self.settings(event)
                 continue
+            if self.start:
+                self.interactivity = False
 
             if self.tutorial_start:
                 self.tutorial(event)
+            if self.tutorial_start2:
+                self.tutorial2(event)
 
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
@@ -723,7 +742,8 @@ class Game:
                         self.combat()
                         self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = None)
                 if event.key == pygame.K_m: #temporary
-                    self.playsound('sounds/typing.mp3') 
+                    self.start = False
+                    self.mainmenu(event)
                 if event.key == pygame.K_t: #GYAP
                     x = self.player.position.x - 250
                     y = self.player.position.y + 150
@@ -872,6 +892,17 @@ class Game:
         vols.append(self.vol3)
         vols.append(self.vol4)
 
+        yvols2 = [y + 100, y + 85, y + 70, y + 55]
+        vols2 = []
+        self.vol5 = b.Button2(x, yvols2[0], white, 50)
+        self.vol6 = b.Button2(x + 40, yvols2[1], white, 80)
+        self.vol7 = b.Button2(x + 80, yvols2[2], white, 110)
+        self.vol8 = b.Button2(x + 120, yvols2[3], white, 140)
+        vols2.append(self.vol5)
+        vols2.append(self.vol6)
+        vols2.append(self.vol7)
+        vols2.append(self.vol8)
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.vol1.hover(mousepos):
                 self.volume = 0
@@ -881,12 +912,15 @@ class Game:
                 self.volume = 0.4
             if self.vol4.hover(mousepos):
                 self.volume = 0.6
-        print (self.volume)
 
-        self.vol1 = b.Button2(x, yvols[0], self.vol1col, 50)
-        self.vol2 = b.Button2(x + 40, yvols[1], self.vol1col, 80)
-        self.vol3 = b.Button2(x + 80, yvols[2], self.vol1col, 110)
-        self.vol4 = b.Button2(x + 120, yvols[3], self.vol4col, 140)
+            if self.vol5.hover(mousepos):
+                self.sevolume = 0
+            if self.vol6.hover(mousepos):
+                self.sevolume = 0.2            
+            if self.vol7.hover(mousepos):
+                self.sevolume = 0.4
+            if self.vol8.hover(mousepos):
+                self.sevolume = 0.6
 
         #audio buttons
         self.bgvol = b.Button(x - 200, y - 50, black)
@@ -915,9 +949,11 @@ class Game:
             self.drawtext("BACK", font, red, x + 150, y + 200)
         
             for vol in range(4):
-                self.drawborder(vols[vol], white)
                 vols[vol].draw(self.map_img)
-            
+            for vol2 in range(4):
+                vols2[vol2].draw(self.map_img)
+
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if systembutton.hover(mousepos):
                     self.selected2 = "SYSTEM"
@@ -944,7 +980,7 @@ class Game:
 
     def mainmenu(self, event):
         self.map_img.fill(white)
-        
+        self.settingstate = False
         #self.camera.freeze = True
         #for sprite in self.all_sprites:
             #sprite.freeze = True

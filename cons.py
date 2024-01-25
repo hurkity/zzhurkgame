@@ -156,27 +156,27 @@ combattext3 = ["Choose your second character: "]
 
 testtext = ["shblawg"]
 
-bigtext1 = ["3: Ohhh my goodness… My entire body hurts…", 
-"4: Right?",
-"4: How did people back in the day handle these car rides?", 
-"1: Hey 2, is this the right place?", 
-"2: According to my calculations, we've reached at our", 
-"2: destination.",
-"2: ...Although, I may not be the most accurate GPS.", 
-"2: I really hope we weren’t misled…", 
-"4: We’d better not have been!!!", 
-"4: IF I WENT THROUGH THAT JUST FOR IT TO BE THE WRONG PLACE", 
-"4: I'M GONNA- ",
-"1: I’m sick of your voice.", 
-"3: Yeah 4, we’re the ones who suffered.", 
-"2: Quit arguing everyone!",
-"2: Let’s head inside already.", 
-"2: Looks like the reception is just through the front door."]
+bigtext1 = ["EMILY: Ohhh my goodness… My entire body hurts…", 
+"ADAM: Right?",
+"ADAM: How did people back in the day handle these car rides?", 
+"EMCY: Hey 2, is this the right place?", 
+"AMY: According to my calculations, we've reached at our", 
+"AMY: destination.",
+"AMY: ...Although, I may not be the most accurate GPS.", 
+"AMY: I really hope we weren’t misled…", 
+"ADAM: We’d better not have been!!!", 
+"ADAM: IF I WENT THROUGH THAT JUST FOR IT TO BE THE WRONG PLACE", 
+"ADAM: I'M GONNA- ",
+"EMCY: I’m sick of your voice.", 
+"EMILY: Yeah 4, we’re the ones who suffered.", 
+"AMY: Quit arguing everyone!",
+"AMY: Let’s head inside already.", 
+"AMY: Looks like the reception is just through the front door."]
 
 instructions1 = ["INSTRUCTIONS:",
 "Welcome to x! Press W, A, S, D to control your movement."]
 
-instructions2 = ["Good, now try interacting with this x using the E key!", 
+instructions2 = ["Now try interacting with this x using the E key!", 
 "E will be your key for interacting with everything."]
 
 instructions3 = ["That's about it! It's a simple game.",
@@ -229,7 +229,7 @@ louisedia = ["LOUISE: Ahh.. young ones…",
 evangelinedia = ["EVANGELINE: “Hello!!!", 
 "EVANGELINE: “Oh.. you’re wondering what I do?", 
 "EVANGELINE: Well.. recently I’ve been working on an experiment", 
-"which essentially involves genetically modifying a series of creatures,", 
+"which involves genetically modifying a series of creatures,", 
 "causing them to mutate rather oddly...", 
 "I don’t want to bore you though.", 
 "2: Wow… that’s so interesting.",
@@ -237,3 +237,92 @@ evangelinedia = ["EVANGELINE: “Hello!!!",
 "EVANGELINE: Really? Well… I appreciate the sentiment."
 "EVANGELINE: “You all should run off now, and..", 
 "be careful around these parts."]
+
+ivydia = ["IVY: Oh, hey kids! Are you guys new here?", 
+"EMILY: Mhm! Do you know anything interesting about BOAR-DOM?", 
+"IVY: Hmmm.. let’s see.", 
+"IVY: Well, there’s been a lot of tension between us neighbours lately.", 
+"IVY: I personally have been hurt by how my PLANTS are being TRAMPLED!", 
+"EMILY: THAT’S TERRIBLE! I’d be so sad if that happened to my plants…", 
+"IVY: I’m a crop vendor, and every night for the last few weeks,", 
+"IVY: my crops have gotten absolutely destroyed.", 
+"IVY: I’m losing so much… it’s such a shame really.", 
+"IVY: But while you’re here, don’t concern yourself with my problems!", 
+"Try to enjoy yourselves, even though there’s absolutely nothing to do..."]
+
+jorhnydia = ["JORHNY: I’m so exhausted…", 
+"JORHNY: Oh. Kids. I’m sure you guys have a lot of fun. And money.", 
+"JORHNY: Anyways. How can I help you guys?", 
+"EMCY: We’re just exploring the town, we just got here.", 
+"EMCY: Anything interesting going on?", 
+"JORHNY: “I wish. BOAR-DOM is boaring as FLEEP. And broke too.",  
+"I’ve been working hard to move out but being a florist,", 
+"let’s just say I don’t make a dime compared to Ekon Mulch."
+"EMCY: ... Ekon Mulch??", 
+"JORHNY: WOW.",
+"YOU’VE NEVER HEARD OF THE MAN HIMSELF, EKON MULCH?!?!?!", 
+"He’s my hero; he’s rich, and smart, and… I wish I could be him.", 
+"JORHNY: Anyhoo, I’m gonna get back to work now.", 
+"You kids have fun… while you can…"]
+
+cutscene2 = ["EMILY: This really sucks… everyone hates each other here!", 
+"AMY: Yeah.. it's quite upsetting to see such a divided community.", 
+"Maybe there’s something we can do to help out?"
+"ADAM: DEFINITELY! IT'S HORRIBLE!!!"
+"EMCY: Alright then, let’s start with Louise then.", 
+"She seemed so upset.", 
+"NARRATOR: QUEST added: Find Louise’s Cat!"]
+
+#act 2
+
+forest1 = ["ADAM: Huff… Huff… Are you… puff… kidding me?", 
+"How far do we… need to run?", 
+"EMILY: STOP WHINING! If you’re weak just say so!", 
+"EMCY: ANYWAYS… Maybe Mittens is hiding somewhere in the forest?", 
+"EMCY: We’ve gotta be careful though, it seems dangerous there.", 
+"AMY: o..ohhh… do we really need to go in there?", 
+"EMILY: Don’t be afraid! :D", 
+"I’ll be right with you the WHOLE time, you can always count on me!", 
+"AMY: ... Okay, let's go."]
+
+forest2 = ["AMY: ... this is so odd.", 
+"EMILY: I’m starting to get really freaked out.. can we leave?", 
+"ADAM: GUUUYYYSSSSS. We can’t give up!", 
+"ADAM: This is for a sweet elderly lady, c’mon!", 
+"EMCY: He’s right. Let’s take the bowl and keep going.", 
+"EMCY: Maybe if we follow these FOOTPRINTS, it’ll lead us to Mittens."]
+
+cutscene3 = ["EMCY: Jorhny? Is that you?", 
+"JORHNY: KITTY!!!!! KITTY KITTY?!?!", 
+"JORHNY: OH, hey kids!", 
+"JORHNY: You startled me… what are you doing out here?", 
+"EMCY: We’re looking for a cat named Mittens.", 
+"EMCY: She belongs to Louise, one of your neighbours."
+"JORHNY: “What a coincidence!", 
+"JORHNY: I’m looking for a cat as well, though I don’t know her name.", 
+"JORHNY: ...", 
+"EMCY: ...", 
+"EMILY: ...", 
+"ADAM: ...", 
+"ADAM: Is she a nice kitty?", 
+"AMY: ARE YOU GUYS ACTUALLY DUMB????", 
+"AMY: The obvious conclusion is that they are the same cat!", 
+"AMY: How many cats in this town could possibly go", 
+"missing at once??", 
+"AMY: There’s only so many people living here."
+"JORHNY: I’d never really thought of that.", 
+"JORHNY: I’ve been feeding this cat for months thinking", 
+"it was a stray since she LOVED to run out to the forest.",
+"JORHNY: No wonder Louise gives me a dirty look when we meet.", 
+"JORHNY: Does she think I’m trying to steal her cat?", 
+"EMCY: Jorhny, that is pretty odd.", 
+"EMCY: If I were her, I’d be pretty freaked out too.",
+"EMILY: Yeah… don’t you feel kinda weird doing that Jorhny?", 
+"ADAM: Even I wouldn’t stoop that low,",
+"feeding a cat you don’t even know JORHNY?",
+"JORHNY: Well I can’t help it, she was so cute!", 
+"Well, since we’re looking for the same cat,",
+"let’s search together, yes?"]
+
+#act 3
+

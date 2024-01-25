@@ -480,7 +480,7 @@ class TextAni(object):
         #for sprite in self.all_sprites:
             #sprite.freeze = True
         if self.letter > len(self.string_list[self.string]) - 1:
-            pygame.time.delay(1000)
+            #pygame.time.delay(1000)
             self.string += 1
             self.letter = 0
             if self.string >= len(self.string_list):
@@ -497,7 +497,7 @@ class TextAni(object):
         self.letter += 1
         pygame.display.update()
         pygame.display.flip()
-        pygame.time.Clock().tick(15)
+        pygame.time.Clock().tick(30)
         return True
     
     def cleanup(self):
