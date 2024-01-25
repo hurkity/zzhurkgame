@@ -57,6 +57,7 @@ class Game:
         img_folder = path.join(folder, 'graphics')
         map_folder = path.join(folder, 'tilemaps')
         self.map = TiledMap(path.join(map_folder, cs.mapchange[self.mapindex]))
+        print(len(cs.mapchange))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = pygame.image.load(
