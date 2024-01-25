@@ -51,11 +51,6 @@ string1 = "NEW GAME"
 string2 = "CONTINUE"
 string3 = "SETTINGS"
 
-newgametext = "New Game raaahhh"
-conttext = "Imagine you are in your previous game haha"
-settingstext = "Switch up your settings!"
-
-
 #part1
 diswidth = 500
 disheight = 500
@@ -115,6 +110,7 @@ gridheight = int(disheight/tilesize)
 
 block_speed = 1
 player_speed = 250
+player_speed2 = 100
 
 
 mapchange = [
@@ -153,8 +149,13 @@ escapetext = ["You ran away..."]
 escapetext2 = ["You can't run!"]
 combattext2 = ["Choose your first character: "]
 combattext3 = ["Choose your second character: "]
+combattextlose = ["You lose..."]
 
-testtext = ["shblawg"]
+testtext = ["shblawg", "asdasd"]
+cutscenetest = ['left', 'left', 'left', 'right', 'right', 'right', 'right', 'right']
+cutscenes = [{'x': 500, 'y': 600, 'movement': ['left', 'left', 'left', 'right', 'right', 'right', 'right', 'right']}]
+
+#act 1
 
 bigtext1 = ["EMILY: Ohhh my goodness… My entire body hurts…", 
 "ADAM: Right?",

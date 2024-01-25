@@ -1,6 +1,8 @@
 # start screen gyap
 import sys
 import math
+import json
+from interface import *
 from os import path
 from objs import *
 import pygame
@@ -33,6 +35,7 @@ class Game:
         self.selected = [False, False, False, False]
         self.chosen = []
         self.enemyattacking = False
+        self.escaped = False
         self.start = False
         self.string = 0
         self.letter = 0
@@ -169,14 +172,18 @@ class Game:
         pygame.quit()
 
     def quit(self):
+        #with open ('savefile.txt', 'w') as f:
+            #json.dump(data, f)
         sys.exit()
+    
+    def prequit(self):
+        pos = [self.player.position.x, self.player.position.y]
+        return pos
 
     def rupdate(self):
         self.all_sprites.update()
         direction = self.player.direction
-        # direction = []
-        # for sprite in self.all_sprites:
-        # direction.append(sprite)
+        #print([self.player.position.x, self.player.position.y])
         self.camera.update(self.player)
         return direction
 
@@ -189,7 +196,7 @@ class Game:
         currentime = 0
         num = 7
         #self.playsound('sounds/car.mp3')
-        while not gameover and currentime < 10000:
+        while not gameover and currentime < 1000:
             if event.type == QUIT:
                 gameover = True
                 self.quit()
@@ -207,7 +214,7 @@ class Game:
                 if event.type == smokeappear:
                     self.dis.blit(smoke, smokerect) #gyap
 
-                if currentime in range(9980, 10020):
+                if currentime in range(0, 1002):
                     pygame.time.delay(3000)
                     pygame.mixer.stop()
                     x = self.player.position.x - 250
@@ -240,8 +247,18 @@ class Game:
         currentime = 0
         if event.type == pygame.KEYDOWN:
             if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]:
-                print (self.text_ani.is_displaying())
-                running = True
+                self.camera.freeze = False 
+                for sprite in self.all_sprites:
+                    sprite.freeze = False
+                self.map_img = self.map.make_map()
+                self.tutorial_start = False
+                pygame.time.delay(2000)
+                self.text_ani.textrunning = True
+                self.text_ani.textplaying = True
+                self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = self.start_game)
+
+                
+                '''running = True
                 while running:
                     if currentime > 20000:
                         running = False
@@ -256,11 +273,7 @@ class Game:
                     print (currentime)
                     currentime = pygame.time.get_ticks()
                     self.clock.tick(80)
-                    pygame.display.update()
-
-        self.camera.freeze = True 
-        for sprite in self.all_sprites:
-            sprite.freeze = True
+                    pygame.display.update()'''
 
     def tutorial2(self, event):
         x = self.player.position.x - 250
@@ -315,13 +328,19 @@ class Game:
         self.string_list = testtext
         self.textplaying = True
         self.textrunning = True
+        self.player.player_speed = 250
         pygame.display.update()
         self.player.cutscene = False
         self.player.cutsceneend = False
 
-    def cutscene(self):
+    def cutscene(self, movement):
+        x = self.player.position.x
+        y = self.player.position.y
+        self.player.player_speed = 100
+
         self.player.cutscene = True
-        self.player.directions = ['left', 'left', 'left', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd']
+        self.player.directions = movement
+        #self.text_ani.start_display(testtext, x, y, font, white, cleanup_func = None)
 
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
@@ -415,6 +434,9 @@ class Game:
             sprite.freeze = True
 
     def combat(self):
+        x = self.player.position.x - 250
+        y = self.player.position.y + 150
+        self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = None)
         self.combatstate = True
         self.camera.freeze = True
         for sprite in self.all_sprites:
@@ -489,6 +511,7 @@ class Game:
                     for sprite in self.all_sprites:
                         sprite.freeze = False #releasing the little man
                     pygame.time.delay(1000)
+                    self.escaped = True
                     self.map_img = self.map.make_map()
                     self.text_ani.start_display(["You ran away..."], x - 250, y + 150, font, red, cleanup_func=self.cleanup)
 
@@ -602,10 +625,11 @@ class Game:
                 y = self.player.position.y + 150
                 if self.enemy.hp > 0:
                     self.enemyattacking = True
-                    self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.swith_enemy_attack)
+                    self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.switch_enemy_attack)
 
                 else:
                     print ("uou woinin")
+                    self.escaped = True
                     self.combatstate = False
                     self.camera.freeze = False
                     for sprite in self.all_sprites:
@@ -617,6 +641,8 @@ class Game:
 
 
     def enemyattack(self, enemy):
+        x = self.player.position.x - 250
+        y = self.player.position.y + 150
         damage = enemy.attack()
         print ("enemy damage: %i" % damage)
         self.team.update(damage)
@@ -626,10 +652,11 @@ class Game:
         self.chosen = []
 
         if self.team.hp <= 0:
-            print ("you lose")
+            self.text_ani.start_display(combattextlose, x, y, font, yellow, cleanup_func=self.cleanup)
             self.charstate = False
             self.enemyattacking = False
             self.combatstate = False
+            self.escaped = True
             self.camera.freeze = False
             for sprite in self.all_sprites:
                 sprite.freeze = False #releasing the little man
@@ -672,29 +699,34 @@ class Game:
         for sprite in self.all_sprites:
             sprite.freeze = False
 
-    def swith_enemy_attack(self):
+    def switch_enemy_attack(self):
         self.enemyattacking = True
 
     def events(self):
         if not self.player.cutscene:
             if not self.player.cutsceneend:
-                if abs(self.player.position.x - 500) < 50 and abs(self.player.position.y - 500) < 50:
-                    self.cutscene()
+                for cut in cutscenes:
+                    if abs(self.player.position.x - cut['x']) < 200 and abs(self.player.position.y - cut['y']) < 200:
+                        self.cutscene(cut['movement'])
+            else:
+                self.player.cutscene = False
         else:
             if self.player.cutsceneend:
                 self.cutsceneend()
 
-        '''if not self.textplaying:
-            if self.textrunning:
-                self.textrunning = False
-                self.camera.freeze = False
-                for sprite in self.all_sprites:
-                    sprite.freeze = False
-                    
-                if not self.combatstate:  
-                    self.map_img = self.map.make_map()'''
+        if not self.escaped: 
+            if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 800) < 50:
+                if not self.combatstate:
+                    self.combat()
+        else: 
+            self.map_img = self.map.make_map()
+            self.combatstate = False
 
         if self.text_ani.is_displaying():
+            self.camera.freeze = True
+            for sprite in self.all_sprites:
+                sprite.freeze = True
+
             displaying = self.text_ani.update(self.map_img)
             if not displaying:
                 self.text_ani.cleanup()
@@ -734,12 +766,6 @@ class Game:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
-                if event.key == pygame.K_SPACE: #temporary
-                    if not self.combatstate:
-                        x = self.player.position.x - 250
-                        y = self.player.position.y + 150
-                        self.combat()
-                        self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = None)
                 if event.key == pygame.K_m: #temporary
                     self.start = False
                     self.mainmenu(event)
@@ -800,12 +826,6 @@ class Game:
         text = font.render(string, True, colour)
         textrect = text.get_rect(topleft=(x, y))
         self.map_img.blit(text, textrect)
-
-    def texttwo(self, string, font, colour, x,
-                y):  # probably easier to use for combat
-        text = font.render(string, True, colour)
-        textrect = text.get_rect(center=(x, y))
-        self.dis.blit(text, textrect)
 
     def start_game(self):
         self.start_playing = True

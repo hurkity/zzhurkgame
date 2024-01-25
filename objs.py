@@ -20,26 +20,6 @@ class Map:
         self.height = self.tileheight * cs.tilesize
 
 
-class Camera:  # dont think we need this anymore wait i lied ehhhh did i though gyap
-
-    def __init__(self, width, height):
-        self.camera = pygame.Rect(0, 0, width, height)
-        self.width = width
-        self.height = height
-
-    def apply(self, object):
-        return object.rect.move(self.camera.topleft)
-
-    def update(self, gart):
-        x = -gart.rect.x + cs.diswidth / 2
-        y = -gart.rect.y + cs.disheight / 2
-        x = min(0, x)
-        y = min(0, y)
-        x = max(-(self.width - cs.diswidth), x)
-        y = max(-(self.height - cs.disheight), y)
-        self.camera = pygame.Rect(x, y, self.width, self.height)
-
-
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, game, x, y):
@@ -124,6 +104,8 @@ class Player(pygame.sprite.Sprite):
         self.cutsceneend = False
         self.directions = []
 
+        self.player_speed = 250
+
         #object interaction schturrrrff
         self.status = "free"
         self.keytype = None
@@ -131,41 +113,42 @@ class Player(pygame.sprite.Sprite):
         # self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     def get_keys(self):
+        direction = None
         if self.cutscene:
             if len(self.directions) > 0:
                 direction = self.directions[0]
                 if direction == 'left':
                     self.position.x -= cs.block_speed
-                    self.velocity.x = -cs.player_speed/2
+                    self.velocity.x = -self.player_speed/2
                 elif direction == 'right':
                     self.position.x += cs.block_speed
-                    self.velocity.x = cs.player_speed/2
+                    self.velocity.x = self.player_speed/2
                 elif direction == 'fwd':
                     self.position.y += cs.block_speed
-                    self.velocity.y = cs.player_speed/2
+                    self.velocity.y = self.player_speed/2
                 elif direction == 'bwd':
                     self.position.y -= cs.block_speed
-                    self.velocity.y = -cs.player_speed/2
+                    self.velocity.y = -self.player_speed/2
                 self.directions.pop(0)
                 return direction
             else:
                 self.cutsceneend = True
-        direction = None
-        self.velocity = vc(0, 0)
-        if self.game.interactivity == False:
-            keez = pygame.key.get_pressed()
-            if keez[pygame.K_LEFT] or keez[pygame.K_a]:
-                direction = "left"
-                self.velocity.x = -cs.player_speed
-            elif keez[pygame.K_RIGHT] or keez[pygame.K_d]:
-                direction = "right"
-                self.velocity.x = cs.player_speed
-            elif keez[pygame.K_DOWN] or keez[pygame.K_s]:
-                direction = "fwd"
-                self.velocity.y = cs.player_speed
-            elif keez[pygame.K_UP] or keez[pygame.K_w]:
-                direction = "bwd"
-                self.velocity.y = -cs.player_speed
+        else: 
+            self.velocity = vc(0, 0)
+            if self.game.interactivity == False:
+                keez = pygame.key.get_pressed()
+                if keez[pygame.K_LEFT] or keez[pygame.K_a]:
+                    direction = "left"
+                    self.velocity.x = -self.player_speed
+                elif keez[pygame.K_RIGHT] or keez[pygame.K_d]:
+                    direction = "right"
+                    self.velocity.x = self.player_speed
+                elif keez[pygame.K_DOWN] or keez[pygame.K_s]:
+                    direction = "fwd"
+                    self.velocity.y = self.player_speed
+                elif keez[pygame.K_UP] or keez[pygame.K_w]:
+                    direction = "bwd"
+                    self.velocity.y = -self.player_speed
         return direction
 
     def getanigroup(self):
@@ -211,16 +194,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = self.position.y
         self.collicase('y')
         return self.direction
-
-
-'''class Background(pygame.sprite.Sprite):
-  def __init__(self, x, y, layers):
-    #chat does it need layers im confused
-    self.group = layers.all_layers #hurk does this mean that each layer and by layer i just mean like map element will be an object? im fricking lost no right yeah yeah yeah no im chilling
-    self.layers = layers
-    self.image = pygame.Surface(im lost)
-    self.x = x
-    self.y = y'''
 
 
 class Interactable(pygame.sprite.Sprite):

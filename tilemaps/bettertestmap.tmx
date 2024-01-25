@@ -89,6 +89,6 @@
  </layer>
  <objectgroup id="8" name="Object Layer 1">
   <object id="43" name="teleport" type="1" x="741" y="1209" width="186" height="59"/>
-  <object id="44" name="player" x="823" y="1162" width="29" height="35"/>
+  <object id="44" name="player" x="946" y="1001" width="29" height="35"/>
  </objectgroup>
 </map>

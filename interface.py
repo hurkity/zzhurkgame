@@ -1,9 +1,7 @@
-import pickle
-import os
+import json
 
-class Save:
-  def __init__(self, file_ext, savefolder):
-    self.file_ext = file_ext
-    self.savefolder = savefolder
-
-  def savedata(self, )
+'''data = {
+    "position" : [], 
+    "state" : 
+    
+}'''
