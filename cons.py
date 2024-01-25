@@ -152,8 +152,10 @@ combattext3 = ["Choose your second character: "]
 combattextlose = ["You lose..."]
 
 testtext = ["shblawg", "asdasd"]
-cutscenetest = ['left', 'left', 'left', 'right', 'right', 'right', 'right', 'right']
-cutscenes = [{'x': 500, 'y': 600, 'movement': ['left', 'left', 'left', 'right', 'right', 'right', 'right', 'right']}]
+cutscenes = [{'x': 946, 
+              'y': 800, 
+              'movement': ['l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l'], 
+              'done': False}]
 
 #act 1
 

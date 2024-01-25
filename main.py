@@ -294,6 +294,19 @@ class Game:
             if direction == None:
                 self.dis.blit(sprite.image, self.camera.implement(sprite))
                 break
+            if direction == 'l':
+                self.map_img.blit(sprite.imageleft, sprite.rectleft)
+                break
+            if direction == 'r':
+                self.map_img.blit(sprite.imageright, sprite.rectright)
+                break
+            if direction == 'b':
+                self.map_img.blit(sprite.imageback, sprite.rectback)
+                break
+            if direction == 'f':
+                self.map_img.blit(sprite.imagefront, sprite.rectfront)
+                break
+
             anigroup = sprite.getanigroup()
             self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
                 sprite))
@@ -329,18 +342,20 @@ class Game:
         self.textplaying = True
         self.textrunning = True
         self.player.player_speed = 250
+        for cut in cutscenes:
+            cut['done'] = True
         pygame.display.update()
         self.player.cutscene = False
         self.player.cutsceneend = False
 
     def cutscene(self, movement):
-        x = self.player.position.x
-        y = self.player.position.y
+        x = self.player.position.x - 250
+        y = self.player.position.y + 150
+        self.text_ani.start_display(cutscene1, x, y, font2, white, cleanup_func = None)
         self.player.player_speed = 100
 
         self.player.cutscene = True
         self.player.directions = movement
-        #self.text_ani.start_display(testtext, x, y, font, white, cleanup_func = None)
 
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
@@ -705,17 +720,19 @@ class Game:
     def events(self):
         if not self.player.cutscene:
             if not self.player.cutsceneend:
-                for cut in cutscenes:
-                    if abs(self.player.position.x - cut['x']) < 200 and abs(self.player.position.y - cut['y']) < 200:
-                        self.cutscene(cut['movement'])
+                    for cut in cutscenes:
+                        if not cut['done']:
+                            if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
+                                self.cutscene(cut['movement'])
             else:
                 self.player.cutscene = False
         else:
             if self.player.cutsceneend:
                 self.cutsceneend()
+                self.map_img = self.map.make_map()
 
         if not self.escaped: 
-            if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 800) < 50:
+            if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 100) < 50:
                 if not self.combatstate:
                     self.combat()
         else: 
@@ -723,13 +740,17 @@ class Game:
             self.combatstate = False
 
         if self.text_ani.is_displaying():
+            self.player.direction = None
             self.camera.freeze = True
             for sprite in self.all_sprites:
                 sprite.freeze = True
 
             displaying = self.text_ani.update(self.map_img)
-            if not displaying:
-                self.text_ani.cleanup()
+        else: 
+            self.camera.freeze = False
+            for sprite in self.all_sprites:
+                sprite.freeze = False
+            self.text_ani.cleanup()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

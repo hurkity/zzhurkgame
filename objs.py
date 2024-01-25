@@ -154,6 +154,14 @@ class Player(pygame.sprite.Sprite):
     def getanigroup(self):
         if self.direction == None:
             return None
+        if self.direction == 'l':
+            return 'l'
+        if self.direction == 'r':
+            return 'r'
+        if self.direction == 'b':
+            return 'b'
+        if self.direction == 'f':
+            return 'f'
         return self.sprites_group[self.direction]
 
     def collicase(self, axis):
