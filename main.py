@@ -34,7 +34,7 @@ class Game:
         self.chosen = []
         self.enemyattacking = False
         self.start = False
-        self.string = 0 
+        self.string = 0
         self.letter = 0
         self.textrunning = False
         self.volume = 0.3
@@ -58,23 +58,23 @@ class Game:
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = pygame.image.load(
-            path.join(img_folder, 'sunnysprite.png')).convert_alpha()
+            path.join(img_folder, 'mcfront.png')).convert_alpha()
         self.player_imgfrontleft = pygame.image.load(
-            path.join(img_folder, 'sunnyfrontleft.png')).convert_alpha()
+            path.join(img_folder, 'mcfrontleft.png')).convert_alpha()
         self.player_imgfrontright = pygame.image.load(
-            path.join(img_folder, 'sunnyfrontright.png')).convert_alpha()
+            path.join(img_folder, 'mcfrontright.png')).convert_alpha()
         self.player_imgleft = pygame.image.load(
-            path.join(img_folder, 'sunnyleft.png')).convert_alpha()
+            path.join(img_folder, 'mcleft.png')).convert_alpha()
         self.player_imgleftleft = pygame.image.load(
-            path.join(img_folder, 'sunnyleftleft.png')).convert_alpha()
+            path.join(img_folder, 'mcleftleft.png')).convert_alpha()
         self.player_imgleftright = pygame.image.load(
-            path.join(img_folder, 'sunnyleftright.png')).convert_alpha()
+            path.join(img_folder, 'mcleftright.png')).convert_alpha()
         self.player_imgright = pygame.image.load(
-            path.join(img_folder, 'sunnyright.png')).convert_alpha()
+            path.join(img_folder, 'mcright.png')).convert_alpha()
         self.player_imgrightleft = pygame.image.load(
-            path.join(img_folder, 'sunnyrightleft.png')).convert_alpha()
+            path.join(img_folder, 'mcrightleft.png')).convert_alpha()
         self.player_imgrightright = pygame.image.load(
-            path.join(img_folder, 'sunnyrightright.png')).convert_alpha()
+            path.join(img_folder, 'mcrightright.png')).convert_alpha()
         self.player_imgback = pygame.image.load(
             path.join(img_folder, 'sunnyback.png')).convert_alpha()
         self.player_imgbackleft = pygame.image.load(
@@ -120,14 +120,14 @@ class Game:
                          layerobject.width, layerobject.height) #obstructionspawn, use this for walls and stuff
 
             elif layerobject.name == 'interactablehitbox':
-                InteractableBox(self, self.striptype(layerobject.type), layerobject.x, #keyhitbox
+                InteractableBox(self, layerobject.type, layerobject.x, #keyhitbox
                                 layerobject.y, layerobject.width,
                                 layerobject.height)
 
             elif layerobject.name == 'textdisplay':
                 TextDisplay(self, layerobject.x,
                             layerobject.y, layerobject.width,
-                            layerobject.height, self.striptype(layerobject.type)) #key spawn
+                            layerobject.height, layerobject.type) #key spawn
 
             elif layerobject.name == 'teleport':
                 Teleport(self, layerobject.type,
@@ -182,7 +182,7 @@ class Game:
 
     def drawbg(self, colour):
         self.dis.fill(colour)
-    
+
     def startscreen(self, event):
 
         gameover = False
@@ -196,7 +196,7 @@ class Game:
 
             for i in range(0, tiles):
                 self.dis.blit(bg, (i*diswidth + self.scroll, 0))
-                
+
                 num -= 0.01
                 self.scroll -= num
 
@@ -216,13 +216,14 @@ class Game:
                     self.camera.freeze = True
                     for sprite in self.all_sprites:
                         sprite.freeze = True
-                    self.text_ani.start_display(text_list, x, y, font2, white, cleanup_func = self.start_tutorial)
+                    self.text_ani.start_display(text_list, x, y, font2, white, \
+                                                cleanup_func = self.start_tutorial)
 
                     #self.cleanup()
                     print ("??")
                     if event.type == pygame.KEYDOWN:
                         self.tutorial(event)
-                    
+
                 currentime = pygame.time.get_ticks()
                 self.clock.tick(80) #gyap
                 pygame.display.update()
@@ -282,7 +283,7 @@ class Game:
                 break
             anigroup = sprite.getanigroup()
             self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
-                sprite))  
+                sprite))
             sprite.currentsprite += 1
             pygame.time.wait(100)
             if sprite.currentsprite > len(anigroup) - 1:
@@ -291,7 +292,7 @@ class Game:
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
-                                 
+
     def blitdirection(self, sprites): #sprites is dict key = char, value = direction
         for sprite in sprites:
             if sprites[sprite] == "left":
@@ -318,10 +319,10 @@ class Game:
         self.player.cutscene = False
         self.player.cutsceneend = False
 
-    def cutscene(self): 
+    def cutscene(self):
         self.player.cutscene = True
         self.player.directions = ['left', 'left', 'left', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd']
-            
+
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
         if not self.combatstate:
@@ -352,7 +353,7 @@ class Game:
             if pygame.sprite.spritecollideany(self.player, self.teleport):
                 for x in self.teleport:
                     if pygame.sprite.collide_rect(self.player, x):
-                        self.mapindex = int(x.type.strip("'"))
+                        self.mapindex = self.striptype(x.type)
                     self.load_data()
                     self.new()
                 '''
@@ -373,7 +374,7 @@ class Game:
                             if lc.type == lock.type:
                                 for textdis in self.text:
                                     if textdis.type == lc.type:
-                                        lock.unlocked(textdis, lc, self.player) #WHY IS THIS NOT WORKING
+                                        lock.unlocked(textdis, lc) #WHY IS THIS NOT WORKING
 
     def checklockinter(self):
         c = pygame.sprite.spritecollideany(self.player, self.interactablelox)
@@ -386,23 +387,18 @@ class Game:
                                                     self.obstruction)
 
     def checkobjinter(self):
-        b = pygame.sprite.spritecollideany(self.player, self.interactablebox)
-        if b is not None:
-            for interactable in self.text:
-                if interactable.type == b.type:
+        grr = pygame.sprite.spritecollideany(self.player, self.interactablebox)
+        if grr is not None:
+            for erm in self.text:
+                if erm.type == grr.type:
                     if self.interactivity:
-                        interactable.displaymytextbetter(self.textindex)
+                        erm.displaymytextbetter(self.textindex)
                     elif self.interactivibee:
-                        self.player.keytype = interactable.type
-                        pygame.sprite.Sprite.remove(interactable,
+                        self.player.keytype = erm.type
+                        pygame.sprite.Sprite.remove(erm,
                                                     self.obstruction)
                     else:
-                        self.displaymytext()
-
-    def displaymytext(self):
-        self.dis.blit(cs.text, cs.textRect)
-        self.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
-        pygame.display.update()
+                        erm.displaymytext()
 
     def drawborder(self, rect, colour):
         pygame.draw.rect(self.map_img, colour, pygame.Rect(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4))
@@ -423,7 +419,7 @@ class Game:
         self.camera.freeze = True
         for sprite in self.all_sprites:
             sprite.freeze = True
-        
+
         x = self.player.position.x
         y = self.player.position.y
         self.combatbg = pygame.image.load('graphics/combatbg.jpg').convert()
@@ -431,7 +427,7 @@ class Game:
         self.map_img.blit(self.combatbg, (x - 250, y - 240))
         self.map_img.blit(self.enemyimg, (x - 50, y))
         self.map_img.blit(self.painterimg, (x + 100, y + 100))
-        
+
         escapex = x - 200
         escapey = y - 140
         attackx = x + 50
@@ -442,9 +438,9 @@ class Game:
         self.attackbutton.draw(self.map_img)
         self.drawtext("Escape...", font, white, x - 190, y - 120)
         self.drawtext("Attack!", font, black, x + 60, y - 120)
-        
+
         #attacks happen in pairs, choose two characters to create a combo attack that deals damage based on power + trust
-        self.c1attack = b.Button(x - 180, y - 170, white) 
+        self.c1attack = b.Button(x - 180, y - 170, white)
         self.c2attack = b.Button(x + 70, y - 170, white)
         self.c3attack = b.Button(x - 180, y - 70, white)
         self.c4attack = b.Button(x + 70, y - 70, white)
@@ -464,7 +460,7 @@ class Game:
         self.textrunning = True
         self.textplaying = True
 
-        if event.type == QUIT: 
+        if event.type == QUIT:
             self.quit()
         if event.type == pygame.MOUSEMOTION:
             mousepos = list(pygame.mouse.get_pos())
@@ -484,7 +480,10 @@ class Game:
             mousepos[0] -= self.camera.x
             mousepos[1] -= self.camera.y
             if self.escapebutton.hover(mousepos) and not self.attackingstate:
-                if self.enemy.escape: #escapability depends on if enemy is part of the main quest                    
+                if self.enemy.escape: #escapability depends on if enemy is part of the main quest
+                    print ("escaping")
+                    self.string_list = escapetext
+
                     self.combatstate = False
                     self.camera.freeze = False
                     for sprite in self.all_sprites:
@@ -504,6 +503,7 @@ class Game:
                     self.textrunning = True
                     self.textplaying = True
 
+                    #self.drawtext("Unable to escape!", font, red, x - 130, y + 180)
                     pygame.display.flip()
                     self.drawtext("You lost your advantage!", font, red, x - 180, y + 200)
                     self.drawtext("%s attacks first!" %(self.enemy.name), font, red, x - 160, y + 220)
@@ -511,7 +511,7 @@ class Game:
 
                     self.enemyattacking = True
                     self.charstate = True
-                        
+
             elif self.attackbutton.hover(mousepos) and not self.attackingstate:
                 print ("attacking")
                 self.attackingstate = True
@@ -549,9 +549,9 @@ class Game:
                    "x": x + 70,
                    "y": y - 60}
                   ]
-        
+
         i = 0
-            
+
         for chara in charas:
             if self.selected[i]:
                 colour1 = red
@@ -615,7 +615,7 @@ class Game:
                     text_list.append("You win!")
                     self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.cleanup)
 
-            
+
     def enemyattack(self, enemy):
         damage = enemy.attack()
         print ("enemy damage: %i" % damage)
@@ -624,7 +624,7 @@ class Game:
         self.enemyattacking = False
         self.selected = [False, False, False, False]
         self.chosen = []
-        
+
         if self.team.hp <= 0:
             print ("you lose")
             self.charstate = False
@@ -637,7 +637,7 @@ class Game:
 
 
     def healthbar(self, enemymaxhp):
-        x = self.player.position.x 
+        x = self.player.position.x
         y = self.player.position.y
 
         if self.team.hp > 300:
@@ -646,7 +646,7 @@ class Game:
             playerhealth = yellow
         elif self.team.hp <= 150:
             playerhealth = red
-        
+
         pygame.draw.rect(self.map_img, black, pygame.Rect(x + 98, y + 68, 104, 24), 20)
         widthplayer = int(self.team.hp / 4)
         heightplayer = 20
@@ -655,10 +655,10 @@ class Game:
         if self.enemy.hp > int(enemymaxhp / 3) * 2:
             enemyhealth = green
         elif self.enemy.hp > int(enemymaxhp / 3) and self.enemy.hp <= int(enemymaxhp / 3) * 2:
-            enemyhealth = yellow 
+            enemyhealth = yellow
         elif self.enemy.hp <= int(enemymaxhp / 3):
             enemyhealth = red
-        
+
         pygame.draw.rect(self.map_img, black, pygame.Rect(x - 52, y - 12, 104, 24), 20)
         widthenemy = self.enemy.hp/enemymaxhp * 100
         heightenemy = 20
@@ -671,12 +671,11 @@ class Game:
         self.camera.freeze = False
         for sprite in self.all_sprites:
             sprite.freeze = False
-    
+
     def swith_enemy_attack(self):
         self.enemyattacking = True
 
     def events(self):
-
         if not self.player.cutscene:
             if not self.player.cutsceneend:
                 if abs(self.player.position.x - 500) < 50 and abs(self.player.position.y - 500) < 50:
@@ -785,7 +784,7 @@ class Game:
                         if len(cs.Text[abc.type]) - 1 > self.textindex:
                             self.textindex += 1
 
-            
+
 
                 '''if event.key == pygame.K_d:
               self.player.move(xchange = block_speed)
@@ -813,7 +812,7 @@ class Game:
 
     def newgame(self, event):
         pygame.display.set_caption("New Game")
-        
+
         self.map_img = self.map.make_map()
 
         self.startscreen(event)
@@ -840,13 +839,13 @@ class Game:
         mousepos = list(pygame.mouse.get_pos())
         mousepos[0] -= self.camera.x
         mousepos[1] -= self.camera.y
-        x = self.player.position.x 
+        x = self.player.position.x
         y = self.player.position.y
 
         pygame.display.set_caption("Settings")
         self.map_img.fill(black)
         pygame.display.flip()
-    
+
         self.settingstate = True
         if event.type == QUIT:
             self.quit()
@@ -880,7 +879,7 @@ class Game:
             self.drawtext("AUDIO", font, red, x - 170, y - 180)
         elif systembutton.hover(mousepos) and self.selected2 != "SYSTEM":
             self.drawtext("SYSTEM", font, red, x + 30, y - 180)
-        
+
         yvols = [y - 50, y - 65, y - 80, y - 95]
         vols = []
         self.vol1 = b.Button2(x, yvols[0], white, 50)
@@ -947,7 +946,7 @@ class Game:
             self.drawtext("BGM VOL", font, red, x - 180, y - 30)
             self.drawtext("SE VOL", font, red, x - 180, y + 120)
             self.drawtext("BACK", font, red, x + 150, y + 200)
-        
+
             for vol in range(4):
                 vols[vol].draw(self.map_img)
             for vol2 in range(4):

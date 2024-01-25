@@ -326,7 +326,7 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         self.hit_rect = self.rect
         self.font = cs.objfont
         self.image = pygame.image.load('graphics/tree.png').convert_alpha()
-        self.text = cs.font.render(cs.Text[self.type][self.game.textindex], True, cs.white)
+        self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
         self.textimage = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
                                         pygame.SRCALPHA)
         self.textimage.fill(cs.translucent_black)
@@ -340,7 +340,7 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         self.game.dis.blit(cs.text2, cs.textRect2)
         if len(cs.Text[self.type]) - 1 > self.game.textindex:
             self.game.dis.blit(cs.text3, cs.textRect3)
-        self.text = cs.font.render(cs.Text[self.type][self.game.textindex], True, cs.white)
+        self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
         pygame.display.update()
 
     def displaymytext(self):
@@ -499,7 +499,7 @@ class TextAni(object):
         pygame.display.flip()
         pygame.time.Clock().tick(30)
         return True
-    
+
     def cleanup(self):
         if self.cleanup_func is None:
             return
