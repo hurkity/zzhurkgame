@@ -60,23 +60,23 @@ class Game:
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = pygame.image.load(
-            path.join(img_folder, 'sunnysprite.png')).convert_alpha()
+            path.join(img_folder, 'mcfront.png')).convert_alpha()
         self.player_imgfrontleft = pygame.image.load(
-            path.join(img_folder, 'sunnyfrontleft.png')).convert_alpha()
+            path.join(img_folder, 'mcfrontleft.png')).convert_alpha()
         self.player_imgfrontright = pygame.image.load(
-            path.join(img_folder, 'sunnyfrontright.png')).convert_alpha()
+            path.join(img_folder, 'mcfrontright.png')).convert_alpha()
         self.player_imgleft = pygame.image.load(
-            path.join(img_folder, 'sunnyleft.png')).convert_alpha()
+            path.join(img_folder, 'mcleft.png')).convert_alpha()
         self.player_imgleftleft = pygame.image.load(
-            path.join(img_folder, 'sunnyleftleft.png')).convert_alpha()
+            path.join(img_folder, 'mcleftleft.png')).convert_alpha()
         self.player_imgleftright = pygame.image.load(
-            path.join(img_folder, 'sunnyleftright.png')).convert_alpha()
+            path.join(img_folder, 'mcleftright.png')).convert_alpha()
         self.player_imgright = pygame.image.load(
-            path.join(img_folder, 'sunnyright.png')).convert_alpha()
+            path.join(img_folder, 'mcright.png')).convert_alpha()
         self.player_imgrightleft = pygame.image.load(
-            path.join(img_folder, 'sunnyrightleft.png')).convert_alpha()
+            path.join(img_folder, 'mcrightleft.png')).convert_alpha()
         self.player_imgrightright = pygame.image.load(
-            path.join(img_folder, 'sunnyrightright.png')).convert_alpha()
+            path.join(img_folder, 'mcrightright.png')).convert_alpha()
         self.player_imgback = pygame.image.load(
             path.join(img_folder, 'sunnyback.png')).convert_alpha()
         self.player_imgbackleft = pygame.image.load(
@@ -122,14 +122,14 @@ class Game:
                          layerobject.width, layerobject.height) #obstructionspawn, use this for walls and stuff
 
             elif layerobject.name == 'interactablehitbox':
-                InteractableBox(self, self.striptype(layerobject.type), layerobject.x, #keyhitbox
+                InteractableBox(self, layerobject.type, layerobject.x, #keyhitbox
                                 layerobject.y, layerobject.width,
                                 layerobject.height)
 
             elif layerobject.name == 'textdisplay':
                 TextDisplay(self, layerobject.x,
                             layerobject.y, layerobject.width,
-                            layerobject.height, self.striptype(layerobject.type)) #key spawn
+                            layerobject.height, layerobject.type) #key spawn
 
             elif layerobject.name == 'teleport':
                 Teleport(self, layerobject.type,
@@ -218,7 +218,8 @@ class Game:
                     self.camera.freeze = True
                     for sprite in self.all_sprites:
                         sprite.freeze = True
-                    self.text_ani.start_display(text_list, x, y, font2, white, cleanup_func = self.start_tutorial)
+                    self.text_ani.start_display(text_list, x, y, font2, white, \
+                                                cleanup_func = self.start_tutorial)
 
                     #self.cleanup()
                     print ("??")
@@ -254,7 +255,7 @@ class Game:
                     if currentime > 5000:
                         running = False
                         self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = None)
-                        self.camera.freeze = True 
+                        self.camera.freeze = True
                         for sprite in self.all_sprites:
                             sprite.freeze = True
                 #self.text_ani.start_display(instructions3, x, y, font2, yellow, cleanup_func = self.start_game)
@@ -267,7 +268,7 @@ class Game:
                 break
             anigroup = sprite.getanigroup()
             self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
-                sprite))  
+                sprite))
             sprite.currentsprite += 1
             pygame.time.wait(100)
             if sprite.currentsprite > len(anigroup) - 1:
@@ -276,7 +277,7 @@ class Game:
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
                                  self.camera.implement_rect(sprite.hit_rect), 1)
-                                 
+
     def blitdirection(self, sprites): #sprites is dict key = char, value = direction
         for sprite in sprites:
             if sprites[sprite] == "left":
@@ -303,10 +304,10 @@ class Game:
         self.player.cutscene = False
         self.player.cutsceneend = False
 
-    def cutscene(self): 
+    def cutscene(self):
         self.player.cutscene = True
         self.player.directions = ['left', 'left', 'left', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd']
-            
+
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
         if not self.combatstate:
@@ -495,7 +496,7 @@ class Game:
 
                     self.enemyattacking = True
                     self.charstate = True
-                        
+
             elif self.attackbutton.hover(mousepos) and not self.attackingstate:
                 print ("attacking")
                 self.attackingstate = True
@@ -533,9 +534,9 @@ class Game:
                    "x": x + 70,
                    "y": y - 60}
                   ]
-        
+
         i = 0
-            
+
         for chara in charas:
             if self.selected[i]:
                 colour1 = red
@@ -599,7 +600,7 @@ class Game:
                     text_list.append("You win!")
                     self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.cleanup)
 
-            
+
     def enemyattack(self, enemy):
         damage = enemy.attack()
         print ("enemy damage: %i" % damage)
@@ -608,7 +609,7 @@ class Game:
         self.enemyattacking = False
         self.selected = [False, False, False, False]
         self.chosen = []
-        
+
         if self.team.hp <= 0:
             print ("you lose")
             self.charstate = False
@@ -660,7 +661,6 @@ class Game:
         self.enemyattacking = True
 
     def events(self):
-
         if not self.player.cutscene:
             if not self.player.cutsceneend:
                 if abs(self.player.position.x - 500) < 50 and abs(self.player.position.y - 500) < 50:
