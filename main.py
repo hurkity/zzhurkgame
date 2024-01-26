@@ -158,6 +158,7 @@ class Game:
 
         self.draw_debug = False
         self.interactivity = False #text interactivity
+        self.frozen = False #its just like interactivity but i need to use it
         self.interactivibee = False #pickup interactivity
         self.camera = View(self.map.width, self.map.height)
 
@@ -403,7 +404,7 @@ class Game:
             for erm in self.text:
                 if erm.type == grr.type:
                     if self.interactivity:
-                        erm.displaymytextbetter(self.textindex)
+                        erm.displaymytextbetter()
                     elif self.interactivibee:
                         self.player.keytype = erm.type
                         pygame.sprite.Sprite.remove(erm,
@@ -752,14 +753,14 @@ class Game:
                 # continue
 
             if not self.start and not self.settingstate:
-                self.interactivity = True
+                self.frozen = True
                 self.mainmenu(event)
                 continue
             if self.settingstate:
                 self.settings(event)
                 continue
             if self.start:
-                self.interactivity = False
+                self.frozen = False
 
             if self.tutorial_start:
                 self.tutorial(event)

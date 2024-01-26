@@ -109,7 +109,6 @@ class Player(pygame.sprite.Sprite):
         #object interaction schturrrrff
         self.status = "free"
         self.keytype = None
-        self.interactivity = False
         self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     @property
@@ -148,7 +147,7 @@ class Player(pygame.sprite.Sprite):
                 self.cutsceneend = True
         else:
             self.velocity = vc(0, 0)
-            if self.game.interactivity == False:
+            if self.game.interactivity == False and self.game.frozen == False:
                 keez = pygame.key.get_pressed()
                 if keez[pygame.K_LEFT] or keez[pygame.K_a]:
                     direction = "left"
@@ -196,6 +195,10 @@ class Player(pygame.sprite.Sprite):
         self.keytype = target.type
         target.rect.center = self.rect.midbottom
         return True
+
+    def dropped(self, target):
+        self.keytype = 0
+        target.rect.topleft = target.topleft
 
 
     def update(self):
@@ -312,17 +315,17 @@ class NormalObject(pygame.sprite.Sprite):
         self.font = cs.objfont
         self.image = pygame.image.load('graphics/tree.png').convert_alpha()
         self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
-        self.textimage = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
+        self.grayrectangle = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
                                         pygame.SRCALPHA)
-        self.textimage.fill(cs.translucent_black)
-        self.textrect = self.textimage.get_rect()
+        self.grayrectangle.fill(cs.translucent_black)
+        self.textrect = self.grayrectangle.get_rect()
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
     def displaymytextbetter(self, index):
-        self.game.dis.blit(self.textimage, self.textrect)
+        self.game.dis.blit(self.grayrectangle, self.textrect)
         self.game.dis.blit(self.text, self.textrect)
-        self.game.dis.blit(cs.text2, cs.textRect2)
+        self.game.dis.blit(cs.pressetoclose, cs.etocloserect)
         if len(cs.Text[self.type]) - 1 > self.game.textindex:
             self.game.dis.blit(cs.text3, cs.textRect3)
         self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
@@ -353,7 +356,8 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         self.textrect = self.textimage.get_rect()
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
-    def displaymytextbetter(self, index):
+        self.topleft = (self.rect.x, self.rect.y)
+    def displaymytextbetter(self):
         self.game.dis.blit(self.textimage, self.textrect)
         self.game.dis.blit(self.text, self.textrect)
         self.game.dis.blit(cs.text2, cs.textRect2)
@@ -430,6 +434,19 @@ class Lock(pygame.sprite.Sprite):
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
+    def displaymytextbetter(self):
+        self.game.dis.blit(self.textimage, self.textrect)
+        self.game.dis.blit(self.text, self.textrect)
+        self.game.dis.blit(cs.text2, cs.textRect2)
+        if len(cs.Text[self.type]) - 1 > self.game.textindex:
+            self.game.dis.blit(cs.text3, cs.textRect3)
+        self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
+        pygame.display.update()
+
+    def displaymytext(self):
+        self.game.dis.blit(cs.text, cs.textRect)
+        self.game.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
+        pygame.display.update()
     def unlocked(self, key, changetarget):
         self.image = changetarget.image
         pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
