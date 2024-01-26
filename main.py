@@ -606,18 +606,18 @@ class Game:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.c1attack.hover(mousepos):
-                if len(self.chosen) < 2:
+                if len(self.chosen) < 2 and 0 not in self.chosen:
                     self.selected[0] = True
                     self.chosen.append(0)
-            if self.c2attack.hover(mousepos):
+            if self.c2attack.hover(mousepos) and 1 not in self.chosen:
                 if len(self.chosen) < 2:
                     self.selected[1] = True
                     self.chosen.append(1)
-            if self.c3attack.hover(mousepos):
+            if self.c3attack.hover(mousepos) and 2 not in self.chosen:
                 if len(self.chosen) < 2:
                     self.selected[2] = True
                     self.chosen.append(2)
-            if self.c4attack.hover(mousepos):
+            if self.c4attack.hover(mousepos) and 3 not in self.chosen:
                 if len(self.chosen) < 2:
                     self.selected[3] = True
                     self.chosen.append(3)
@@ -779,9 +779,10 @@ class Game:
 
             displaying = self.text_ani.update(self.map_img)
         else:
-            self.camera.freeze = False
-            for sprite in self.all_sprites:
-                sprite.freeze = False
+            if not self.combatstate:
+                self.camera.freeze = False
+                for sprite in self.all_sprites:
+                    sprite.freeze = False
             self.text_ani.cleanup()
 
         for event in pygame.event.get():

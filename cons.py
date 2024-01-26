@@ -114,10 +114,10 @@ player_speed2 = 100
 
 
 mapchange = [
-        'forest.tmx',
         'tuto.tmx',
         'hotel.tmx',
-        'town.tmx'
+        'town.tmx',
+        'forest.tmx'
 ]
 
 
@@ -211,7 +211,8 @@ hotel2 = ["RECEPTIONIST: Hello, how can I help you?",
 "...but we’re happy to have you guys! Especially since… well…",
 "In any case, welcome to x!",
 "I’ll have your bags and all moved up to your rooms.",
-"So feel free to spend some time exploring the town."]
+"So feel free to spend some time exploring the town.", 
+"If you head UP and RIGHT, you'll find the door."]
 
 cutscene1 = ["TOUR GUIDE: “Well, here we are! Welcome to x!",
 "ALL: ...",
