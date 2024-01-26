@@ -200,7 +200,7 @@ class Game:
         currentime = 0
         num = 7
         #self.playsound('sounds/car.mp3')
-        while not gameover and currentime < 1000:
+        while not gameover and currentime < 10000:
             if event.type == QUIT:
                 gameover = True
                 self.quit()
@@ -218,20 +218,17 @@ class Game:
                 if event.type == smokeappear:
                     self.dis.blit(smoke, smokerect) #gyap
 
-                if currentime in range(0, 1002):
+                if currentime in range(9080, 10020):
                     pygame.time.delay(3000)
                     pygame.mixer.stop()
                     x = self.player.position.x - 250
                     y = self.player.position.y + 160
-                    text_list = bigtext1
                     self.camera.freeze = True
                     for sprite in self.all_sprites:
                         sprite.freeze = True
-                    self.text_ani.start_display(text_list, x, y, font2, white, \
+                    self.text_ani.start_display(bigtext1, x, y, font2, white, 
                                                 cleanup_func = self.start_tutorial)
 
-                    #self.cleanup()
-                    print ("??")
                     if event.type == pygame.KEYDOWN:
                         self.tutorial(event)
 
@@ -242,7 +239,7 @@ class Game:
     def start_tutorial(self):
         x = self.player.position.x - 250
         y = self.player.position.y + 160
-        self.text_ani.start_display(instructions1, x, y, font2, yellow, cleanup_func = self.start_game)
+        #self.text_ani.start_display(instructions1, x, y, font2, yellow, cleanup_func = self.start_game)
         self.tutorial_start = True
 
     def tutorial(self, event):
@@ -261,23 +258,6 @@ class Game:
                 self.text_ani.textplaying = True
                 self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = self.start_game)
 
-
-                '''running = True
-                while running:
-                    if currentime > 20000:
-                        running = False
-                        self.tutorial_start = False
-                        self.tutorial_start2 = True
-                    self.camera.freeze = False
-                    for sprite in self.all_sprites:
-                        sprite.freeze = False
-                    self.text_ani.stop_display()
-                    self.text_ani.cleanup()
-                    self.start = True
-                    print (currentime)
-                    currentime = pygame.time.get_ticks()
-                    self.clock.tick(80)
-                    pygame.display.update()'''
 
     def tutorial2(self, event):
         x = self.player.position.x - 250
@@ -323,17 +303,6 @@ class Game:
                 pygame.draw.rect(self.dis, cs.blue,
                                 self.camera.implement_rect(sprite.hit_rect), 1)
 
-    def blitdirection(self, sprites): #sprites is dict key = char, value = direction
-        for sprite in sprites:
-            if sprites[sprite] == "left":
-                self.map_img.blit(sprite.imageleft, sprite.rectleft)
-            elif sprites[sprite] == "right":
-                self.map_img.blit(sprite.imageright, sprite.rectright)
-            elif sprites[sprite] == "front":
-                self.map_img.blit(sprite.imagefront, sprite.rectfront)
-            elif sprites[sprite] == "back":
-                self.map_img.blit(sprite.imageback, sprite.rectback)
-
     def playsound(self, sound):
         mixer.music.load(sound)
         mixer.music.set_volume(self.volume)
@@ -347,6 +316,8 @@ class Game:
         self.textrunning = True
         self.player.player_speed = 250
         cutscenes[self.cutindex]['done'] = True
+        self.map_img = self.map.make_map()
+
         pygame.display.update()
         self.player.cutscene = False
         self.player.cutsceneend = False
@@ -727,10 +698,14 @@ class Game:
         if not self.player.cutscene:
             if not self.player.cutsceneend:
                     for cut in cutscenes:
-                        if not cut['done'] and self.mapindex == cut['map']:
+                        if not cut['done'] and self.mapindex == cut['map'] and self.start:
                             if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
                                 self.cutscene(cut['movement'], cut['text'], cut['map'])
                                 self.cutindex = cut['index']
+                                if cut['colour'] == yellow:
+                                    self.text_ani.colour = yellow
+                                else: 
+                                    self.text_ani.colour = white
             else:
                 self.player.cutscene = False
         else:

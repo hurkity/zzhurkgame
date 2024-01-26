@@ -517,7 +517,7 @@ class TextAni(object):
 
         current_string = self.string_list[self.string][:self.letter]
         text_surface = self.font.render(current_string, True, self.colour)
-        text_rect = text_surface.get_rect(topleft=(self.x + 10, self.y + 30))
+        text_rect = text_surface.get_rect(topleft=(self.x + 7, self.y + 30))
         map_img.blit(text_surface, text_rect)
 
         self.letter += 1
