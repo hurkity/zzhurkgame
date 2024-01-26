@@ -108,6 +108,7 @@ class Game:
         self.locks = pygame.sprite.Group()  # destination corresponding to the objects the player picks up
         self.interactablelox = pygame.sprite.Group()
         self.lockchange = pygame.sprite.Group()
+        self.arrows = pygame.sprite.Group()
         '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
@@ -156,6 +157,10 @@ class Game:
                                 layerobject.y, layerobject.width,
                                 layerobject.height)
 
+            elif layerobject.name == 'arrow':
+                Arrows(self,
+                       layerobject.x, layerobject.y, layerobject.width,
+                       layerobject.height, self.striptype(layerobject.type))
         self.draw_debug = False
         self.interactivity = False #text interactivity
         self.frozen = False #its just like interactivity but i need to use it
@@ -227,7 +232,7 @@ class Game:
                     self.camera.freeze = True
                     for sprite in self.all_sprites:
                         sprite.freeze = True
-                    self.text_ani.start_display(bigtext1, x, y, font2, white, 
+                    self.text_ani.start_display(bigtext1, x, y, font2, white,
                                                 cleanup_func = self.start_tutorial)
 
                     if event.type == pygame.KEYDOWN:
@@ -291,7 +296,7 @@ class Game:
                 self.map_img.blit(sprite.image, sprite.rectfront)
                 break
 
-            else: 
+            else:
                 anigroup = sprite.getanigroup()
                 self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
                     sprite))
@@ -347,6 +352,9 @@ class Game:
                 self.dis.blit(x.image, self.camera.implement_rect(x.rect))
 
             for x in self.locks:
+                self.dis.blit(x.image, self.camera.implement_rect(x.rect))
+
+            for x in self.arrows:
                 self.dis.blit(x.image, self.camera.implement_rect(x.rect))
             # .all_sprites.draw(self.dis)
 
@@ -718,7 +726,7 @@ class Game:
                                 self.cutindex = cut['index']
                                 if cut['colour'] == yellow:
                                     self.text_ani.colour = yellow
-                                else: 
+                                else:
                                     self.text_ani.colour = white
             else:
                 self.player.cutscene = False
@@ -743,12 +751,12 @@ class Game:
                 self.map_img = self.map.make_map()'''
 
 
-        if not self.escaped: 
+        if not self.escaped:
             if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 400) < 50:
                 if not self.combatstate and self.mapindex == 0:
                     self.combat()
 
-        else: 
+        else:
             self.map_img = self.map.make_map()
             self.combatstate = False
 

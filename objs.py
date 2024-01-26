@@ -119,7 +119,7 @@ class Player(pygame.sprite.Sprite):
         self._currentsprite = value
         if value is None:
             raise Exception("none")
-        
+
     def get_keys(self):
         direction = None
         if self.cutscene:
@@ -477,6 +477,25 @@ class Lockchange(pygame.sprite.Sprite):
         self.textrect = self.textimage.get_rect()
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
+
+class Arrows(pygame.sprite.Sprite):
+    def __init__(self, game, x, y, width, height, type):
+        self.game = game
+        self.type = type
+        self.inside = self.game.arrows
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        self.rect = pygame.Rect(x, y, width, height)
+        self.x = x
+        self.y = y
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.hit_rect = self.rect
+        self.font = cs.objfont
+        self.image = pygame.image.load('graphics/arrowtopright.jpg').convert_alpha()
+        #i hope you're not checking for efficiency here because i am REALLY tweakin out now
+        match self.type:
+            case 5:
+                self.image = pygame.image.load('graphics/arrowtopright.jpg').convert_alpha()
 
 class TextAni(object):
     def __init__(self):

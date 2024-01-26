@@ -11,8 +11,8 @@ class Character(pygame.sprite.Sprite):
         self.name = name
         self.hp = hp #i think i need to add them all together and replace or something idk how to turn it into one from four objects
         self.power = power
-    
-    
+
+
 class Team:
     def __init__(self):
         self.characters = []
@@ -26,21 +26,21 @@ class Team:
         self.characters.append(c2)
         self.characters.append(c3)
         self.characters.append(c4)
-        self.trust = {c1.name + ' ' + c2.name: trust[0], 
+        self.trust = {c1.name + ' ' + c2.name: trust[0],
                       c1.name + ' ' + c3.name: trust[1],
                       c1.name + ' ' + c4.name: trust[2],
                       c2.name + ' ' + c3.name: trust[3],
                       c2.name + ' ' + c4.name: trust[4],
                       c3.name + ' ' + c4.name: trust[5]
                       }
-        
+
     @property
     def hp(self):
         hp = 0
-        for chars in self.characters:
+        for chars in self.characters: # combining hps
             hp += chars.hp
         return hp
-    
+
     def add_maxhp(self, val):
         self.max_hp += val
 
@@ -87,7 +87,7 @@ class Computer(pygame.sprite.Sprite):
         print ("enemy attacking")
         damage = self.power
         return damage
-    
+
     def skill(self):
         chosenskill = random.randint(1, 3)
         if chosenskill == 1:
@@ -96,7 +96,7 @@ class Computer(pygame.sprite.Sprite):
             damage = self.power * 1.2
         elif chosenskill == 3:
             damage == self.power * 1.5
-    
+
     def update(self, damage):
         self.hp -= damage
         if self.hp <= 0:
