@@ -323,15 +323,18 @@ class Game:
         self.player.cutscene = False
         self.player.cutsceneend = False
 
-    def cutscene(self, movement, text, map):
-        x = self.player.position.x - 250
-        y = self.player.position.y + 150
+    def cutscene(self, movement, text, index):
+        if index == 7:
+            x = self.player.position.x - 410
+            y = self.player.position.y + 310
+        else: 
+            x = self.player.position.x - 250
+            y = self.player.position.y + 150
 
         self.text_ani.start_display(text, x, y, font2, white, cleanup_func = None)
         self.player.player_speed = 100
         self.player.cutscene = True
         self.player.directions = movement[:]
-        print(self.player.directions)
 
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
@@ -427,6 +430,7 @@ class Game:
             sprite.freeze = True
 
     def combat(self):
+        self.escaped = False
         x = self.player.position.x - 250
         y = self.player.position.y + 150
         self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = None)
@@ -622,6 +626,7 @@ class Game:
 
                 else:
                     print ("uou woinin")
+                    #self.team.hp += 
                     self.escaped = True
                     self.combatstate = False
                     self.camera.freeze = False
@@ -629,6 +634,10 @@ class Game:
                         sprite.freeze = False #releasing the little man
                     self.map_img = self.map.make_map()
                     self.charstate = False
+                    self.team.add_maxhp(self.team.hp)
+                    self.team.reset_hp()
+                    self.enemy.resethp(targhp)
+                    self.attackingstate = False
                     text_list.append("You win!")
                     self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.cleanup)
 
@@ -654,21 +663,25 @@ class Game:
             for sprite in self.all_sprites:
                 sprite.freeze = False #releasing the little man
             self.map_img = self.map.make_map()
+            self.team.reset_hp()
+            self.enemy.resethp(targhp)
+            self.attackingstate = False
+
 
 
     def healthbar(self, enemymaxhp):
         x = self.player.position.x
         y = self.player.position.y
 
-        if self.team.hp > 300:
+        if self.team.hp > self.team.max_hp * 0.75:
             playerhealth = green
-        elif self.team.hp > 150 and self.team.hp <= 300:
+        elif self.team.hp > self.team.max_hp * 0.4:
             playerhealth = yellow
-        elif self.team.hp <= 150:
+        elif self.team.hp <= self.team.max_hp * 0.4:
             playerhealth = red
 
         pygame.draw.rect(self.map_img, black, pygame.Rect(x + 98, y + 68, 104, 24), 20)
-        widthplayer = int(self.team.hp / 4)
+        widthplayer = int(100 * self.team.hp / self.team.max_hp)
         heightplayer = 20
         pygame.draw.rect(self.map_img, playerhealth, pygame.Rect(x + 100, y + 70, widthplayer, heightplayer))
 
@@ -696,12 +709,12 @@ class Game:
         self.enemyattacking = True
 
     def events(self):
-        if not self.player.cutscene:
+        '''if not self.player.cutscene:
             if not self.player.cutsceneend:
                     for cut in cutscenes:
                         if not cut['done'] and self.mapindex == cut['map'] and self.start:
                             if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
-                                self.cutscene(cut['movement'], cut['text'], cut['map'])
+                                self.cutscene(cut['movement'], cut['text'], cut['index'])
                                 self.cutindex = cut['index']
                                 if cut['colour'] == yellow:
                                     self.text_ani.colour = yellow
@@ -713,6 +726,22 @@ class Game:
             if self.player.cutsceneend:
                 self.cutsceneend()
                 self.map_img = self.map.make_map()
+
+        if not self.player.cutscene:
+            if self.player.keytype == 0 and not cutscenes[7]['done']:
+                self.cutindex = cutscenes[7]['index']
+                self.cutscene(cutscenes[7]['movement'], cutscenes[7]['text'], cutscenes[7]['index'])
+                if cutscenes[7]['colour'] == yellow:
+                    self.text_ani.colour = yellow
+                else: 
+                    self.text_ani.colour = white
+            else: 
+                self.player.cutscene = False
+        else: 
+            if self.player.cutsceneend:
+                self.cutsceneend()
+                self.map_img = self.map.make_map()'''
+
 
         if not self.escaped: 
             if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 400) < 50:
@@ -741,11 +770,11 @@ class Game:
                 self.quit()
             if self.enemyattacking:
                 self.enemyattack(self.enemy)
-                self.healthbar(targhpcopy)
+                self.healthbar(self.enemy.maxhp)
                 continue
             if self.charstate:
                 self.combatstage2(event)
-                self.healthbar(targhpcopy)
+                self.healthbar(self.enemy.maxhp)
                 continue
             if self.combatstate:
                 self.textrunning = True
@@ -774,6 +803,8 @@ class Game:
                 if event.key == pygame.K_m: #temporary
                     self.start = False
                     self.mainmenu(event)
+                if event.key == pygame.K_c:
+                    self.combat()
                 if event.key == pygame.K_t: #GYAP
                     x = self.player.position.x - 250
                     y = self.player.position.y + 150

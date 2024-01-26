@@ -16,10 +16,12 @@ class Character(pygame.sprite.Sprite):
 class Team:
     def __init__(self):
         self.characters = []
-        c1 = Character('s', 100, pow1)
-        c2 = Character('as', 100, pow2)
-        c3 = Character('f', 100, pow3)
-        c4 = Character('w', 100, pow4)
+        self.max_hp = 400
+        print('creat team')
+        c1 = Character('EMCY', 100, pow1)
+        c2 = Character('AMY', 100, pow2)
+        c3 = Character('EMILY', 100, pow3)
+        c4 = Character('ADAM', 100, pow4)
         self.characters.append(c1)
         self.characters.append(c2)
         self.characters.append(c3)
@@ -39,6 +41,14 @@ class Team:
             hp += chars.hp
         return hp
     
+    def add_maxhp(self, val):
+        self.max_hp += val
+
+    def reset_hp(self):
+        for chars in self.characters:
+            chars.hp = self.max_hp / 4
+        print (self.max_hp)
+
     def attack(self, c1, c2):
         print ("player: %i" % self.hp)
         print ("%s and %s attacking" %(c1.name, c2.name))
@@ -64,9 +74,13 @@ class Computer(pygame.sprite.Sprite):
     def __init__(self, name, hp, power, escape):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
+        self.maxhp = hp
         self.hp = hp
         self.power = power
         self.escape = escape
+
+    def resethp(self, maxhp):
+        self.hp = maxhp
 
     def attack(self):
         print ("enemy: %i" % self.hp)
