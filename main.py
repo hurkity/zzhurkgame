@@ -82,11 +82,11 @@ class Game:
         self.player_imgrightright = pygame.image.load(
             path.join(img_folder, 'mcrightright.png')).convert_alpha()
         self.player_imgback = pygame.image.load(
-            path.join(img_folder, 'sunnyback.png')).convert_alpha()
+            path.join(img_folder, 'mcback.png')).convert_alpha()
         self.player_imgbackleft = pygame.image.load(
-            path.join(img_folder, 'sunnybackleft.png')).convert_alpha()
+            path.join(img_folder, 'mcbackleft.png')).convert_alpha()
         self.player_imgbackright = pygame.image.load(
-            path.join(img_folder, 'sunnybackright.png')).convert_alpha()
+            path.join(img_folder, 'mcbackright.png')).convert_alpha()
 
         self.enemyimg = pygame.image.load('graphics/cookiemonster.png')
         self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
@@ -95,7 +95,7 @@ class Game:
 
 
     def striptype(self, stripped):
-        return int(stripped.strip("'"))
+        return int(stripped.strip())
     def new(self):
         self.all_sprites = pygame.sprite.Group()  # all sprites
         self.obstruction = pygame.sprite.Group()  # blocks movement in collicase
@@ -126,17 +126,17 @@ class Game:
                          layerobject.width, layerobject.height) #obstructionspawn, use this for walls and stuff
 
             elif layerobject.name == 'interactablehitbox':
-                InteractableBox(self, layerobject.type, layerobject.x, #keyhitbox
+                InteractableBox(self, self.striptype(layerobject.type), layerobject.x, #keyhitbox
                                 layerobject.y, layerobject.width,
                                 layerobject.height)
 
             elif layerobject.name == 'textdisplay':
                 TextDisplay(self, layerobject.x,
                             layerobject.y, layerobject.width,
-                            layerobject.height, layerobject.type) #key spawn
+                            layerobject.height, self.striptype(layerobject.type)) #key spawn
 
             elif layerobject.name == 'teleport':
-                Teleport(self, layerobject.type,
+                Teleport(self, self.striptype(layerobject.type),
                          layerobject.x, layerobject.y, layerobject.width,
                          layerobject.height) #teleport spawn
 
@@ -178,7 +178,7 @@ class Game:
         #with open ('savefile.txt', 'w') as f:
             #json.dump(data, f)
         sys.exit()
-    
+
     def prequit(self):
         pos = [self.player.position.x, self.player.position.y]
         return pos
@@ -250,7 +250,7 @@ class Game:
         currentime = 0
         if event.type == pygame.KEYDOWN:
             if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]:
-                self.camera.freeze = False 
+                self.camera.freeze = False
                 for sprite in self.all_sprites:
                     sprite.freeze = False
                 self.map_img = self.map.make_map()
@@ -260,7 +260,7 @@ class Game:
                 self.text_ani.textplaying = True
                 self.text_ani.start_display(instructions2, x, y, font2, yellow, cleanup_func = self.start_game)
 
-                
+
                 '''running = True
                 while running:
                     if currentime > 20000:
@@ -390,8 +390,9 @@ class Game:
 
             arghhss = pygame.sprite.spritecollideany(self.player, self.teleport)
             if arghhss is not None:
-                self.mapindex = self.striptype(arghhss.type)
-                print("type: " + arghhss.type)
+                self.mapindex = arghhss.type
+                if self.mapindex > 2:
+                    print("type: " + arghhss.type)
                 self.load_data()
                 self.new()
                 '''
@@ -735,11 +736,11 @@ class Game:
                 self.cutsceneend()
                 self.map_img = self.map.make_map()
 
-        if not self.escaped: 
+        if not self.escaped:
             if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 100) < 50:
                 if not self.combatstate:
                     self.combat()
-        else: 
+        else:
             self.map_img = self.map.make_map()
             self.combatstate = False
 
@@ -750,7 +751,7 @@ class Game:
                 sprite.freeze = True
 
             displaying = self.text_ani.update(self.map_img)
-        else: 
+        else:
             self.camera.freeze = False
             for sprite in self.all_sprites:
                 sprite.freeze = False
@@ -960,7 +961,7 @@ class Game:
             if self.vol5.hover(mousepos):
                 self.sevolume = 0
             if self.vol6.hover(mousepos):
-                self.sevolume = 0.2            
+                self.sevolume = 0.2
             if self.vol7.hover(mousepos):
                 self.sevolume = 0.4
             if self.vol8.hover(mousepos):

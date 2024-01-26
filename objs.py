@@ -110,7 +110,7 @@ class Player(pygame.sprite.Sprite):
         self.status = "free"
         self.keytype = None
         self.interactivity = False
-        # self.rect = self.image.get_rect(topleft = (self.x, self.y))
+        self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     def get_keys(self):
         direction = None
@@ -133,7 +133,7 @@ class Player(pygame.sprite.Sprite):
                 return direction
             else:
                 self.cutsceneend = True
-        else: 
+        else:
             self.velocity = vc(0, 0)
             if self.game.interactivity == False:
                 keez = pygame.key.get_pressed()
@@ -325,7 +325,7 @@ class NormalObject(pygame.sprite.Sprite):
     def displaymytext(self):
         self.game.dis.blit(cs.text, cs.textRect)
         pygame.display.update()
-class TextDisplay(NormalObject):  # textbox appearing to describe objects
+class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe objects
 
     def __init__(self, game, x, y, width, height, type):
         self.game = game
@@ -347,14 +347,26 @@ class TextDisplay(NormalObject):  # textbox appearing to describe objects
         self.textrect = self.textimage.get_rect()
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
-
-    #def displaymytextbetter(self, index):
-   #     pass
+    def displaymytextbetter(self, index):
+        self.game.dis.blit(self.textimage, self.textrect)
+        self.game.dis.blit(self.text, self.textrect)
+        self.game.dis.blit(cs.text2, cs.textRect2)
+        if len(cs.Text[self.type]) - 1 > self.game.textindex:
+            self.game.dis.blit(cs.text3, cs.textRect3)
+        self.text = cs.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
+        pygame.display.update()
 
     def displaymytext(self):
         self.game.dis.blit(cs.text, cs.textRect)
         self.game.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
         pygame.display.update()
+    #def displaymytextbetter(self, index):
+   #     pass
+
+    #def displaymytext(self):
+    #    self.game.dis.blit(cs.text, cs.textRect)
+   #     self.game.dis.blit(cs.textSecondLine, cs.textSecondLineRect)
+   #     pygame.display.update()
 
     '''def displaytextani(self, string_list, txtcolour, font):
         # if not self.textrunning:
