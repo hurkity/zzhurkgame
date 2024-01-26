@@ -17,7 +17,6 @@ class Team:
     def __init__(self):
         self.characters = []
         self.max_hp = 400
-        print('create team')
         c1 = Character('EMCY', 100, pow1)
         c2 = Character('AMY', 100, pow2)
         c3 = Character('EMILY', 100, pow3)

@@ -53,6 +53,7 @@ class Game:
         self.tutorial_start = False
         self.tutorial_start2 = False
         self.cutindex = None
+        self.indexcounter = 0
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -442,6 +443,7 @@ class Game:
         x = self.player.position.x - 250
         y = self.player.position.y + 150
         self.text_ani.start_display(combattext1, x, y, font, green, cleanup_func = None)
+        print ("huh")
         self.combatstate = True
         self.camera.freeze = True
         for sprite in self.all_sprites:
@@ -451,9 +453,9 @@ class Game:
         y = self.player.position.y
         self.combatbg = pygame.image.load('graphics/combatbg.jpg').convert()
         self.combatbg = pygame.transform.scale(self.combatbg, (diswidth, disheight))
-        self.map_img.blit(self.combatbg, (x - 250, y - 240))
+        self.map_img.blit(self.combatbg, (x - 250, y - 250))
         self.map_img.blit(self.enemyimg, (x - 50, y))
-        self.map_img.blit(self.painterimg, (x + 100, y + 100))
+        self.map_img.blit(self.painterimg, (x + 100, y + 50))
 
         escapex = x - 200
         escapey = y - 140
@@ -523,9 +525,9 @@ class Game:
                 else:
                     self.attackingstate = True
                     self.map_img = self.map.make_map()
-                    self.map_img.blit(self.combatbg, (x - 250, y - 240))
+                    self.map_img.blit(self.combatbg, (x - 250, y - 250))
                     self.map_img.blit(self.enemyimg, (x - 50, y))
-                    self.map_img.blit(self.painterimg, (x + 100, y + 100))
+                    self.map_img.blit(self.painterimg, (x + 100, y + 50))
 
                     self.string_list = combattext2
                     self.textrunning = True
@@ -546,9 +548,9 @@ class Game:
                 self.chosen = []
                 self.selected = [False, False, False, False]
                 self.map_img = self.map.make_map()
-                self.map_img.blit(self.combatbg, (x - 250, y - 240))
+                self.map_img.blit(self.combatbg, (x - 250, y - 250))
                 self.map_img.blit(self.enemyimg, (x - 50, y))
-                self.map_img.blit(self.painterimg, (x + 100, y + 100))
+                self.map_img.blit(self.painterimg, (x + 100, y + 50))
                 self.charstate = True
 
     def combatstage2(self, event):
@@ -717,17 +719,20 @@ class Game:
         self.enemyattacking = True
 
     def events(self):
-        '''if not self.player.cutscene:
+        if not self.player.cutscene:
             if not self.player.cutsceneend:
-                    for cut in cutscenes:
-                        if not cut['done'] and self.mapindex == cut['map'] and self.start:
-                            if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
-                                self.cutscene(cut['movement'], cut['text'], cut['index'])
-                                self.cutindex = cut['index']
-                                if cut['colour'] == yellow:
-                                    self.text_ani.colour = yellow
-                                else:
-                                    self.text_ani.colour = white
+                for cut in cutscenes:
+                    if self.indexcounter == cut['index']:
+                            if not cut['done'] and self.mapindex == cut['map'] and self.start:
+                                if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
+                                    self.cutscene(cut['movement'], cut['text'], cut['index'])
+                                    self.cutindex = cut['index']
+                                    print (self.indexcounter)
+                                    self.indexcounter += 1
+                                    if cut['colour'] == yellow:
+                                        self.text_ani.colour = yellow
+                                    else: 
+                                        self.text_ani.colour = white
             else:
                 self.player.cutscene = False
         else:
@@ -736,8 +741,9 @@ class Game:
                 self.map_img = self.map.make_map()
 
         if not self.player.cutscene:
-            if self.player.keytype == 0 and not cutscenes[7]['done']:
+            if self.player.keytype == 0 and not cutscenes[7]['done'] and self.indexcounter == cutscenes[7]['index']:
                 self.cutindex = cutscenes[7]['index']
+                self.indexcounter += 1
                 self.cutscene(cutscenes[7]['movement'], cutscenes[7]['text'], cutscenes[7]['index'])
                 if cutscenes[7]['colour'] == yellow:
                     self.text_ani.colour = yellow
@@ -748,8 +754,13 @@ class Game:
         else: 
             if self.player.cutsceneend:
                 self.cutsceneend()
-                self.map_img = self.map.make_map()'''
+                self.map_img = self.map.make_map()
 
+        if self.combatstate: 
+            print ("Asasdaa")
+            self.camera.freeze = True
+            for sprite in self.all_sprites: 
+                sprite.freeze = True
 
         if not self.escaped:
             if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 400) < 50:
