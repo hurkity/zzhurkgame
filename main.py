@@ -301,7 +301,6 @@ class Game:
                 self.map_img.blit(sprite.imageleft, sprite.rectleft)
                 break
             elif direction == 'r':
-                print ("Evaluate")
                 self.map_img.blit(sprite.imageright, self.camera.implement(sprite))
                 break
             elif direction == 'b':
@@ -353,15 +352,14 @@ class Game:
         self.player.cutsceneend = False
 
     def cutscene(self, movement, text, map):
-        if map == 0:
-            y = self.player.position.y + 150
-        elif map == 1: 
-            y = self.player.position.y + 55
         x = self.player.position.x - 250
+        y = self.player.position.y + 150
+
         self.text_ani.start_display(text, x, y, font2, white, cleanup_func = None)
         self.player.player_speed = 100
         self.player.cutscene = True
-        self.player.directions = movement
+        self.player.directions = movement[:]
+        print(self.player.directions)
 
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
@@ -795,8 +793,6 @@ class Game:
 
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
-                if event.key == pygame.K_l:
-                    print("%i" % len(self.all_sprites))
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
                 if event.key == pygame.K_m: #temporary
@@ -807,7 +803,7 @@ class Game:
                     y = self.player.position.y + 150
                     self.camera.freeze = True
                     self.text_ani.start_display(stringlist, x, y, font, white, self.cleanup)
-                if event.key == pygame.K_p:
+                if event.key == pygame.K_SPACE:
                     #self.map_img = self.map.make_map()
                     if self.text_ani.is_displaying():
                         self.text_ani.skip_line()

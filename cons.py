@@ -159,7 +159,7 @@ testtext = ["shblawg", "asdasd"]
 bigtext1 = ["EMILY: Ohhh my goodness… My entire body hurts…", 
 "ADAM: Right?",
 "ADAM: How did people back in the day handle these car rides?", 
-"EMCY: Hey 2, is this the right place?", 
+"EMCY: Hey AcadAmy, is this the right place?", 
 "AMY: According to my calculations, we've reached at our", 
 "AMY: destination.",
 "AMY: ...Although, I may not be the most accurate GPS.", 
@@ -168,7 +168,7 @@ bigtext1 = ["EMILY: Ohhh my goodness… My entire body hurts…",
 "ADAM: IF I WENT THROUGH THAT JUST FOR IT TO BE THE WRONG PLACE", 
 "ADAM: I'M GONNA- ",
 "EMCY: I’m sick of your voice.", 
-"EMILY: Yeah 4, we’re the ones who suffered.", 
+"EMILY: Yeah Adumb, we’re the ones who suffered.", 
 "AMY: Quit arguing everyone!",
 "AMY: Let’s head inside already.", 
 "AMY: Looks like the reception is just through the front door."]
@@ -196,7 +196,8 @@ instructions6 = ["NARRATOR: Perfect, you found the key!",
 "Now, head on over to the hotel."]
 
 hotel1 = ["ADAM: Wow. This place is GORGEOUS!", 
-"EMCY: You’re being generous. There are cobwebs EVERYWHERE!", 
+"EMCY: You're just completely lying Adumb.",
+"There are cobwebs EVERYWHERE!", 
 "EMILY: Yeah… I can feel spiders creeping up my body already… eugh.", 
 "AMY: C'mon, let’s go talk to the receptionist."]
 
@@ -219,12 +220,12 @@ louisedia = ["LOUISE: Ahh.. young ones…",
 "LOUISE: You’re new here.", 
 "LOUISE: It’s been a while since I’ve seen anyone", 
 "born after the Chilly War.", 
-"4: ..??? Chilly War???", 
+"ADAM: ..??? Chilly War???", 
 "LOUISE: Kids nowadays.", 
 "LOUISE: I’ve lost my cat, Mittens.", 
 "LOUISE: It would mean so much if you could help me find her…", 
 "LOUISE: My legs just aren't what they used to be…", 
-"4: Of course we can help you! It’s just that-", 
+"ADAM: Of course we can help you! It’s just that-", 
 "LOUISE: Never mind.. I wouldn’t want to bother you children…", 
 "Go on, have some fun."]
 
@@ -234,8 +235,8 @@ evangelinedia = ["EVANGELINE: “Hello!!!",
 "which involves genetically modifying a series of creatures,", 
 "causing them to mutate rather oddly...", 
 "I don’t want to bore you though.", 
-"2: Wow… that’s so interesting.",
-"2: I really aspire to be like you in the future!",
+"AMY: Wow… that’s so interesting.",
+"AMY: I really aspire to be like you in the future!",
 "EVANGELINE: Really? Well… I appreciate the sentiment."
 "EVANGELINE: “You all should run off now, and..", 
 "be careful around these parts."]
@@ -273,6 +274,7 @@ cutscene2 = ["EMILY: This really sucks… everyone hates each other here!",
 "ADAM: DEFINITELY! IT'S HORRIBLE!!!"
 "EMCY: Alright then, let’s start with Louise then.", 
 "She seemed so upset.", 
+"EMILY: Sounds good, Emmesey!"
 "NARRATOR: QUEST added: Find Louise’s Cat!"]
 
 #act 2
@@ -280,10 +282,10 @@ cutscene2 = ["EMILY: This really sucks… everyone hates each other here!",
 forest1 = ["ADAM: Huff… Huff… Are you… puff… kidding me?", 
 "How far do we… need to run?", 
 "EMILY: STOP WHINING! If you’re weak just say so!", 
-"EMCY: ANYWAYS… Maybe Mittens is hiding somewhere in the forest?", 
+"EMCY: Cut it out Emoly, maybe Mittens is hiding deeper in the forest?", 
 "EMCY: We’ve gotta be careful though, it seems dangerous there.", 
 "AMY: o..ohhh… do we really need to go in there?", 
-"EMILY: Don’t be afraid! :D", 
+"EMILY: Don’t be afraid AcadAmy! :D", 
 "I’ll be right with you the WHOLE time, you can always count on me!", 
 "AMY: ... Okay, let's go."]
 
@@ -291,7 +293,7 @@ forest2 = ["AMY: ... this is so odd.",
 "EMILY: I’m starting to get really freaked out.. can we leave?", 
 "ADAM: GUUUYYYSSSSS. We can’t give up!", 
 "ADAM: This is for a sweet elderly lady, c’mon!", 
-"EMCY: He’s right. Let’s take the bowl and keep going.", 
+"EMCY: Adumb is right. Let’s take the bowl and keep going.", 
 "EMCY: Maybe if we follow these FOOTPRINTS, it’ll lead us to Mittens."]
 
 cutscene3 = ["EMCY: Jorhny? Is that you?", 
@@ -327,16 +329,105 @@ cutscene3 = ["EMCY: Jorhny? Is that you?",
 "let’s search together, yes?"]
 
 #act 3
+forest3 = ["...: MEOW!",
+"JORHNY: You guys heard that right?",
+"EMILY: MITTENS??? MITTTEEEENNNNNSSSS?!?!?",
+"ADAM: MITTENS!!!!! WE’RE COMING FOR YOUUUUU!!!!!!",
+"AMY: Stop yelling! You’re gonna scare her."]
+#mittens blit
+
+
+forest4 = ["EMCY: I guess there wasn’t any need to worry after all.",
+"JORHNY: Oh great heavens! Let’s head home Mittens.",
+"??: GRAAHHAGGHGH",
+"ALL: ?!?!?!",
+"ADAM: That doesn’t sound good, does it…",
+"EMILY: THAT SO DOES NOT SOUND GOOD!",
+"AMY: Jorhny.. you should stay here.",
+"EMCY: Let’s see what it is before panicking…",
+"NARRATOR: Head to the right"]
+
+postfight = ["ADAM: What was that…?",
+"EMCY: This town gets odder and odder.",
+"EMILY: I am DEEPLY AFRAID!",
+"AMY: Stop that, Emoly.",
+"EMILY: Sorry.",
+"ADAM: Are we just glazing over what just happened like it’s normal?",
+"EMCY: Yeah, well…. Let’s go back and find Louise, I guess…"
+]
+
+town = ["IVY: Look what you’ve done, old lady!",
+"Your cats have run all over my crops! Again!",
+"LOUISE: Mittens would do no such thing… ",
+"if she’s even still here, that is!",
+#(Sees players)
+"OH! MITTENS! Thank you so much!",
+"IVY: Ugh, that’s that, I guess.",
+"Just make sure you keep a better watch on your cats, Louise.",
+"LOUISE: I’m telling you, Mittens would do no such thing…"
+"IVY: Whatever, whatever.",
+"Say, EMCY, could you go get me my shovel?",
+"I need to take out all the dead plants in my field"]
+#quest added: find Ivy’s shovel!
+
+shovel = ["EMCY: Here’s your shovel, Ivy.",
+"IVY: Oh, hey Emcy! Thanks, man."]
+
+finalfight = ["ADAM: Oh, everyone’s here. What’s happening?",
+"Are we having an outdoor party?",
+"Wait, can parties be outdoor, or are those all barbecues…",
+"what’s the overlap here….",
+"LOUISE: Hmph. Personally, I’m not too concerned,",
+"but apparently Evangeline has something she wants to tell all of us.",
+"EVANGELINE: YES! SOMETHING SUPER URGENT!",
+"The sensors in my lab just went off, which means…",
+"things are about to get real bad!",
+"JORHNY: Wait, what!? What do you mean, Evangeline?",
+"EVANGELINE: Ugh, JORHNY,",
+"That means that my mutations have TOTALLY hypermutated",
+"and are really dangerous right now!",
+"EVANGELINE: ...",
+"And, um, they’re also in your field.",
+"JORHNY: WHAT!? I — I mean.",
+"Totally cool, Evangeline, ahaha.",
+"Nothing a guy like me can’t handle, eheheh.",
+"AMY: Why are you acting like that? Stop that at once.",
+"IVY: Okay, what say we all go over to the field and…",
+"The new kids can try to fight it off?",
+"LOUISE: Mittens likes this!",
+"JORHNY: Oh, yeah.. you coming with, Evangeline?",
+"EVANGELINE: What would this town do without me?"]
+
+#final act
+ending1 = ["NARRATOR: and so… they resolved the issue.",
+"The kids were finally free to enjoy their vacation,",
+"and Evangeline also came to some very important conclusions",
+"— that first, her mutations had held Mittens hostage in the forest,",
+"that, second, they were the ones tearing up Ivy’s crops and eating them",
+"and that third,",
+"the vegetable seeds were spread in Jorhny’s flowers due to the creatures…",
+"well… defecating in the fields."]
+
+ending2 = ["And why were the creatures so insistent on doing it in Jorhny’s fields?",
+"Well, they were attracted to the flower fields because they were made of flowers!",
+"Due to the qualities of the pollen of the flowers that Jorhny,"
+"had left in Evangeline’s lab,",
+"her experiment had gotten a lot more lively… literally!"]
+
+ending3 = ["Well, when the residents of Boardom cleared up their misunderstandings,",
+"everyone hugged and made up.",
+"Except for Mittens, who went immediately to taunt her previous captors.",
+"The sludge was definitely not happy about that."]
 
 cutscenes = [{'x': 980,
-               'y': 780, 
-               'movement': ['bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd'],
+               'y': 700, 
+               'movement': ['right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right'],
                'index': 0,
                'map': 1,
                'text': hotel1, 
                'done': False}, 
-               {'x': 980, 
-                'y': 480, 
+               {'x': 1200, 
+                'y': 700, 
                 'movement': ['r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r'],
                 'index': 1, 
                 'map': 1, 

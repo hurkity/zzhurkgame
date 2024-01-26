@@ -124,6 +124,8 @@ class Player(pygame.sprite.Sprite):
     def get_keys(self):
         direction = None
         if self.cutscene:
+            self.velocity.x = 0
+            self.velocity.y = 0
             if len(self.directions) > 0:
                 direction = self.directions[0]
                 if direction == 'left':
