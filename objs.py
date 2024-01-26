@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.group = game.all_sprites, game.playergroup
         pygame.sprite.Sprite.__init__(self, self.group)
         self.game = game
-        self.currentsprite = 0
+        self._currentsprite = 0
 
         self.frontsprites = []
         self.image = game.player_img
@@ -112,6 +112,15 @@ class Player(pygame.sprite.Sprite):
         self.interactivity = False
         self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
+    @property
+    def currentsprite(self):
+        return self._currentsprite
+    @currentsprite.setter
+    def currentsprite(self, value):
+        self._currentsprite = value
+        if value is None:
+            raise Exception("none")
+        
     def get_keys(self):
         direction = None
         if self.cutscene:
@@ -129,6 +138,8 @@ class Player(pygame.sprite.Sprite):
                 elif direction == 'bwd':
                     self.position.y -= cs.block_speed
                     self.velocity.y = -self.player_speed/2
+                elif direction is None:
+                    direction = self.direction
                 self.directions.pop(0)
                 return direction
             else:
@@ -152,17 +163,10 @@ class Player(pygame.sprite.Sprite):
         return direction
 
     def getanigroup(self):
-        if self.direction == None:
-            return None
-        if self.direction == 'l':
-            return 'l'
-        if self.direction == 'r':
-            return 'r'
-        if self.direction == 'b':
-            return 'b'
-        if self.direction == 'f':
-            return 'f'
-        return self.sprites_group[self.direction]
+        if self.direction in ['left', 'right', 'fwd', 'bwd']:
+            return self.sprites_group[self.direction]
+        else:
+            return self.sprites_group['bwd']
 
     def collicase(self, axis):
         if axis == 'x':

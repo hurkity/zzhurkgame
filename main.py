@@ -52,6 +52,7 @@ class Game:
         self.start_playing = False
         self.tutorial_start = False
         self.tutorial_start2 = False
+        self.cutindex = None
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -118,7 +119,7 @@ class Game:
           InteractableBox(self, j, i)'''
         for layerobject in self.map.tmxdata.objects:
 
-            if layerobject.name == 'player':
+            if layerobject.name == 'player' and len(self.all_sprites) == 0:
                 self.player = Player(self, layerobject.x, layerobject.y) #playerspawn
 
             elif layerobject.name == 'house':
@@ -296,31 +297,32 @@ class Game:
         for sprite in self.all_sprites:
             if direction == None:
                 self.dis.blit(sprite.image, self.camera.implement(sprite))
-                break
-            if direction == 'l':
+            elif direction == 'l':
                 self.map_img.blit(sprite.imageleft, sprite.rectleft)
                 break
-            if direction == 'r':
-                self.map_img.blit(sprite.imageright, sprite.rectright)
+            elif direction == 'r':
+                print ("Evaluate")
+                self.map_img.blit(sprite.imageright, self.camera.implement(sprite))
                 break
-            if direction == 'b':
+            elif direction == 'b':
                 self.map_img.blit(sprite.imageback, sprite.rectback)
                 break
-            if direction == 'f':
-                self.map_img.blit(sprite.imagefront, sprite.rectfront)
+            elif direction == 'f':
+                self.map_img.blit(sprite.image, sprite.rectfront)
                 break
 
-            anigroup = sprite.getanigroup()
-            self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
-                sprite))
-            sprite.currentsprite += 1
-            pygame.time.wait(100)
-            if sprite.currentsprite > len(anigroup) - 1:
-                sprite.currentsprite = 0
+            else: 
+                anigroup = sprite.getanigroup()
+                self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
+                    sprite))
+                sprite.currentsprite += 1
+                pygame.time.wait(100)
+                if sprite.currentsprite > len(anigroup) - 1:
+                    sprite.currentsprite = 0
 
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
-                                 self.camera.implement_rect(sprite.hit_rect), 1)
+                                self.camera.implement_rect(sprite.hit_rect), 1)
 
     def blitdirection(self, sprites): #sprites is dict key = char, value = direction
         for sprite in sprites:
@@ -345,18 +347,19 @@ class Game:
         self.textplaying = True
         self.textrunning = True
         self.player.player_speed = 250
-        for cut in cutscenes:
-            cut['done'] = True
+        cutscenes[self.cutindex]['done'] = True
         pygame.display.update()
         self.player.cutscene = False
         self.player.cutsceneend = False
 
-    def cutscene(self, movement):
+    def cutscene(self, movement, text, map):
+        if map == 0:
+            y = self.player.position.y + 150
+        elif map == 1: 
+            y = self.player.position.y + 55
         x = self.player.position.x - 250
-        y = self.player.position.y + 150
-        self.text_ani.start_display(cutscene1, x, y, font2, white, cleanup_func = None)
+        self.text_ani.start_display(text, x, y, font2, white, cleanup_func = None)
         self.player.player_speed = 100
-
         self.player.cutscene = True
         self.player.directions = movement
 
@@ -726,9 +729,10 @@ class Game:
         if not self.player.cutscene:
             if not self.player.cutsceneend:
                     for cut in cutscenes:
-                        if not cut['done']:
+                        if not cut['done'] and self.mapindex == cut['map']:
                             if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
-                                self.cutscene(cut['movement'])
+                                self.cutscene(cut['movement'], cut['text'], cut['map'])
+                                self.cutindex = cut['index']
             else:
                 self.player.cutscene = False
         else:
@@ -736,11 +740,12 @@ class Game:
                 self.cutsceneend()
                 self.map_img = self.map.make_map()
 
-        if not self.escaped:
-            if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 100) < 50:
-                if not self.combatstate:
+        if not self.escaped: 
+            if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 400) < 50:
+                if not self.combatstate and self.mapindex == 0:
                     self.combat()
-        else:
+
+        else: 
             self.map_img = self.map.make_map()
             self.combatstate = False
 
@@ -790,6 +795,8 @@ class Game:
 
             if event.type == pygame.KEYDOWN:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
+                if event.key == pygame.K_l:
+                    print("%i" % len(self.all_sprites))
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
                 if event.key == pygame.K_m: #temporary

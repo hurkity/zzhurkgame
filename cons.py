@@ -152,10 +152,7 @@ combattext3 = ["Choose your second character: "]
 combattextlose = ["You lose..."]
 
 testtext = ["shblawg", "asdasd"]
-cutscenes = [{'x': 946, 
-              'y': 800, 
-              'movement': ['l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l'], 
-              'done': False}]
+
 
 #act 1
 
@@ -182,24 +179,26 @@ instructions1 = ["INSTRUCTIONS:",
 instructions2 = ["Now try interacting with this x using the E key!", 
 "E will be your key for interacting with everything."]
 
-instructions3 = ["That's about it! It's a simple game.",
+instructions3 = ["Press M to see the menu screen."]
+
+instructions4 = ["That's about it! It's a simple game.",
 "Head on over to the hotel now."]
 
-instructions4 = ["4: Alright, let’s go have some fun!", 
-"2: Wait wait wait no.", 
+instructions5 = ["ADAM: Alright, let’s go have some fun!", 
+"AMY: Wait wait wait no.", 
 "They forgot to give us our hotel room key???", 
 "Are you kidding me?!?!", 
-"3: That totally sucks. I guess let’s go look for it?", 
+"EMILY: That totally sucks. I guess let’s go look for it?", 
 "NARRATOR: Oops! I completely forgot to give you the key.", 
 "I left it down the hall, so go ahead and pick it up."]
 
-instructions5 = ["Perfect, you found the key!", 
+instructions6 = ["NARRATOR: Perfect, you found the key!", 
 "Now, head on over to the hotel."]
 
-hotel1 = ["4: Wow. This place is GORGEOUS!", 
-"1: You’re being way too generous. There are cobwebs EVERYWHERE!", 
-"3: Yeah… I can feel spiders creeping up my body already… eugh.", 
-"2: Insightful commentary, now let’s go talk to the receptionist."]
+hotel1 = ["ADAM: Wow. This place is GORGEOUS!", 
+"EMCY: You’re being generous. There are cobwebs EVERYWHERE!", 
+"EMILY: Yeah… I can feel spiders creeping up my body already… eugh.", 
+"AMY: C'mon, let’s go talk to the receptionist."]
 
 hotel2 = ["RECEPTIONIST: Hello, how can I help you?",
 "2: Hi, we’d like to check in.", 
@@ -212,7 +211,7 @@ hotel2 = ["RECEPTIONIST: Hello, how can I help you?",
 "So feel free to spend some time exploring the town."]
 
 cutscene1 = ["TOUR GUIDE: “Well, here we are! Welcome to x!", 
-"1+2+3+4: ...", 
+"ALL: ...", 
 "TOUR GUIDE: ...", 
 "TOUR GUIDE: Well… If you have any questions, let me know."]
 
@@ -329,3 +328,53 @@ cutscene3 = ["EMCY: Jorhny? Is that you?",
 
 #act 3
 
+cutscenes = [{'x': 980,
+               'y': 780, 
+               'movement': ['bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd'],
+               'index': 0,
+               'map': 1,
+               'text': hotel1, 
+               'done': False}, 
+               {'x': 980, 
+                'y': 480, 
+                'movement': ['r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r'],
+                'index': 1, 
+                'map': 1, 
+                'text': hotel2,
+                'done': False}, 
+                {'x': 946, 
+                'y': 900, 
+                'movement': ['bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd'], 
+                'index': 2,
+                'map': 0,
+                'text': cutscene1,
+                'done': False},
+                {'x': 1100,
+                'y': 800,
+                'movement': [],
+                'index': 3,
+                'map': 2,
+                'text': louisedia,
+                'done': False}, 
+                {'x': 300,
+                'y': 900,
+                'movement': [],
+                'index': 4,
+                'map': 2,
+                'text': ivydia,
+                'done': False}, 
+                {'x': 300,
+                'y': 400,
+                'movement': [], 
+                'index': 5,
+                'map': 2,
+                'text': evangelinedia,
+                'done': False}, 
+                {'x': 1100, #change
+                'y': 900, #change
+                'movement': [],
+                'index': 3,
+                'map': 2,
+                'text': jorhnydia,
+                'done': False}, 
+              ]
