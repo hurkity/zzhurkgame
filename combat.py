@@ -17,15 +17,12 @@ class Team:
     def __init__(self):
         self.characters = []
         self.max_hp = 400
-        print('creat team')
+        print('create team')
         c1 = Character('EMCY', 100, pow1)
         c2 = Character('AMY', 100, pow2)
         c3 = Character('EMILY', 100, pow3)
         c4 = Character('ADAM', 100, pow4)
-        self.characters.append(c1)
-        self.characters.append(c2)
-        self.characters.append(c3)
-        self.characters.append(c4)
+        self.characters = [c1, c2, c3, c4]
         self.trust = {c1.name + ' ' + c2.name: trust[0],
                       c1.name + ' ' + c3.name: trust[1],
                       c1.name + ' ' + c4.name: trust[2],
