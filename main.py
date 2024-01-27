@@ -637,7 +637,7 @@ class Game:
                     self.charstate = False
                     self.team.add_maxhp(self.team.hp)
                     self.team.reset_hp()
-                    self.enemy.resethp(targhp)
+                    self.enemy.resethp(self.enemy.hp)
                     self.attackingstate = False
                     text_list.append("You win!")
                     self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.cleanup)
@@ -665,7 +665,7 @@ class Game:
                 sprite.freeze = False #releasing the little man
             self.map_img = self.map.make_map()
             self.team.reset_hp()
-            self.enemy.resethp(targhp)
+            self.enemy.resethp(self.enemy.hp)
             self.attackingstate = False
 
 
@@ -714,9 +714,6 @@ class Game:
             if not self.player.cutsceneend:
                 for cut in cutscenes:
                     if self.indexcounter == cut['index']:
-                            '''if cut['index'] == 20: #need to be completed all cutscenes with npc dialogue in act 1 to activate this cutscene
-                                if cutscenes[range(12, 19)]['done']:
-                                    cutscenes[cut]['done'] = False'''
                             if not cut['done'] and self.mapindex == cut['map'] and self.start:
                                 if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
                                     self.cutscene(cut['movement'], cut['text'], cut['index'])
@@ -770,6 +767,7 @@ class Game:
             self.combatstate = False
 
         if self.text_ani.is_displaying():
+            self.playsound('sounds/typing.mp3')
             self.player.direction = None
             self.camera.freeze = True
             for sprite in self.all_sprites:
@@ -777,11 +775,13 @@ class Game:
 
             displaying = self.text_ani.update(self.map_img)
         else:
+            pygame.mixer.stop()
             if not self.combatstate:
                 self.camera.freeze = False
                 for sprite in self.all_sprites:
                     sprite.freeze = False
             self.text_ani.cleanup()
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
