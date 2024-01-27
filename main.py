@@ -55,7 +55,7 @@ class Game:
         self.tutorial_start = False
         self.tutorial_start2 = False
         self.cutindex = None
-        self.indexcounter = 26
+        self.indexcounter = 23
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -126,7 +126,7 @@ class Game:
                                 layerobject.height)
 
             elif layerobject.name == 'textdisplay':
-                if self.indexcounter == 27:
+                if self.indexcounter == 29:
                     TextDisplay(self, 218 + int(layerobject.type) * 25,
                             885, layerobject.width,
                             layerobject.height, self.striptype(layerobject.type)) #key spawn
@@ -169,7 +169,7 @@ class Game:
 
         self.enemies = []
         for enemy in enemies:
-            obj_enemy = Computer(enemy['name'], enemy['hp'], enemy['pow'], True, enemy['map'], enemy['x'], enemy['y'], enemy['pic'])
+            obj_enemy = Computer(enemy['name'], enemy['hp'], enemy['pow'], enemy['escape'], enemy['map'], enemy['x'], enemy['y'], enemy['pic'])
             self.enemies.append(obj_enemy)
 
     def run(self):
@@ -302,22 +302,27 @@ class Game:
         self.player.cutsceneend = False
 
     def cutscene(self, movement, text, index):
-        if index == 6:
+        if index == 7:
             x = self.player.position.x - 410
             y = self.player.position.y + 310
-        if index == 7:
+            print ("?!?!")
+        elif index == 8:
             x = self.player.position.x - 250
-            y = self.player.position.y + 100
-        if index == 15: 
+            y = self.player.position.y + 150
+        elif index == 16: 
             x = self.player.position.x - 230
             y = self.player.position.y + 150
-        if index == 22: 
-            x = self.player.position.x - 230
+        elif index == 24: 
+            x = self.player.position.x - 210
+            y = self.player.position.y - 360
+        elif index == 25:
+            x = self.player.position.x - 200
             y = self.player.position.y + 150
         else:
             x = self.player.position.x - 250
             y = self.player.position.y + 150
-        
+        print ([x, y])
+        print (index)
         if text != None:
             self.text_ani.start_display(text, x, y, font2, white, cleanup_func = self.cleanup)
 
@@ -706,7 +711,7 @@ class Game:
             if self.player.keytype == 0 and not cutscenes[7]['done'] and self.indexcounter == cutscenes[7]['index']:
                 self.cutindex = cutscenes[7]['index']
                 self.indexcounter += 1
-                if self.indexcounter == 27:
+                if self.indexcounter == 29:
                         enemies.append({"name": "FINAL MUTATION", "hp": 10000, "pow": 200, "map": 2, "x": 250, "y": 700, "pic": "graphics/monster.png"})
 
                 self.cutscene(cutscenes[7]['movement'], cutscenes[7]['text'], cutscenes[7]['index'])
