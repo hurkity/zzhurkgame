@@ -1,5 +1,6 @@
 import pygame
 import cons as cs
+from pygame import mixer
 
 vc = pygame.math.Vector2
 
@@ -527,8 +528,13 @@ class TextAni(object):
         self.textplaying = False
         self.cleanup_func = None
 
+    def playsound(self, sound):
+        mixer.music.load(sound)
+        mixer.music.set_volume(0.3)
+        mixer.music.play()
+        
     def start_display(self, string_list, x, y, font, colour, cleanup_func=None):
-        self.string_list = [f"{str} " + ' ' * 1000 for str in string_list]
+        self.string_list = [f"{str} " + ' ' * 10000 for str in string_list]
         self.string = 0
         self.letter = 0
         self.x = x
@@ -567,7 +573,10 @@ class TextAni(object):
             if self.string >= len(self.string_list):
                 self.textrunning = False
                 return False
-
+        if self.letter == 0:
+            self.playsound('sounds/typing.mp3')
+        if self.letter == 20:
+            mixer.music.stop()
         pygame.draw.rect(map_img, cs.black, pygame.Rect(self.x, self.y, 500, 100))
 
         current_string = self.string_list[self.string][:self.letter]
@@ -582,6 +591,7 @@ class TextAni(object):
         return True
 
     def cleanup(self):
+        mixer.music.stop()
         if self.cleanup_func is None:
             return
         self.cleanup_func()
