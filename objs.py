@@ -333,6 +333,8 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
                 self.image = pygame.image.load('graphics/louise.png').convert_alpha()
             case 5:
                 self.image = pygame.image.load('graphics/mittens.png').convert_alpha()
+            case 6:
+                self.image = pygame.image.load('graphics/bunny.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.rect.width,
                                                          self.rect.height))
         self.text = self.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)

@@ -101,6 +101,7 @@ Text = [  # font.render("bjdndkjnf", True, green),
     ["Oh, Mittens... come home soon...",
      "your 19 sisters need you!"],
     ["MEOW!"]
+    ["Intriguing Bunny."]
 ]
 
 LockText = [  # font.render("bjdndkjnf", True, green),
@@ -206,10 +207,11 @@ instructions1 = ["INSTRUCTIONS:",
 "Welcome to BOAR-DOM!",
 "Press W, A, S, D to control your movement."]
 
+instructions2 = ["Now try interacting with this bunny using the E key!",
 instructions3 = ["Press M to see the menu screen."]
 
 instructions4 = ["That's about it! It's a simple game.",
-"Head DOWN over to the hotel now."]
+"Head UP over to the hotel now."]
 
 instructions5 = ["ADAM: Alright, let’s go have some fun!",
 "AMY: Wait wait wait no.",
@@ -646,6 +648,7 @@ cutscenes = [{'x': 827,
                'colour': yellow,
                 'done': False},
                 {'x': 1150, 
+                'y': 860,
                 'y': 860, 
                 'movement': ['fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd'],
                 'index': 20,

@@ -231,10 +231,10 @@
   <object id="30" name="house" x="1306" y="597.5" width="47" height="41"/>
   <object id="32" name="player" x="209" y="733" width="26" height="23"/>
   <object id="34" name="arrow" type="5" x="1255" y="178" width="124" height="86"/>
-  <object id="35" name="arrow" type="2" x="124" y="165" width="33" height="33"/>
+  <object id="35" name="arrow" type="2" x="270" y="294" width="33" height="33"/>
   <object id="36" name="arrow" type="3" x="695" y="254" width="36" height="37"/>
   <object id="37" name="arrow" type="4" x="539" y="622" width="40" height="43"/>
-  <object id="38" name="arrow" type="2" x="1239" y="596" width="37" height="40"/>
+  <object id="38" name="arrow" type="2" x="1227" y="590" width="37" height="40"/>
   <object id="39" name="arrow" type="3" x="1022" y="881" width="53" height="50"/>
   <object id="41" name="textdisplay" type="5" x="1461" y="91" width="31" height="29"/>
   <object id="42" name="interactablehitbox" type="5" x="1453" y="79" width="49" height="51"/>

@@ -333,6 +333,7 @@ class Game:
 
     def draw(self, direction):
         self.dis.blit(self.map_img, self.camera.implement_rect(self.map_rect))
+        #if cs.cutscenes[self.indexcounter]['index'] ==
         if not self.combatstate:
             for x in self.text:
                 if x.type == self.player.keytype:
@@ -698,16 +699,16 @@ class Game:
             if not self.player.cutsceneend:
                 for cut in cutscenes:
                     if self.indexcounter == cut['index']:
-                            if not cut['done'] and self.mapindex == cut['map'] and self.start:
-                                if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
-                                    self.cutscene(cut['movement'], cut['text'], cut['index'])
-                                    self.cutindex = cut['index']
-                                    print (self.indexcounter)
-                                    self.indexcounter += 1
-                                    if cut['colour'] == yellow:
-                                        self.text_ani.colour = yellow
-                                    else: 
-                                        self.text_ani.colour = white
+                        if not cut['done'] and self.mapindex == cut['map'] and self.start:
+                            if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
+                                self.cutscene(cut['movement'], cut['text'], cut['index'])
+                                self.cutindex = cut['index']
+                                print (self.indexcounter)
+                                self.indexcounter += 1
+                                if cut['colour'] == yellow:
+                                    self.text_ani.colour = yellow
+                                else:
+                                    self.text_ani.colour = white
             else:
                 self.player.cutscene = False
         else:
