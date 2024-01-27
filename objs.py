@@ -112,7 +112,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     @property
-    def currentsprite(self): #for bugs during cutscene with movement 
+    def currentsprite(self): #for bugs during cutscene with movement
         return self._currentsprite
     @currentsprite.setter
     def currentsprite(self, value):
@@ -122,7 +122,7 @@ class Player(pygame.sprite.Sprite):
 
     def get_keys(self): #player movement
         direction = None
-        if self.cutscene: #if in a cutscene, the movement doesn't depend on keys 
+        if self.cutscene: #if in a cutscene, the movement doesn't depend on keys
             self.velocity.x = 0
             self.velocity.y = 0
             if len(self.directions) > 0:
@@ -330,6 +330,8 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
                 self.image = pygame.image.load('graphics/ivy.png').convert_alpha()
             case 4:
                 self.image = pygame.image.load('graphics/louise.png').convert_alpha()
+            case 5:
+                self.image = pygame.image.load('graphics/mittens.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.rect.width,
                                                          self.rect.height))
         self.text = self.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
@@ -355,34 +357,7 @@ class TextDisplay(pygame.sprite.Sprite):  # textbox appearing to describe object
         pygame.display.update()
     #def displaymytextbetter(self, index):
    #     pass
-class People(TextDisplay):  # like the exact same as textdisplay minus some stuff
 
-    def __init__(self, game, x, y, width, height, type):
-        self.game = game
-        self.type = type
-        self.inside = self.game.text, self.game.interactable, self.game.obstruction
-        pygame.sprite.Sprite.__init__(self, self.inside)
-        self.rect = pygame.Rect(x, y, width, height)
-        self.x = x
-        self.y = y
-        self.rect.x = self.x
-        self.rect.y = self.y
-        self.hit_rect = self.rect
-        self.font = cs.objfont
-        self.image = pygame.image.load('graphics/tree.png').convert_alpha()
-        match type:
-            case 0:
-                self.image = pygame.image.load('graphics/key.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.rect.width,
-                                                         self.rect.height))
-        self.text = self.font.render(str(cs.Text[self.type][self.game.textindex].strip("[],")), True, cs.white)
-        self.textimage = pygame.Surface((cs.diswidth, 0.2 * cs.disheight),
-                                        pygame.SRCALPHA)
-        self.textimage.fill(cs.translucent_black)
-        self.textrect = self.textimage.get_rect()
-        self.textrect.x = 0
-        self.textrect.y = cs.diswidth * 0.8
-        self.topleft = (self.rect.x, self.rect.y)
     def displaymytextbetter(self):
         self.game.dis.blit(self.textimage, self.textrect)
         self.game.dis.blit(self.text, self.textrect)
@@ -501,6 +476,19 @@ class Lockchange(pygame.sprite.Sprite):
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
+'''class Enemy(pygame.sprite.Sprite):
+    def __init__(self, game, type, x, y, w, h):
+        self.game = game
+        self.type = type
+        self.inside = self.game.enemygrp
+        pygame.sprite.Sprite.__init__(self, self.inside)
+        # self._layer = cs.object_layer
+        self.rect = pygame.Rect(x, y, w, h)
+        self.x = x
+        self.y = y
+        # self.image = pygame.Surface((18, 18), pygame.SRCALPHA, 32)
+        self.rect.x = self.x
+        self.rect.y = self.y'''
 class Arrows(pygame.sprite.Sprite):
     def __init__(self, game, x, y, width, height, type):
         self.game = game
@@ -516,9 +504,18 @@ class Arrows(pygame.sprite.Sprite):
         #self.image = pygame.image.load('graphics/arrowtopright.png').convert_alpha()
         #i hope you're not checking for efficiency here because i am REALLY tweakin out now
         match self.type:
+            case 1:
+                self.image = pygame.image.load('graphics/frog.png').convert_alpha()
+            case 2:
+                self.image = pygame.image.load('graphics/bird.png').convert_alpha()
+            case 3:
+                self.image = pygame.image.load('graphics/bunny.png').convert_alpha()
+            case 4:
+                self.image = pygame.image.load('graphics/squirrel.png').convert_alpha()
             case 5:
                 self.image = pygame.image.load('graphics/arrowtopright.png').convert_alpha()
-
+        self.image = pygame.transform.scale(self.image, (self.rect.width,
+                                                         self.rect.height))
 class TextAni(object):
     def __init__(self):
         self.string_list = None

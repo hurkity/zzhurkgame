@@ -108,6 +108,7 @@ class Game:
         self.interactablelox = pygame.sprite.Group()
         self.lockchange = pygame.sprite.Group()
         self.arrows = pygame.sprite.Group()
+        #self.enemygrp = pygame.sprite.Group()
         '''for i, row in enumerate(self.map.data):
       for j, value in enumerate(row):
         if value == '1':
@@ -283,7 +284,7 @@ class Game:
     def movementani(self, direction):
 
         for sprite in self.all_sprites:
-            if direction == None: #when no movement 
+            if direction == None: #when no movement
                 self.dis.blit(sprite.image, self.camera.implement(sprite))
             elif direction == 'l':
                 self.map_img.blit(sprite.imageleft, sprite.rectleft)
@@ -332,7 +333,7 @@ class Game:
         else:
             x = self.player.position.x - 250
             y = self.player.position.y + 150
-        
+
         if text != None:
             self.text_ani.start_display(text, x, y, font2, white, cleanup_func = self.cleanup)
 
@@ -375,8 +376,6 @@ class Game:
             arghhss = pygame.sprite.spritecollideany(self.player, self.teleport)
             if arghhss is not None:
                 self.mapindex = arghhss.type
-                if self.mapindex > 2:
-                    print("type: " + arghhss.type)
                 self.load_data()
                 self.new()
                 '''
@@ -722,7 +721,7 @@ class Game:
                                     self.indexcounter += 1
                                     if cut['colour'] == yellow:
                                         self.text_ani.colour = yellow
-                                    else: 
+                                    else:
                                         self.text_ani.colour = white
             else:
                 self.player.cutscene = False
@@ -747,14 +746,16 @@ class Game:
                 self.cutsceneend()
                 self.map_img = self.map.make_map()
 
-        if self.combatstate: 
+        if self.combatstate:
             self.camera.freeze = True
-            for sprite in self.all_sprites: 
+            for sprite in self.all_sprites:
                 sprite.freeze = True
 
         if not self.escaped:
             for enemy in self.enemies:
                 if enemy.map == self.mapindex and self.start:
+                    #if pygame.sprite.spritecollideany(self.player, self.enemies):
+                        #self.combat()
                     if abs(self.player.position.x - enemy.x) < 50 and abs(self.player.position.y - enemy.y) < 50:
                         if not self.combatstate and self.mapindex == 0:
                             self.enemy = enemy
@@ -818,7 +819,7 @@ class Game:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
-                if event.key == pygame.K_m: 
+                if event.key == pygame.K_m:
                     if not self.combatstate and not self.text_ani.textplaying:
                         self.start = False
                         self.mainmenu(event)
@@ -836,7 +837,7 @@ class Game:
                         self.text_ani.skip_line()
                     else:
                         self.map_img = self.map.make_map()
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_1:
                     if self.textplaying and not self.textrunning:
                         self.map_img = self.map.make_map()
                         self.camera.freeze = False
