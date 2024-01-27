@@ -329,7 +329,7 @@ class Game:
         if index == 7:
             x = self.player.position.x - 410
             y = self.player.position.y + 310
-        else: 
+        else:
             x = self.player.position.x - 250
             y = self.player.position.y + 150
         
@@ -366,6 +366,7 @@ class Game:
 
             self.checkobjinter()
             self.checklockinter()
+            self.checkpickups()
 
             if self.player.status == "carrying":
                 self.inneractivibee()
@@ -386,6 +387,9 @@ class Game:
 
         pygame.display.flip()
 
+    def checkpickups(self):
+        if self.player.status == "carrying":
+            self.dis.blit(cs.droptext, cs.droptextRect)
     def inneractivibee(self):
         a = pygame.sprite.spritecollideany(self.player, self.interactablelox)
         if a is not None: #checking specific box
@@ -404,7 +408,7 @@ class Game:
             if c is not None:
                 for aye in self.locks:
                     if aye.type == c.type:
-                        self.player.keytype = aye.type
+                        #self.player.keytype = aye.type
                         pygame.sprite.Sprite.remove(aye,
                                                     self.obstruction)
 
@@ -416,9 +420,9 @@ class Game:
                     if self.interactivity:
                         erm.displaymytextbetter()
                     elif self.interactivibee:
-                        self.player.keytype = erm.type
-                        pygame.sprite.Sprite.remove(erm,
-                                                    self.obstruction)
+                        if self.player.keytype == erm.type:
+                            pygame.sprite.Sprite.remove(erm,
+                                                        self.obstruction)
                     else:
                         erm.displaymytext()
 
@@ -737,11 +741,11 @@ class Game:
                 self.cutscene(cutscenes[7]['movement'], cutscenes[7]['text'], cutscenes[7]['index'])
                 if cutscenes[7]['colour'] == yellow:
                     self.text_ani.colour = yellow
-                else: 
+                else:
                     self.text_ani.colour = white
-            else: 
+            else:
                 self.player.cutscene = False
-        else: 
+        else:
             if self.player.cutsceneend:
                 self.cutsceneend()
                 self.map_img = self.map.make_map()
@@ -839,28 +843,34 @@ class Game:
                         for sprite in self.all_sprites:
                             sprite.freeze = False
                         self.textplaying = False
+
                 if event.key == pygame.K_j:
-                    self.draw_debug = not self.draw_debug
-                if pygame.sprite.spritecollideany(self.player,
-                                                  self.interactablebox):
+                    self.draw_debug = not self.draw_debug # originally a function meant to show objects heh
+
+                if self.player.status == "carrying":
+                    if event.key == pygame.K_g:
+                        self.interactivibee = False
+                        self.player.dropped()
+                        self.player.status = "free"
+
+
+                abc = pygame.sprite.spritecollideany(self.player,
+                                                     self.interactablebox)
+                if abc is not None:
                     if self.player.status == "free":
                         if event.key == pygame.K_e:
                             self.interactivity = not self.interactivity
                             self.textindex = 0
-                if pygame.sprite.spritecollideany(self.player,
-                                                  self.interactablebox):
-                    if event.key == pygame.K_p:
-                        self.interactivibee = not self.interactivibee
-                        self.player.status = "carrying"
-                        for y in self.interactablelox:
-                            if pygame.sprite.collide_rect(self.player, y):
-                                self.player.keytype = y.type
-                abc = pygame.sprite.spritecollideany(self.player,
-                                                     self.interactablebox)
                 if abc is not None:
                     if event.key == pygame.K_RETURN:
                         if len(cs.Text[abc.type]) - 1 > self.textindex:
                             self.textindex += 1
+                if abc is not None:
+                    if event.key == pygame.K_p:
+                        self.interactivibee = not self.interactivibee
+                        self.player.status = "carrying"
+                        self.player.keytype = abc.type
+
 
 
 

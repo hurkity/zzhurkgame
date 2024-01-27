@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="100" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="18">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="100" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="20">
  <tileset firstgid="1" source="../maps/interiorfree.tsx"/>
  <tileset firstgid="51" source="../maps/tinytowntest.tsx"/>
  <tileset firstgid="183" source="../maps/roguelikeIndoor_transparent.tsx"/>
@@ -140,6 +140,7 @@
   <object id="11" name="teleport" type="2" x="1422.67" y="-1.33333" width="165.333" height="84"/>
   <object id="13" name="player" x="980" y="769.333" width="25.3333" height="30.6667"/>
   <object id="14" name="teleport" type="0" x="913.333" y="900" width="149.333" height="54.6667"/>
+  <object id="19" name="house" x="1069.33" y="675.333" width="149.333" height="9.333"/>
  </objectgroup>
  <layer id="3" name="Tile Layer 3" width="100" height="60">
   <data encoding="csv">

@@ -72,21 +72,22 @@ smokeappear, t = pygame.USEREVENT+1, 3000
 pygame.time.set_timer(smokeappear, t)
 
 string4 = "woahh oh woahh"
-objfont = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
+objfont = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 10)
 font = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
 font2 = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 8)
 font3 = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 12)
 
 text = font.render("'e' to interact with the object!", True, green, blue)
 textSecondLine = font.render("'p' to pick up the object!", True, green, blue)
+droptext = font.render("'g' to drop the object!", True, white)
 pressetoclose = font2.render("press 'e' again to close", True, white)
 entertocontinue= font2.render("press enter to continue", True, white)
 
 
 
 Text = [  # font.render("bjdndkjnf", True, green),
-        ["first object description", "first object des2", "first object des3"],
-        ["second object description", "second object des2"],
+        ["A rusty old key.", "Looks like it opens some large doors."],
+        ["", "second object des2"],
         ["third object description"],
         ["fourth object description"],
         ["fifth object description"],
@@ -97,6 +98,7 @@ LockText = [  # font.render("bjdndkjnf", True, green),
         "second lock description",
         "third lock description"]
 textRect = text.get_rect(center = (diswidth/2, disheight/10))
+droptextRect = droptext.get_rect(center = (diswidth/2, disheight/10))
 textSecondLineRect = text.get_rect(center = (diswidth/2, disheight/10 +
                                              textRect.height))
 etocloserect = pressetoclose.get_rect(bottomright = (diswidth, disheight))
@@ -117,10 +119,10 @@ player_speed2 = 100
 
 
 mapchange = [
-        'forest.tmx',
         'tuto.tmx',
         'hotel.tmx',
-        'town.tmx'
+        'town.tmx',
+        'forest.tmx'
 ]
 
 
@@ -207,7 +209,7 @@ instructions5 = ["ADAM: Alright, let’s go have some fun!",
 instructions6 = ["NARRATOR: Oops! I completely forgot to give you the key.",
 "I left it on the top right of the map, go ahead and take it."]
 
-instructions7 = ["NARRATOR: Perfect, you found the key!", 
+instructions7 = ["NARRATOR: Perfect, you found the key!",
 "Now, head on over to the hotel on the TOP of the map."]
 
 hotel1 = ["ADAM: Wow. This place is GORGEOUS!",
@@ -482,64 +484,64 @@ ending3 = ["Well, when the residents of Boardom",
 "Except for Mittens, who went immediately to taunt her previous captors.",
 "The sludge was definitely not happy about that."]
 
-cutscenes = [{'x': 827, 
-                'y': 879, 
+cutscenes = [{'x': 827,
+                'y': 879,
                 'movement': ['bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd'],
                 'index': 0,
                 'map': 0,
                 'text': bigtext1,
                'colour': white,
                 'done': False},
-                {'x': 827, 
-                'y': 779, 
+                {'x': 827,
+                'y': 779,
                 'movement': ['left', 'left', 'left', 'left', 'left', None, None, None, 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', None, None, None, 'right', 'right', 'right', 'right', 'right', None, None, None, 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', None, None, None],
                 'index': 1,
                 'map': 0,
                 'text': instructions1,
                'colour': yellow,
                 'done': False},
-                {'x': 827, 
-                'y': 679, 
+                {'x': 827,
+                'y': 679,
                 'movement': [None],
                 'index': 2,
                 'map': 0,
                 'text': instructions2,
                'colour': yellow,
                 'done': False},
-                {'x': 827, 
-                'y': 579, 
+                {'x': 827,
+                'y': 579,
                 'movement': [None],
                 'index': 3,
                 'map': 0,
                 'text': instructions3,
                'colour': yellow,
                 'done': False},
-                {'x': 827, 
-                'y': 529, 
+                {'x': 827,
+                'y': 529,
                 'movement': ['left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', None, None, None, 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', None, None, None, 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', None, None, None, 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd', None, None, None],
                 'index': 4,
                 'map': 0,
                 'text': instructions4,
                'colour': yellow,
                 'done': False},
-                {'x': 827, 
-                'y': 479, 
+                {'x': 827,
+                'y': 479,
                 'movement': ['bwd', 'bwd', 'bwd', 'bwd', 'bwd', 'bwd'],
                 'index': 5,
                 'map': 0,
                 'text': instructions5,
                'colour': white,
                 'done': False},
-                {'x': 827, 
-                'y': 429, 
+                {'x': 827,
+                'y': 429,
                 'movement': [None],
                 'index': 6,
                 'map': 0,
                 'text': instructions6,
                'colour': yellow,
                 'done': False},
-                {'x': 0, 
-                'y': 0, 
+                {'x': 0,
+                'y': 0,
                 'movement': [None],
                 'index': 7,
                 'map': 0,
@@ -557,7 +559,7 @@ cutscenes = [{'x': 827,
                {'x': 1100, 
                 'y': 700, 
                 'movement': [None],
-                'index': 9, 
+                'index': 9,
                 'map': 1,
                 'text': hotel2,
                'colour': white,
