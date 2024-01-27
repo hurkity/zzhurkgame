@@ -157,14 +157,11 @@ targpow1 = 80
 targhp1 = 2000
 
 enemies = [
-    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 124, "y": 165, "pic": "graphics/cookiemonster.png"},
-    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 695, "y": 254, "pic": "graphics/monster.png"},
-    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 539, "y": 622, "pic": "graphics/cookiemonster.png"},
-    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 982, "y": 155, "pic": "graphics/cookiemonster.png"},
-    {"name": "MUTATION??", "hp": 2000, "pow": 100, "map": 3, "x": 1274, "y": 424, "pic": "graphics/monster.png"},
-    {"name": "FINAL MUTATION", "hp": 10000, "pow": 200, "map": 2, "x": 250, "y": 700, "pic": "graphics/monster.png"},
-
-
+    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 124, "y": 165, "pic": "graphics/bird.png"},
+    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 695, "y": 254, "pic": "graphics/bunny.png"},
+    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 539, "y": 622, "pic": "graphics/squirrel.png"},
+    {"name": "gart", "hp": 2000, "pow": 100, "map": 3, "x": 982, "y": 155, "pic": "graphics/frog.png"},
+    {"name": "MUTATION??", "hp": 2000, "pow": 100, "map": 3, "x": 1274, "y": 424, "pic": "graphics/sludge2.png"}
 ]
 
 
@@ -625,7 +622,7 @@ cutscenes = [{'x': 827,
                 'done': False},
                 {'x': 1050, 
                 'y': 500, 
-                'movement': [None],
+                'movement': ['left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left'],
                 'index': 17,
                 'map': 2,
                 'text': ivydia,
@@ -650,14 +647,14 @@ cutscenes = [{'x': 827,
                 {'x': 1150, 
                 'y': 860,
                 'y': 860, 
-                'movement': ['fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd'],
+                'movement': ['fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd', 'fwd'],
                 'index': 20,
                 'map': 2,
                 'text': louise2,
                'colour': white,
                 'done': False},
-                {'x': 1280, 
-                'y': 900, 
+                {'x': 1150, 
+                'y': 960, 
                 'movement': [None],
                 'index': 21,
                 'map': 2,

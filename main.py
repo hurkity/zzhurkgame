@@ -2,7 +2,6 @@
 import sys
 import math
 import json
-from interface import *
 from os import path
 from objs import *
 import pygame
@@ -56,7 +55,7 @@ class Game:
         self.tutorial_start = False
         self.tutorial_start2 = False
         self.cutindex = None
-        self.indexcounter = 0
+        self.indexcounter = 26
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -111,15 +110,7 @@ class Game:
         self.interactablelox = pygame.sprite.Group()
         self.lockchange = pygame.sprite.Group()
         self.arrows = pygame.sprite.Group()
-        '''for i, row in enumerate(self.map.data):
-      for j, value in enumerate(row):
-        if value == '1':
-          Wall(self, j, i)
-        elif value == 'p':
-          self.player = Player(self, j, i)
-        elif value == '2':
-          Interactable(self, j, i) old tilemap stuff
-          InteractableBox(self, j, i)'''
+
         for layerobject in self.map.tmxdata.objects:
 
             if layerobject.name == 'player' and len(self.all_sprites) == 0:
@@ -135,9 +126,14 @@ class Game:
                                 layerobject.height)
 
             elif layerobject.name == 'textdisplay':
-                TextDisplay(self, layerobject.x,
-                            layerobject.y, layerobject.width,
+                if self.indexcounter == 27:
+                    TextDisplay(self, 218 + int(layerobject.type) * 25,
+                            885, layerobject.width,
                             layerobject.height, self.striptype(layerobject.type)) #key spawn
+                else:
+                    TextDisplay(self, layerobject.x,
+                                layerobject.y, layerobject.width,
+                                layerobject.height, self.striptype(layerobject.type)) #key spawn
 
             elif layerobject.name == 'teleport':
                 Teleport(self, self.striptype(layerobject.type),
@@ -187,8 +183,6 @@ class Game:
         pygame.quit()
 
     def quit(self):
-        #with open ('savefile.txt', 'w') as f:
-            #json.dump(data, f)
         sys.exit()
 
     def prequit(self):
@@ -464,11 +458,6 @@ class Game:
     def combatevent(self, event):
         x = self.player.position.x
         y = self.player.position.y
-        self.string_list = combattext1
-        self.font = font
-        self.colour = white
-        #self.textrunning = True
-        #self.textplaying = True
 
         if event.type == QUIT:
             self.quit()
@@ -509,11 +498,6 @@ class Game:
                     self.map_img.blit(self.enemyimg, (x - 50, y))
                     self.map_img.blit(self.painterimg, (x + 100, y + 50))
 
-                    #self.string_list = combattext2
-                    #self.textrunning = True
-                    #self.textplaying = True
-
-                    #self.drawtext("Unable to escape!", font, red, x - 130, y + 180)
                     pygame.display.flip()
                     self.drawtext("You lost your advantage!", font, red, x - 180, y + 200)
                     self.drawtext("%s attacks first!" %(self.enemy.name), font, red, x - 160, y + 220)
@@ -523,8 +507,11 @@ class Game:
                     self.charstate = True
 
             elif self.attackbutton.hover(mousepos) and not self.attackingstate:
+                x = self.player.position.x - 250
+                y = self.player.position.y + 150
                 self.attackingstate = True
                 self.chosen = []
+                self.text_ani.start_display(["CHOOSE TWO CHARACTERS: "], x, y, font, green, cleanup_func = None)
                 self.selected = [False, False, False, False]
                 self.map_img = self.map.make_map()
                 self.map_img.blit(self.combatbg, (x - 250, y - 250))
@@ -604,9 +591,8 @@ class Game:
                 damage = self.team.attack(self.team.characters[self.chosen[0]], self.team.characters[self.chosen[1]])
                 self.enemy.update(damage)
                 pygame.time.delay(2000)
-                text_list = ["Attacking enemy.",
-                        "%s and %s attack" %(charas[self.chosen[0]]['name'], charas[self.chosen[1]]['name']),
-                        "%i damage" % damage]
+                text_list = ["%s AND %s ATTACK" %(charas[self.chosen[0]]['name'], charas[self.chosen[1]]['name']),
+                        "DEAL %i DAMAGE" % damage]
                 x = self.player.position.x - 250
                 y = self.player.position.y + 150
                 if self.enemy.hp > 0:
@@ -625,7 +611,7 @@ class Game:
                     self.team.reset_hp()
                     self.enemy.resethp(self.enemy.hp)
                     self.attackingstate = False
-                    text_list.append("You win!")
+                    text_list.append("YOU WIN!")
                     self.text_ani.start_display(text_list, x, y, font, yellow, cleanup_func=self.cleanup)
 
 
@@ -720,6 +706,9 @@ class Game:
             if self.player.keytype == 0 and not cutscenes[7]['done'] and self.indexcounter == cutscenes[7]['index']:
                 self.cutindex = cutscenes[7]['index']
                 self.indexcounter += 1
+                if self.indexcounter == 27:
+                        enemies.append({"name": "FINAL MUTATION", "hp": 10000, "pow": 200, "map": 2, "x": 250, "y": 700, "pic": "graphics/monster.png"})
+
                 self.cutscene(cutscenes[7]['movement'], cutscenes[7]['text'], cutscenes[7]['index'])
                 if cutscenes[7]['colour'] == yellow:
                     self.text_ani.colour = yellow
@@ -742,18 +731,25 @@ class Game:
                 if enemy.map == self.mapindex and self.start:
                     if abs(self.player.position.x - enemy.x) < 50 and abs(self.player.position.y - enemy.y) < 50:
                         if not self.combatstate:
-                            print ("??")
                             self.enemy = enemy
                             self.enemyimg = pygame.image.load(self.enemy.pic)
                             self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
                             self.combat()
 
         else:
+            inrange = False
+            for enemy in self.enemies:
+                if enemy.map == self.mapindex and self.start:
+                    if abs(self.player.position.x - enemy.x) < 60 or abs(self.player.position.y - enemy.y) < 60:
+                        inrange = True
+                        break
+            
+            if not inrange:
+                self.escaped = False
             self.map_img = self.map.make_map()
             self.combatstate = False
 
         if self.text_ani.is_displaying():
-            #self.playsound('sounds/typing.mp3')
             self.player.direction = None
             self.camera.freeze = True
             for sprite in self.all_sprites:
@@ -761,7 +757,6 @@ class Game:
 
             displaying = self.text_ani.update(self.map_img)
         else:
-            pygame.mixer.stop()
             if not self.combatstate:
                 self.camera.freeze = False
                 for sprite in self.all_sprites:
@@ -808,8 +803,6 @@ class Game:
                     if not self.combatstate and not self.text_ani.textplaying:
                         self.start = False
                         self.mainmenu(event)
-                if event.key == pygame.K_c:
-                    self.combat()
                 if event.key == pygame.K_q:
                     print ([self.player.position.x, self.player.position.y])
                 if event.key == pygame.K_t: #GYAP
@@ -822,13 +815,6 @@ class Game:
                         self.text_ani.skip_line()
                     else:
                         self.map_img = self.map.make_map()
-                if event.key == pygame.K_RETURN:
-                    if self.textplaying and not self.textrunning:
-                        self.map_img = self.map.make_map()
-                        self.camera.freeze = False
-                        for sprite in self.all_sprites:
-                            sprite.freeze = False
-                        self.textplaying = False
 
                 if event.key == pygame.K_j:
                     self.draw_debug = not self.draw_debug # originally a function meant to show objects heh
