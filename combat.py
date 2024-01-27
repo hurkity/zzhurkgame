@@ -67,13 +67,17 @@ class Team:
 
 
 class Computer(pygame.sprite.Sprite):
-    def __init__(self, name, hp, power, escape):
+    def __init__(self, name, hp, power, escape, map, x, y, pic):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.maxhp = hp
         self.hp = hp
         self.power = power
         self.escape = escape
+        self.map = map
+        self.x = x
+        self.y = y 
+        self.pic = pic
 
     def resethp(self, maxhp):
         self.hp = maxhp

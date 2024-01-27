@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self._currentsprite = 0
 
-        self.frontsprites = []
+        self.frontsprites = [] #animation loop throughh
         self.image = game.player_img
         self.imagefrontleft = game.player_imgfrontleft
         self.imagefrontright = game.player_imgfrontright
@@ -42,7 +42,7 @@ class Player(pygame.sprite.Sprite):
         self.frontsprites.append(self.image)
         self.frontsprites.append(self.imagefrontright)
 
-        self.leftsprites = []
+        self.leftsprites = [] #same but for left facing
         self.imageleft = game.player_imgleft
         self.imageleftleft = game.player_imgleftleft
         self.imageleftright = game.player_imgleftright
@@ -56,7 +56,7 @@ class Player(pygame.sprite.Sprite):
         self.leftsprites.append(self.imageleft)
         self.leftsprites.append(self.imageleftright)
 
-        self.rightsprites = []
+        self.rightsprites = [] #etc
         self.imageright = game.player_imgright
         self.imagerightleft = game.player_imgrightleft
         self.imagerightright = game.player_imgrightright
@@ -112,7 +112,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = (self.x, self.y))
 
     @property
-    def currentsprite(self):
+    def currentsprite(self): #for bugs during cutscene with movement 
         return self._currentsprite
     @currentsprite.setter
     def currentsprite(self, value):
@@ -120,9 +120,9 @@ class Player(pygame.sprite.Sprite):
         if value is None:
             raise Exception("none")
 
-    def get_keys(self):
+    def get_keys(self): #player movement
         direction = None
-        if self.cutscene:
+        if self.cutscene: #if in a cutscene, the movement doesn't depend on keys 
             self.velocity.x = 0
             self.velocity.y = 0
             if len(self.directions) > 0:
@@ -145,7 +145,7 @@ class Player(pygame.sprite.Sprite):
                 return direction
             else:
                 self.cutsceneend = True
-        else:
+        else: #if not in cutscene, it doesnt depend on keys!
             self.velocity = vc(0, 0)
             if self.game.interactivity == False and self.game.frozen == False:
                 keez = pygame.key.get_pressed()
@@ -163,7 +163,7 @@ class Player(pygame.sprite.Sprite):
                     self.velocity.y = -self.player_speed
         return direction
 
-    def getanigroup(self):
+    def getanigroup(self): #animation. the sprite group is passed from here
         if self.direction in ['left', 'right', 'fwd', 'bwd']:
             return self.sprites_group[self.direction]
         else:
@@ -509,7 +509,7 @@ class TextAni(object):
         self.cleanup_func = None
 
     def start_display(self, string_list, x, y, font, colour, cleanup_func=None):
-        self.string_list = [f"{str} " for str in string_list]
+        self.string_list = [f"{str} " + ' ' * 1000 for str in string_list]
         self.string = 0
         self.letter = 0
         self.x = x

@@ -29,7 +29,7 @@ class Game:
         self.combatstate = False
         self.textindex = 0
         self.cutscenestate = False
-        self.textplaying = False
+        #self.textplaying = False
         self.attackingstate = False
         self.charstate = False
         self.selected = [False, False, False, False]
@@ -90,8 +90,6 @@ class Game:
         self.player_imgbackright = pygame.image.load(
             path.join(img_folder, 'mcbackright.png')).convert_alpha()
 
-        self.enemyimg = pygame.image.load('graphics/cookiemonster.png')
-        self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
         self.painterimg = pygame.image.load('graphics/personality.png')
         self.painterimg = pygame.transform.scale(self.painterimg, (100, 100))
 
@@ -170,7 +168,10 @@ class Game:
 
         self.team = Team()
 
-        self.enemy = Computer(targname, targhp, targpow, True)
+        self.enemies = []
+        for enemy in enemies:
+            obj_enemy = Computer(enemy['name'], enemy['hp'], enemy['pow'], True, enemy['map'], enemy['x'], enemy['y'], enemy['pic'])
+            self.enemies.append(obj_enemy)
 
     def run(self):
         self.game_over = False
@@ -201,7 +202,7 @@ class Game:
     def drawbg(self, colour):
         self.dis.fill(colour)
 
-    def startscreen(self, event):
+    def startscreen(self, event): #just the opening screen with the car going down
 
         gameover = False
         currentime = 0
@@ -216,7 +217,7 @@ class Game:
                 self.dis.blit(bg, (i*diswidth + self.scroll, 0))
 
                 num -= 0.01
-                self.scroll -= num
+                self.scroll -= num #slows down until it comes to stop
 
                 if abs(self.scroll) > diswidth:
                     self.scroll = 0
@@ -282,7 +283,7 @@ class Game:
     def movementani(self, direction):
 
         for sprite in self.all_sprites:
-            if direction == None:
+            if direction == None: #when no movement 
                 self.dis.blit(sprite.image, self.camera.implement(sprite))
             elif direction == 'l':
                 self.map_img.blit(sprite.imageleft, sprite.rectleft)
@@ -298,13 +299,13 @@ class Game:
                 break
 
             else:
-                anigroup = sprite.getanigroup()
+                anigroup = sprite.getanigroup() #to HERE (check objs player class get keys method)
                 self.dis.blit(anigroup[sprite.currentsprite], self.camera.implement(
-                    sprite))
-                sprite.currentsprite += 1
+                    sprite)) #for animation yep
+                sprite.currentsprite += 1 #loooop
                 pygame.time.wait(100)
                 if sprite.currentsprite > len(anigroup) - 1:
-                    sprite.currentsprite = 0
+                    sprite.currentsprite = 0 #reset
 
             if self.draw_debug:
                 pygame.draw.rect(self.dis, cs.blue,
@@ -316,11 +317,6 @@ class Game:
         mixer.music.play()
 
     def cutsceneend(self):
-        x = self.player.position.x - 250
-        y = self.player.position.y - 50
-        self.string_list = testtext
-        self.textplaying = True
-        self.textrunning = True
         self.player.player_speed = 250
         cutscenes[self.cutindex]['done'] = True
         self.map_img = self.map.make_map()
@@ -336,8 +332,10 @@ class Game:
         else: 
             x = self.player.position.x - 250
             y = self.player.position.y + 150
+        
+        if text != None:
+            self.text_ani.start_display(text, x, y, font2, white, cleanup_func = self.cleanup)
 
-        self.text_ani.start_display(text, x, y, font2, white, cleanup_func = None)
         self.player.player_speed = 100
         self.player.cutscene = True
         self.player.directions = movement[:]
@@ -428,16 +426,6 @@ class Game:
         pygame.draw.rect(self.map_img, colour, pygame.Rect(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4))
         pygame.display.flip()
 
-    def starttextani(self):
-        #self.playsound('sounds/typing.mp3')
-        self.string = 0
-        self.letter = 0
-        self.textrunning = True
-        self.textplaying = True
-        self.camera.freeze = True
-        for sprite in self.all_sprites:
-            sprite.freeze = True
-
     def combat(self):
         self.escaped = False
         x = self.player.position.x - 250
@@ -486,8 +474,8 @@ class Game:
         self.string_list = combattext1
         self.font = font
         self.colour = white
-        self.textrunning = True
-        self.textplaying = True
+        #self.textrunning = True
+        #self.textplaying = True
 
         if event.type == QUIT:
             self.quit()
@@ -529,9 +517,9 @@ class Game:
                     self.map_img.blit(self.enemyimg, (x - 50, y))
                     self.map_img.blit(self.painterimg, (x + 100, y + 50))
 
-                    self.string_list = combattext2
-                    self.textrunning = True
-                    self.textplaying = True
+                    #self.string_list = combattext2
+                    #self.textrunning = True
+                    #self.textplaying = True
 
                     #self.drawtext("Unable to escape!", font, red, x - 130, y + 180)
                     pygame.display.flip()
@@ -636,7 +624,6 @@ class Game:
 
                 else:
                     print ("uou woinin")
-                    #self.team.hp += 
                     self.escaped = True
                     self.combatstate = False
                     self.camera.freeze = False
@@ -723,6 +710,9 @@ class Game:
             if not self.player.cutsceneend:
                 for cut in cutscenes:
                     if self.indexcounter == cut['index']:
+                            '''if cut['index'] == 20: #need to be completed all cutscenes with npc dialogue in act 1 to activate this cutscene
+                                if cutscenes[range(12, 19)]['done']:
+                                    cutscenes[cut]['done'] = False'''
                             if not cut['done'] and self.mapindex == cut['map'] and self.start:
                                 if abs(self.player.position.x - cut['x']) < 50 and abs(self.player.position.y - cut['y']) < 50:
                                     self.cutscene(cut['movement'], cut['text'], cut['index'])
@@ -740,7 +730,7 @@ class Game:
                 self.cutsceneend()
                 self.map_img = self.map.make_map()
 
-        if not self.player.cutscene:
+        if not self.player.cutscene: #specifically for cutscene 7 which is when you pick up the key
             if self.player.keytype == 0 and not cutscenes[7]['done'] and self.indexcounter == cutscenes[7]['index']:
                 self.cutindex = cutscenes[7]['index']
                 self.indexcounter += 1
@@ -757,15 +747,19 @@ class Game:
                 self.map_img = self.map.make_map()
 
         if self.combatstate: 
-            print ("Asasdaa")
             self.camera.freeze = True
             for sprite in self.all_sprites: 
                 sprite.freeze = True
 
         if not self.escaped:
-            if abs(self.player.position.x - 946) < 50 and abs(self.player.position.y - 400) < 50:
-                if not self.combatstate and self.mapindex == 0:
-                    self.combat()
+            for enemy in self.enemies:
+                if enemy.map == self.mapindex and self.start:
+                    if abs(self.player.position.x - enemy.x) < 50 and abs(self.player.position.y - enemy.y) < 50:
+                        if not self.combatstate and self.mapindex == 0:
+                            self.enemy = enemy
+                            self.enemyimg = pygame.image.load(self.enemy.pic)
+                            self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
+                            self.combat()
 
         else:
             self.map_img = self.map.make_map()
@@ -797,7 +791,7 @@ class Game:
                 self.healthbar(self.enemy.maxhp)
                 continue
             if self.combatstate:
-                self.textrunning = True
+                #self.textrunning = True
                 self.combatevent(event)
                 # continue
 
@@ -820,18 +814,20 @@ class Game:
                 # play_pos = (self.player.x, self.player.y, self.displaytext)
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
-                if event.key == pygame.K_m: #temporary
-                    self.start = False
-                    self.mainmenu(event)
+                if event.key == pygame.K_m: 
+                    if not self.combatstate and not self.text_ani.textplaying:
+                        self.start = False
+                        self.mainmenu(event)
                 if event.key == pygame.K_c:
                     self.combat()
+                if event.key == pygame.K_q:
+                    print ([self.player.position.x, self.player.position.y])
                 if event.key == pygame.K_t: #GYAP
                     x = self.player.position.x - 250
                     y = self.player.position.y + 150
                     self.camera.freeze = True
                     self.text_ani.start_display(stringlist, x, y, font, white, self.cleanup)
                 if event.key == pygame.K_SPACE:
-                    #self.map_img = self.map.make_map()
                     if self.text_ani.is_displaying():
                         self.text_ani.skip_line()
                     else:
@@ -896,7 +892,6 @@ class Game:
         self.cutscenestate = True
 
         pygame.display.flip()
-        print('new game')
         self.start = True
 
         if event.type == QUIT:
