@@ -22,7 +22,7 @@ class Game:
         pygame.font.init()
         mixer.init()
         self.dis = pygame.display.set_mode((diswidth, disheight))
-        pygame.display.set_caption('get me out of heeaarraahh')
+        pygame.display.set_caption('TITLE SCREEN')
         self.clock = pygame.time.Clock()
         # pygame.key.set_repeat(500, 100)
         self.mapindex = 0
@@ -55,7 +55,8 @@ class Game:
         self.tutorial_start = False
         self.tutorial_start2 = False
         self.cutindex = None
-        self.indexcounter = 23
+        self.indexcounter = 15
+        self.enemycounter = 0
 
     def load_data(self):
         folder = path.dirname(__file__)
@@ -192,7 +193,6 @@ class Game:
     def rupdate(self):
         self.all_sprites.update()
         direction = self.player.direction
-        #print([self.player.position.x, self.player.position.y])
         self.camera.update(self.player)
         return direction
 
@@ -305,12 +305,11 @@ class Game:
         if index == 7:
             x = self.player.position.x - 410
             y = self.player.position.y + 310
-            print ("?!?!")
         elif index == 8:
             x = self.player.position.x - 250
-            y = self.player.position.y + 150
+            y = self.player.position.y 
         elif index == 16: 
-            x = self.player.position.x - 230
+            x = self.player.position.x - 250
             y = self.player.position.y + 150
         elif index == 24: 
             x = self.player.position.x - 210
@@ -325,6 +324,7 @@ class Game:
         print (index)
         if text != None:
             self.text_ani.start_display(text, x, y, font2, white, cleanup_func = self.cleanup)
+            #self.text_ani.textplaying = False
 
         self.player.player_speed = 100
         self.player.cutscene = True
@@ -681,6 +681,7 @@ class Game:
         self.camera.freeze = False
         for sprite in self.all_sprites:
             sprite.freeze = False
+        self.text_ani.textplaying = False
 
     def switch_enemy_attack(self):
         self.enemyattacking = True
@@ -711,8 +712,6 @@ class Game:
             if self.player.keytype == 0 and not cutscenes[7]['done'] and self.indexcounter == cutscenes[7]['index']:
                 self.cutindex = cutscenes[7]['index']
                 self.indexcounter += 1
-                if self.indexcounter == 29:
-                        enemies.append({"name": "FINAL MUTATION", "hp": 10000, "pow": 200, "map": 2, "x": 250, "y": 700, "pic": "graphics/monster.png"})
 
                 self.cutscene(cutscenes[7]['movement'], cutscenes[7]['text'], cutscenes[7]['index'])
                 if cutscenes[7]['colour'] == yellow:
@@ -735,11 +734,19 @@ class Game:
             for enemy in self.enemies:
                 if enemy.map == self.mapindex and self.start:
                     if abs(self.player.position.x - enemy.x) < 50 and abs(self.player.position.y - enemy.y) < 50:
-                        if not self.combatstate:
+                        if not self.combatstate and self.enemycounter < 6 and self.enemy.hp > 0:
                             self.enemy = enemy
                             self.enemyimg = pygame.image.load(self.enemy.pic)
                             self.enemyimg = pygame.transform.scale(self.enemyimg, (100, 100))
+                            self.enemycounter += 1
                             self.combat()
+
+                        elif self.enemycounter == 6:
+                            enemies.append({"name": "MUTATION??", "hp": 7500, "pow": 85, "escape": False, "map": 3, "x": 1240, "y": 570, "pic": "graphics/sludge1.png"})
+
+                        elif self.enemycounter == 7:
+                            enemies.append({"name": "FINAL MUTATION", "hp": 10000, "pow": 100, "escape": False, "map": 2, "x": 250, "y": 700, "pic": "graphics/sludge2.png"})
+
 
         else:
             inrange = False
@@ -760,7 +767,7 @@ class Game:
             for sprite in self.all_sprites:
                 sprite.freeze = True
 
-            displaying = self.text_ani.update(self.map_img)
+            displaying = self.text_ani.update(self.map_img, self.sevolume)
         else:
             if not self.combatstate:
                 self.camera.freeze = False
@@ -805,7 +812,7 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.quit()
                 if event.key == pygame.K_m: 
-                    if not self.combatstate and not self.text_ani.textplaying:
+                    if not self.combatstate and not self.text_ani.textplaying and not self.cutscenestate:
                         self.start = False
                         self.mainmenu(event)
                 if event.key == pygame.K_q:
@@ -870,7 +877,7 @@ class Game:
         self.start_playing = True
 
     def newgame(self, event):
-        pygame.display.set_caption("New Game")
+        pygame.display.set_caption("NEW GAME")
 
         self.map_img = self.map.make_map()
 
@@ -885,7 +892,7 @@ class Game:
             self.quit()
 
     def contgame(self, event):
-        pygame.display.set_caption("Continue Game")
+        pygame.display.set_caption("CONTINUE GAME")
         self.map_img = self.map.make_map()
         pygame.display.flip()
 
@@ -900,7 +907,7 @@ class Game:
         x = self.player.position.x
         y = self.player.position.y
 
-        pygame.display.set_caption("Settings")
+        pygame.display.set_caption("SETTINGS")
         self.map_img.fill(black)
         pygame.display.flip()
 

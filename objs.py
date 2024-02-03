@@ -479,19 +479,7 @@ class Lockchange(pygame.sprite.Sprite):
         self.textrect.x = 0
         self.textrect.y = cs.diswidth * 0.8
 
-'''class Enemy(pygame.sprite.Sprite):
-    def __init__(self, game, type, x, y, w, h):
-        self.game = game
-        self.type = type
-        self.inside = self.game.enemygrp
-        pygame.sprite.Sprite.__init__(self, self.inside)
-        # self._layer = cs.object_layer
-        self.rect = pygame.Rect(x, y, w, h)
-        self.x = x
-        self.y = y
-        # self.image = pygame.Surface((18, 18), pygame.SRCALPHA, 32)
-        self.rect.x = self.x
-        self.rect.y = self.y'''
+
 class Arrows(pygame.sprite.Sprite):
     def __init__(self, game, x, y, width, height, type):
         self.game = game
@@ -530,9 +518,9 @@ class TextAni(object):
         self.textplaying = False
         self.cleanup_func = None
 
-    def playsound(self, sound):
+    def playsound(self, sound, vol):
         mixer.music.load(sound)
-        mixer.music.set_volume(0.3)
+        mixer.music.set_volume(vol)
         mixer.music.play()
         
     def start_display(self, string_list, x, y, font, colour, cleanup_func=None):
@@ -559,7 +547,7 @@ class TextAni(object):
         if self.string < len(self.string_list):
             self.letter = len(self.string_list[self.string]) - 1
 
-    def update(self, map_img):
+    def update(self, map_img, vol):
         if not self.textplaying:
             return
         if self.string >= len(self.string_list):
@@ -576,7 +564,7 @@ class TextAni(object):
                 self.textrunning = False
                 return False
         if self.letter == 0:
-            self.playsound('sounds/typing.mp3')
+            self.playsound('sounds/typing.mp3', vol)
         if self.letter == 20:
             mixer.music.stop()
         pygame.draw.rect(map_img, cs.black, pygame.Rect(self.x, self.y, 500, 100))

@@ -76,7 +76,6 @@ tiles = math.ceil(diswidth/bgwidth) + 1 #should be 2 (round up)
 smokeappear, t = pygame.USEREVENT+1, 3000
 pygame.time.set_timer(smokeappear, t)
 
-string4 = "woahh oh woahh"
 objfont = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 10)
 font = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 16)
 font2 = pygame.font.Font('public-pixel-font/PublicPixel.ttf', 8)
@@ -89,20 +88,6 @@ pressetoclose = font2.render("press 'e' again to close", True, white)
 entertocontinue= font2.render("press enter to continue", True, white)
 
 
-Text = [  # font.render("bjdndkjnf", True, green),
-    ["A rusty old key.", "Looks like it opens some large doors."],
-    ["Ugh, just a bit more money...", "I'll make it out of here soon.",
-     "Oh, but maybe...",
-     "taking someone with me wouldn't be so bad..."],
-    ["Whew!", "Be cautious, gang!", "And, woah. Stay away from the lab bench."],
-    ["Hmm, do my carrots need watering today?",
-     "Ugh, I guess weeding would be better.",
-     "All my bushes have been flattened, anyways."],
-    ["Oh, Mittens... come home soon...",
-     "your 19 sisters need you!"],
-    ["MEOW!"],
-    ["Intriguing Bunny."]
-]
 
 LockText = [  # font.render("bjdndkjnf", True, green),
         "first lock description",
@@ -154,12 +139,10 @@ targpow1 = 80
 targhp1 = 2000
 
 enemies = [
-    {"name": "BIRD", "hp": 2000, "pow": 100, "escape": True, "map": 3, "x": 286, "y": 300, "pic": "graphics/bird.png"},
-    {"name": "BUNNY", "hp": 2000, "pow": 100, "escape": True, "map": 3, "x": 695, "y": 254, "pic": "graphics/bunny.png"},
-    {"name": "SQUIRREL", "hp": 2000, "pow": 100, "escape": True, "map": 3, "x": 539, "y": 622, "pic": "graphics/squirrel.png"},
-    {"name": "FROG", "hp": 2000, "pow": 100, "escape": True, "map": 3, "x": 982, "y": 155, "pic": "graphics/frog.png"},
-    {"name": "MUTATION??", "hp": 2000, "pow": 100, "escape": False, "map": 3, "x": 1274, "y": 424, "pic": "graphics/sludge1.png"},
-    {"name": "FINAL MUTATION", "hp": 10000, "pow": 200, "escape": False, "map": 2, "x": 250, "y": 700, "pic": "graphics/sludge2.png"},
+    {"name": "BIRD", "hp": 3000, "pow": 70, "escape": True, "map": 3, "x": 286, "y": 300, "pic": "graphics/bird.png"},
+    {"name": "BUNNY", "hp": 3500, "pow": 50, "escape": True, "map": 3, "x": 695, "y": 254, "pic": "graphics/bunny.png"},
+    {"name": "SQUIRREL", "hp": 3000, "pow": 50, "escape": True, "map": 3, "x": 539, "y": 622, "pic": "graphics/squirrel.png"},
+    {"name": "FROG", "hp": 2600, "pow": 75, "escape": True, "map": 3, "x": 982, "y": 155, "pic": "graphics/frog.png"},
 ]
 
 
@@ -265,7 +248,7 @@ louisedia = ["LOUISE: Ahh.. young ones…",
 "Go on, have some fun."]
 
 evangelinedia = ["EVANGELINE: “Hello!!!",
-"EVANGELINE: “Oh.. you’re wondering what I do?",
+"EVANGELINE: Oh.. you’re wondering what I do?",
 "EVANGELINE: Well..",
 "Recently I’ve been working on an experiment",
 "which involves genetically modifying creatures,",
@@ -273,7 +256,7 @@ evangelinedia = ["EVANGELINE: “Hello!!!",
 "I don’t want to bore you though.",
 "AMY: Wow… that’s so interesting.",
 "AMY: I really aspire to be like you in the future!",
-"EVANGELINE: Really? Well… I appreciate the sentiment."
+"EVANGELINE: Really? Well… I appreciate the sentiment.",
 "EVANGELINE: “You all should run off now, and..",
 "be careful around these parts."]
 
@@ -688,26 +671,18 @@ cutscenes = [{'x': 827,
                 'text': forest1,
                'colour': white,
                 'done': False},
-                {'x': 193, 
-                'y': 400, 
-                'movement': [None],
-                'index': 25,
-                'map': 3,
-                'text': cutscene3,
-               'colour': white,
-                'done': False}, 
                 {'x': 1000, 
                 'y': 250, 
                 'movement': [None],
-                'index': 26,
+                'index': 25,
                 'map': 3,
                 'text': forest3,
                'colour': white,
                 'done': False},
-                {'x': 1250, 
-                'y': 260, 
+                {'x': 1320, 
+                'y': 200, 
                 'movement': [None],
-                'index': 27,
+                'index': 26,
                 'map': 3,
                 'text': forest4,
                'colour': white,
@@ -715,7 +690,7 @@ cutscenes = [{'x': 827,
                 {'x': 1280, 
                 'y': 680, 
                 'movement': [None],
-                'index': 28,
+                'index': 27,
                 'map': 3,
                 'text': postfight,
                'colour': white,
@@ -723,7 +698,7 @@ cutscenes = [{'x': 827,
                 {'x': 390, 
                 'y': 825, 
                 'movement': ['left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left', 'left'],
-                'index': 29,
+                'index': 28,
                 'map': 2,
                 'text': town,
                'colour': white,
@@ -731,7 +706,7 @@ cutscenes = [{'x': 827,
                 {'x': 260, 
                 'y': 825, 
                 'movement': [None],
-                'index': 30,
+                'index': 29,
                 'map': 2,
                 'text': finalfight,
                'colour': white,
@@ -739,9 +714,22 @@ cutscenes = [{'x': 827,
                 {'x': 306, 
                 'y': 626, 
                 'movement': [None],
-                'index': 31,
+                'index': 30,
                 'map': 2,
                 'text': ending,
                'colour': yellow,
                 'done': False},
+]
+
+Text = [  # font.render("bjdndkjnf", True, green),
+    ["A rusty old key.", "Looks like it opens some large doors."],
+    cutscene3,
+    ["Whew!", "Be cautious, gang!", "And, woah. Stay away from the lab bench."],
+    ["Hmm, do my carrots need watering today?",
+     "Ugh, I guess weeding would be better.",
+     "All my bushes have been flattened, anyways."],
+    ["Oh, Mittens... come home soon...",
+     "your 19 sisters need you!"],
+    ["MEOW!"],
+    ["Intriguing Bunny."]
 ]
